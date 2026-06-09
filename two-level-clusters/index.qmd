@@ -1,0 +1,33 @@
+---
+title: "Two-Level Clustered Data: The Rat Pup Example"
+subtitle: "West et al. - Cap. 3 (p.59)"
+author: "Elena Lazo"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-tools: true
+  revealjs:
+    output-file: slides.html
+    theme: moon
+    slide-number: true
+    code-fold: true
+    chalkboard: true
+---
+
+## Descripción del problema
+
+## Diseño del estudio
+
+## Hipótesis y objetivos
+
+## Exploración de datos
+
+## Modelos ajustados
+
+## Comparación de modelos
+
+## Modelo final e interpretación
+
+## Conclusiones

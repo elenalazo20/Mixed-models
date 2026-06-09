@@ -1,0 +1,240 @@
+[
+  {
+    "objectID": "two-level-clusters/index.html#diseño-del-estudio",
+    "href": "two-level-clusters/index.html#diseño-del-estudio",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Diseño del estudio",
+    "text": "Diseño del estudio"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#hipótesis-y-objetivos",
+    "href": "two-level-clusters/index.html#hipótesis-y-objetivos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Hipótesis y objetivos",
+    "text": "Hipótesis y objetivos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#exploración-de-datos",
+    "href": "two-level-clusters/index.html#exploración-de-datos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Exploración de datos",
+    "text": "Exploración de datos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#modelos-ajustados",
+    "href": "two-level-clusters/index.html#modelos-ajustados",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Modelos ajustados",
+    "text": "Modelos ajustados"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#comparación-de-modelos",
+    "href": "two-level-clusters/index.html#comparación-de-modelos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Comparación de modelos",
+    "text": "Comparación de modelos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#modelo-final-e-interpretación",
+    "href": "two-level-clusters/index.html#modelo-final-e-interpretación",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Modelo final e interpretación",
+    "text": "Modelo final e interpretación"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#conclusiones",
+    "href": "two-level-clusters/index.html#conclusiones",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Conclusiones",
+    "text": "Conclusiones"
+  },
+  {
+    "objectID": "three-level-clusters/index.html",
+    "href": "three-level-clusters/index.html",
+    "title": "Three-Level Clusters (Classroom)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "three-level-clusters/index.html#próximamente",
+    "href": "three-level-clusters/index.html#próximamente",
+    "title": "Three-Level Clusters (Classroom)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "pre-post-clusters/index.html",
+    "href": "pre-post-clusters/index.html",
+    "title": "Pre-Post Clusters (PRT)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "pre-post-clusters/index.html#próximamente",
+    "href": "pre-post-clusters/index.html#próximamente",
+    "title": "Pre-Post Clusters (PRT)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html",
+    "href": "longitudinal-random-coef/index.html",
+    "title": "Longitudinal Random Coef (Autism)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#próximamente",
+    "href": "longitudinal-random-coef/index.html#próximamente",
+    "title": "Longitudinal Random Coef (Autism)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html",
+    "href": "longitudinal-clusters/index.html",
+    "title": "Longitudinal Clusters (Dental Veener)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#próximamente",
+    "href": "longitudinal-clusters/index.html#próximamente",
+    "title": "Longitudinal Clusters (Dental Veener)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "crossed-random-effects/index.html",
+    "href": "crossed-random-effects/index.html",
+    "title": "Crossed Random Effects (SAT Score)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "crossed-random-effects/index.html#próximamente",
+    "href": "crossed-random-effects/index.html#próximamente",
+    "title": "Crossed Random Effects (SAT Score)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-grouped/index.html",
+    "href": "longitudinal-grouped/index.html",
+    "title": "Longitudinal Grouped (ARMD)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "longitudinal-grouped/index.html#próximamente",
+    "href": "longitudinal-grouped/index.html#próximamente",
+    "title": "Longitudinal Grouped (ARMD)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "multilevel-glm/index.html",
+    "href": "multilevel-glm/index.html",
+    "title": "Multilevel GLM (Mathematics)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "multilevel-glm/index.html#próximamente",
+    "href": "multilevel-glm/index.html#próximamente",
+    "title": "Multilevel GLM (Mathematics)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "repeated-measures/index.html",
+    "href": "repeated-measures/index.html",
+    "title": "Repeated Measures (Rat Brain)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "repeated-measures/index.html#próximamente",
+    "href": "repeated-measures/index.html#próximamente",
+    "title": "Repeated Measures (Rat Brain)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#descripción-del-problema",
+    "href": "two-level-clusters/slides.html#descripción-del-problema",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Descripción del problema",
+    "text": "Descripción del problema"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#diseño-del-estudio",
+    "href": "two-level-clusters/slides.html#diseño-del-estudio",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Diseño del estudio",
+    "text": "Diseño del estudio"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#hipótesis-y-objetivos",
+    "href": "two-level-clusters/slides.html#hipótesis-y-objetivos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Hipótesis y objetivos",
+    "text": "Hipótesis y objetivos"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#exploración-de-datos",
+    "href": "two-level-clusters/slides.html#exploración-de-datos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Exploración de datos",
+    "text": "Exploración de datos"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#modelos-ajustados",
+    "href": "two-level-clusters/slides.html#modelos-ajustados",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Modelos ajustados",
+    "text": "Modelos ajustados"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#comparación-de-modelos",
+    "href": "two-level-clusters/slides.html#comparación-de-modelos",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Comparación de modelos",
+    "text": "Comparación de modelos"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#modelo-final-e-interpretación",
+    "href": "two-level-clusters/slides.html#modelo-final-e-interpretación",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Modelo final e interpretación",
+    "text": "Modelo final e interpretación"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#conclusiones",
+    "href": "two-level-clusters/slides.html#conclusiones",
+    "title": "Two-Level Clustered Data: The Rat Pup Example",
+    "section": "Conclusiones",
+    "text": "Conclusiones"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "",
+    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
+  },
+  {
+    "objectID": "index.html#acerca-de-este-sitio",
+    "href": "index.html#acerca-de-este-sitio",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "",
+    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
+  },
+  {
+    "objectID": "index.html#ejemplos",
+    "href": "index.html#ejemplos",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "Ejemplos",
+    "text": "Ejemplos\n\n\n\nEjemplo\nLibro\nCapítulo\nModelo\n\n\n\n\n🎯 Two-Level Clusters (Rat Pup)\nWest et al.\nCap. 3 (p.59)\nModelos para datos en clusters de 2 niveles\n\n\nThree-Level Clusters (Classroom)\nWest et al.\nCap. 4 (p.135)\nModelos para datos en clusters de 3 niveles\n\n\nRepeated Measures (Rat Brain)\nWest et al.\nCap. 5 (p.199)\nModelo para datos de medidas repetidas\n\n\nLongitudinal Random Coef (Autism)\nWest et al.\nCap. 6 (p.249)\nModelos longitudinales con coeficientes aleatorios\n\n\nLongitudinal Clusters (Dental Veener)\nWest et al.\nCap. 7 (p.307)\nModelo longitudinal en clusters\n\n\nCrossed Random Effects (SAT Score)\nWest et al.\nCap. 8 (p.369)\nModelos con factores aleatorios cruzados\n\n\nMultilevel GLM (Mathematics)\nFinch et al.\nCap. 8 (p.133)\nModelo lineal generalizado multinivel\n\n\nLongitudinal Grouped (ARMD)\nGalecki et al.\nCap. 2 (p.11-22)\nModelo longitudinal con obs. agrupadas\n\n\nPre-Post Clusters (PRT)\nGalecki et al.\nCap. 2 (p.20)\nModelo pre-post con datos en clusters"
+  }
+]

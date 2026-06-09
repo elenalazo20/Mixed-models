@@ -1,0 +1,25 @@
+---
+title: "Modelos Mixtos - West, Finch & Galecki"
+---
+
+## Acerca de este sitio
+
+Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:
+
+- **West, Brady T., Kathleen B. Welch, and Andrzej T. Galecki** - *Linear Mixed Models: A Practical Guide Using Statistical Software*
+- **Finch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley** - *Multilevel Modeling Using R*
+- **Galecki, Andrzej T., and Tomasz Burzykowski** - *Linear Mixed-Effects Models Using R*
+
+## Ejemplos
+
+| Ejemplo | Libro | Capítulo | Modelo |
+|---------|-------|----------|--------|
+| [🎯 Two-Level Clusters (Rat Pup)](two-level-clusters/index.qmd) | West et al. | Cap. 3 (p.59) | Modelos para datos en clusters de 2 niveles |
+| [Three-Level Clusters (Classroom)](three-level-clusters/index.qmd) | West et al. | Cap. 4 (p.135) | Modelos para datos en clusters de 3 niveles |
+| [Repeated Measures (Rat Brain)](repeated-measures/index.qmd) | West et al. | Cap. 5 (p.199) | Modelo para datos de medidas repetidas |
+| [Longitudinal Random Coef (Autism)](longitudinal-random-coef/index.qmd) | West et al. | Cap. 6 (p.249) | Modelos longitudinales con coeficientes aleatorios |
+| [Longitudinal Clusters (Dental Veener)](longitudinal-clusters/index.qmd) | West et al. | Cap. 7 (p.307) | Modelo longitudinal en clusters |
+| [Crossed Random Effects (SAT Score)](crossed-random-effects/index.qmd) | West et al. | Cap. 8 (p.369) | Modelos con factores aleatorios cruzados |
+| [Multilevel GLM (Mathematics)](multilevel-glm/index.qmd) | Finch et al. | Cap. 8 (p.133) | Modelo lineal generalizado multinivel |
+| [Longitudinal Grouped (ARMD)](longitudinal-grouped/index.qmd) | Galecki et al. | Cap. 2 (p.11-22) | Modelo longitudinal con obs. agrupadas |
+| [Pre-Post Clusters (PRT)](pre-post-clusters/index.qmd) | Galecki et al. | Cap. 2 (p.20) | Modelo pre-post con datos en clusters |

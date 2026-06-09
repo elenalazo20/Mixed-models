@@ -1,0 +1,37 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Mixed Models - West, Finch & Galecki"
+  navbar:
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Examples"
+        menu:
+          - text: "🎯 Two-Level Clusters (Rat Pup)"
+            file: two-level-clusters/index.qmd
+          - text: "Three-Level Clusters (Classroom)"
+            file: three-level-clusters/index.qmd
+          - text: "Repeated Measures (Rat Brain)"
+            file: repeated-measures/index.qmd
+          - text: "Longitudinal Random Coef (Autism)"
+            file: longitudinal-random-coef/index.qmd
+          - text: "Longitudinal Clusters (Dental Veener)"
+            file: longitudinal-clusters/index.qmd
+          - text: "Crossed Random Effects (SAT Score)"
+            file: crossed-random-effects/index.qmd
+          - text: "Multilevel GLM (Mathematics)"
+            file: multilevel-glm/index.qmd
+          - text: "Longitudinal Grouped (ARMD)"
+            file: longitudinal-grouped/index.qmd
+          - text: "Pre-Post Clusters (PRT)"
+            file: pre-post-clusters/index.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    code-tools: true
