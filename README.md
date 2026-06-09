@@ -19,4 +19,18 @@ Sitio web con ejemplos trabajados de modelos mixtos en R, basados en tres libros
 | Repeated Measures (Rat Brain) | West et al. | Cap. 5 (p.199) | Modelo para datos de medidas repetidas |
 | Longitudinal Random Coef (Autism) | West et al. | Cap. 6 (p.249) | Modelos longitudinales con coeficientes aleatorios |
 | Longitudinal Clusters (Dental Veener) | West et al. | Cap. 7 (p.307) | Modelo longitudinal en clusters |
-| Crossed Random Effects (SAT Score) | West et al. | Cap. 8 (p.369) |
+| Crossed Random Effects (SAT Score) | West et al. | Cap. 8 (p.369) | Modelos con factores aleatorios cruzados |
+| Multilevel GLM (Mathematics) | Finch et al. | Cap. 8 (p.133) | Modelo lineal generalizado multinivel |
+| Longitudinal Grouped (ARMD) | Galecki et al. | Cap. 2 (p.11-22) | Modelo longitudinal con obs. agrupadas |
+| Pre-Post Clusters (PRT) | Galecki et al. | Cap. 2 (p.20) | Modelo pre-post con datos en clusters |
+
+## 🛠️ Tecnologías
+
+- R 4.5.2
+- Quarto
+- lme4 / nlme
+- ggplot2
+
+## 🌐 Sitio web
+
+👉 [elenalazo20.github.io/Mixed-models](https://elenalazo20.github.io/Mixed-models)
