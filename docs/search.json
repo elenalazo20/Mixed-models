@@ -2,9 +2,9 @@
   {
     "objectID": "two-level-clusters/index.html#diseño-del-estudio",
     "href": "two-level-clusters/index.html#diseño-del-estudio",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Diseño del estudio",
-    "text": "Diseño del estudio"
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.2 Diseño del estudio",
+    "text": "0.2 Diseño del estudio\n\n\nMostrar código\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías - Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías - Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\n\n\nNivel 2 - camada: unidad de asignación del tratamiento\nNivel 1 - cría: unidad de medición\nDiseño desbalanceado: tamaño de camada varía de 2 a 18 crías"
   },
   {
     "objectID": "two-level-clusters/index.html#hipótesis-y-objetivos",
@@ -44,9 +44,9 @@
   {
     "objectID": "two-level-clusters/index.html#conclusiones",
     "href": "two-level-clusters/index.html#conclusiones",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Conclusiones",
-    "text": "Conclusiones"
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.13 Conclusiones",
+    "text": "0.13 Conclusiones\n\nEl tratamiento se asocia con una reducción del peso al nacer\nLa dosis alta presenta mayor reducción que la dosis baja\nEl peso también se relaciona con el sexo y el tamaño de camada\nExiste variabilidad relevante entre camadas\nLa varianza residual es heterogénea entre grupos de tratamiento\nEl Model 3.3 representa mejor la estructura jerárquica de los datos\n\n\nIgnorar la agrupación habría ocultado una parte importante de la estructura de los datos. El modelo mixto permitió estimar simultáneamente los efectos promedio del tratamiento y la variabilidad entre y dentro de las camadas."
   },
   {
     "objectID": "three-level-clusters/index.html",
@@ -170,9 +170,9 @@
   {
     "objectID": "two-level-clusters/slides.html#diseño-del-estudio",
     "href": "two-level-clusters/slides.html#diseño-del-estudio",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Diseño del estudio",
-    "text": "Diseño del estudio"
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "2. Diseño del estudio",
+    "text": "2. Diseño del estudio\n\n\nCode\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías — Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías — Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\n\n\nNivel 2 — camada: unidad de asignación del tratamiento\nNivel 1 — cría: unidad de medición\nDiseño desbalanceado: tamaño de camada varía de 2 a 18 crías"
   },
   {
     "objectID": "two-level-clusters/slides.html#hipótesis-y-objetivos",
@@ -212,9 +212,9 @@
   {
     "objectID": "two-level-clusters/slides.html#conclusiones",
     "href": "two-level-clusters/slides.html#conclusiones",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Conclusiones",
-    "text": "Conclusiones"
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "13. Conclusiones",
+    "text": "13. Conclusiones\n\nEl tratamiento se asocia con una reducción del peso al nacer\nLa dosis alta presenta mayor reducción que la dosis baja\nEl peso también se relaciona con el sexo y el tamaño de camada\nExiste variabilidad relevante entre camadas\nLa varianza residual es heterogénea entre grupos de tratamiento\nEl Model 3.3 representa mejor la estructura jerárquica de los datos\n\n\nIgnorar la agrupación habría ocultado una parte importante de la estructura de los datos. El modelo mixto permitió estimar simultáneamente los efectos promedio del tratamiento y la variabilidad entre y dentro de las camadas."
   },
   {
     "objectID": "index.html",
@@ -236,5 +236,250 @@
     "title": "Modelos Mixtos - West, Finch & Galecki",
     "section": "Ejemplos",
     "text": "Ejemplos\n\n\n\nEjemplo\nLibro\nCapítulo\nModelo\n\n\n\n\n🎯 Two-Level Clusters (Rat Pup)\nWest et al.\nCap. 3 (p.59)\nModelos para datos en clusters de 2 niveles\n\n\nThree-Level Clusters (Classroom)\nWest et al.\nCap. 4 (p.135)\nModelos para datos en clusters de 3 niveles\n\n\nRepeated Measures (Rat Brain)\nWest et al.\nCap. 5 (p.199)\nModelo para datos de medidas repetidas\n\n\nLongitudinal Random Coef (Autism)\nWest et al.\nCap. 6 (p.249)\nModelos longitudinales con coeficientes aleatorios\n\n\nLongitudinal Clusters (Dental Veener)\nWest et al.\nCap. 7 (p.307)\nModelo longitudinal en clusters\n\n\nCrossed Random Effects (SAT Score)\nWest et al.\nCap. 8 (p.369)\nModelos con factores aleatorios cruzados\n\n\nMultilevel GLM (Mathematics)\nFinch et al.\nCap. 8 (p.133)\nModelo lineal generalizado multinivel\n\n\nLongitudinal Grouped (ARMD)\nGalecki et al.\nCap. 2 (p.11-22)\nModelo longitudinal con obs. agrupadas\n\n\nPre-Post Clusters (PRT)\nGalecki et al.\nCap. 2 (p.20)\nModelo pre-post con datos en clusters"
+  },
+  {
+    "objectID": "two-level-clusters/index.html",
+    "href": "two-level-clusters/index.html",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "",
+    "text": "Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#problema-de-investigación",
+    "href": "two-level-clusters/index.html#problema-de-investigación",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "",
+    "text": "Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#variables",
+    "href": "two-level-clusters/index.html#variables",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.3 Variables",
+    "text": "0.3 Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nweight\n1\nContinua\nOutcome\nGramos\n\n\nsex / sex1\n1\nCategórica\nCovariable\nMale = referencia; Female = 1\n\n\npup_id\n1\nIdentificador\nIdentificación\nUna cría\n\n\nlitter\n2\nIdentificador\nAgrupación aleatoria\nUna madre/camada\n\n\ntreatment\n2\nCategórica\nPredictor principal\nControl = referencia\n\n\nlitsize\n2\nCuantitativa\nCovariable\nNúmero de crías\n\n\ntrtgrp\n2\nCategórica\nEstructura residual\nControl vs. High_Low\n\n\n\n\n\n\nResumen por grupo de tratamiento\n\n\ntreatment\nCamadas\nCrias\nPeso_medio\nDE\n\n\n\n\nControl\n10\n131\n6.32\n0.74\n\n\nLow\n10\n126\n5.93\n0.43\n\n\nHigh\n7\n65\n5.89\n0.64"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#exploración-descriptiva",
+    "href": "two-level-clusters/index.html#exploración-descriptiva",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.4 Exploración descriptiva",
+    "text": "0.4 Exploración descriptiva\n\n0.4.1 Peso según tratamiento y sexo\n\n\n\n\n\n\n\n\n\n\n\n0.4.2 Peso según tamaño de camada"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#objetivos-e-hipótesis",
+    "href": "two-level-clusters/index.html#objetivos-e-hipótesis",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.5 Objetivos e hipótesis",
+    "text": "0.5 Objetivos e hipótesis\nObjetivo general: Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.\nObjetivos analíticos:\n\nDeterminar si existe variabilidad relevante entre camadas\nEvaluar si la varianza residual difiere entre grupos de tratamiento\nEvaluar si el efecto del tratamiento varía según el sexo\nEstimar el efecto ajustado del tratamiento sobre el peso\nSeleccionar el modelo que mejor represente los datos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#estrategia-top-down",
+    "href": "two-level-clusters/index.html#estrategia-top-down",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.6 Estrategia top-down",
+    "text": "0.6 Estrategia top-down\n\n\nMostrar código\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]\n\n\n\n\n\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
+    "href": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.7 Ajuste y comparación de modelos",
+    "text": "0.7 Ajuste y comparación de modelos\n\n0.7.1 Model 3.1: Modelo inicial\n\n\nMostrar código\nmodel3.1.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\")\n\n\n\n\n0.7.2 H3.1: ¿Es necesario el intercepto aleatorio?\n\n\nMostrar código\nmodel3.1a.fit &lt;- gls(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  data = ratpup,\n  method = \"REML\")\n\nlrt_h31 &lt;- anova(model3.1a.fit, model3.1.fit)\nlrt_h31\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1a.fit     1  8 506.5099 536.5305 -245.2550                        \nmodel3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001\n\n\n\nComo se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: p &lt; 0.001 → se mantiene el intercepto aleatorio.\n\n\n\n0.7.3 H3.2: ¿Varianza residual heterogénea por tratamiento?\n\n\nMostrar código\nmodel3.2a.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | treatment))\nanova(model3.1.fit, model3.2a.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001\n\n\n\n\n0.7.4 H3.3: ¿Se pueden agrupar High y Low?\n\n\nMostrar código\nmodel3.2b.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nanova(model3.2a.fit, model3.2b.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.2a.fit     1 11 381.8847 423.1630 -179.9423                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741\n\n\n\n\n0.7.5 H3.4: ¿Model 3.2B mejor que varianza homogénea?\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001\n\n\n\n\n0.7.6 H3.5: ¿Es significativa la interacción tratamiento × sexo?\n\n\nMostrar código\nanova(model3.2b.fit)\n\n\n               numDF denDF  F-value p-value\n(Intercept)        1   292 9027.740  &lt;.0001\ntreatment          2    23    4.241  0.0271\nsex1               1   292   61.568  &lt;.0001\nlitsize            1    23   49.577  &lt;.0001\ntreatment:sex1     2   292    0.317  0.7288\n\n\n\nNo se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (p = 0.73).\n\n\n\n0.7.7 H3.6: ¿Efecto global del tratamiento?\n\n\nMostrar código\nmodel3.3.ml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nmodel3.3a.ml.fit &lt;- lme(\n  weight ~ sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nanova(model3.3a.ml.fit, model3.3.ml.fit)\n\n\n                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        \nmodel3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04\n\n\n\np &lt; 0.001 → el tratamiento tiene efecto global significativo.\n\n\n\n0.7.8 Resumen de comparación de modelos\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n3.1 vs 3.1A\nIntercepto aleatorio\np &lt; 0.001\nMantener\n\n\n3.1 vs 3.2A\nVarianza heterogénea\np &lt; 0.001\nHeterogénea\n\n\n3.2A vs 3.2B\nAgrupar High/Low\np = 0.27\nElegir 3.2B\n\n\n3.1 vs 3.2B\nConfirmar 3.2B\np &lt; 0.001\nElegir 3.2B\n\n\nanova(3.2B)\nInteracción trat×sexo\np = 0.73\nEliminar\n\n\n3.3A vs 3.3 (ML)\nEfecto tratamiento\np &lt; 0.001\nMantener"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#modelo-final",
+    "href": "two-level-clusters/index.html#modelo-final",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.8 Modelo final",
+    "text": "0.8 Modelo final\n\n\nMostrar código\nmodel3.3.reml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nsummary(model3.3.reml.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: ratpup \n       AIC      BIC    logLik\n  372.2784 402.3497 -178.1392\n\nRandom effects:\n Formula: ~1 | litter\n        (Intercept)  Residual\nStdDev:   0.3146374 0.5144324\n\nVariance function:\n Structure: Different standard deviations per stratum\n Formula: ~1 | trtgrp \n Parameter estimates:\n  Control  High_Low \n1.0000000 0.5889108 \nFixed effects:  weight ~ treatment + sex1 + litsize \n                  Value  Std.Error  DF   t-value p-value\n(Intercept)    8.327633 0.27406956 294 30.385107  0.0000\ntreatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091\ntreatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001\nsex1          -0.343431 0.04204323 294 -8.168531  0.0000\nlitsize       -0.130681 0.01855194  23 -7.044036  0.0000\n Correlation: \n              (Intr) trtmnL trtmnH sex1  \ntreatmentLow  -0.348                     \ntreatmentHigh -0.610  0.464              \nsex1          -0.103 -0.035 -0.006       \nlitsize       -0.913  0.064  0.403  0.043\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 \n\nNumber of Observations: 322\nNumber of Groups: 27 \n\n\nMostrar código\nintervals(model3.3.reml.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                   lower       est.       upper\n(Intercept)    7.7882461  8.3276330  8.86701987\ntreatmentLow  -0.7486398 -0.4336625 -0.11868526\ntreatmentHigh -1.2406946 -0.8622677 -0.48384070\nsex1          -0.4261753 -0.3434314 -0.26068758\nlitsize       -0.1690581 -0.1306805 -0.09230291\n\n Random Effects:\n  Level: litter \n                    lower      est.     upper\nsd((Intercept)) 0.2272184 0.3146374 0.4356896\n\n Variance function:\n             lower      est.     upper\nHigh_Low 0.4998565 0.5889108 0.6938309\n\n Within-group standard error:\n    lower      est.     upper \n0.4536291 0.5144324 0.5833856"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "href": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.10 Componentes de varianza e ICC",
+    "text": "0.10 Componentes de varianza e ICC\n\n\nMostrar código\nvc &lt;- VarCorr(model3.3.reml.fit)\n\nvar_litter &lt;- as.numeric(vc[\"(Intercept)\", \"Variance\"])\nvar_res_control &lt;- as.numeric(vc[\"Residual\", \"Variance\"])\n\nsd_ratio &lt;- coef(\n  model3.3.reml.fit$modelStruct$varStruct,\n  unconstrained = FALSE)\n\nvar_res_high_low &lt;- var_res_control * unname(sd_ratio)^2\n\nicc_control  &lt;- var_litter / (var_litter + var_res_control)\nicc_high_low &lt;- var_litter / (var_litter + var_res_high_low)\n\ncat(\"Varianza entre camadas:     \", round(var_litter, 4), \"\\n\")\n\n\nVarianza entre camadas:      0.099 \n\n\nMostrar código\ncat(\"Varianza residual Control:  \", round(var_res_control, 4), \"\\n\")\n\n\nVarianza residual Control:   0.2646 \n\n\nMostrar código\ncat(\"Varianza residual High/Low: \", round(var_res_high_low, 4), \"\\n\")\n\n\nVarianza residual High/Low:  0.0918 \n\n\nMostrar código\ncat(\"ICC Control:                \", round(icc_control, 4), \"\\n\")\n\n\nICC Control:                 0.2722 \n\n\nMostrar código\ncat(\"ICC High/Low:               \", round(icc_high_low, 4), \"\\n\")\n\n\nICC High/Low:                0.5189"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#diagnósticos",
+    "href": "two-level-clusters/index.html#diagnósticos",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.12 Diagnósticos",
+    "text": "0.12 Diagnósticos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
+    "href": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "1.1 Por qué lme() y no lmer()",
+    "text": "1.1 Por qué lme() y no lmer()\n\nlmer() no permite varianzas residuales heterogéneas\nPara Model 3.2B y 3.3 es obligatorio usar lme() de nlme\nlmer() solo llega hasta Model 3.1 en este ejemplo"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#ml-vs-reml",
+    "href": "two-level-clusters/index.html#ml-vs-reml",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "1.2 ML vs REML",
+    "text": "1.2 ML vs REML\n\n\n\nSituación\nMétodo\n\n\n\n\nComparar modelos con distintos efectos fijos\nML\n\n\nEstimar modelo final e interpretar parámetros\nREML\n\n\nComparar modelos con mismos efectos fijos\nREML"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
+    "href": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "1.3 Por qué dividir el p-value en H3.1",
+    "text": "1.3 Por qué dividir el p-value en H3.1\nCuando se prueba si una varianza es cero, el parámetro está en el límite del espacio parametral. El LRT estándar no aplica directamente y el p-value se divide por 2."
+  },
+  {
+    "objectID": "two-level-clusters/index.html#código-completo-h3.6",
+    "href": "two-level-clusters/index.html#código-completo-h3.6",
+    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
+    "section": "Código completo H3.6",
+    "text": "Código completo H3.6\n\n\nCode\nmodel3.3a.ml.fit &lt;- lme(weight ~ sex1 + litsize,\n                        random = ~1 | litter,\n                        data = ratpup,\n                        method = \"ML\",\n                        weights = varIdent(form = ~1 | trtgrp))\nanova(model3.3.ml.fit, model3.3a.ml.fit)"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#todos-los-gráficos-diagnósticos",
+    "href": "two-level-clusters/index.html#todos-los-gráficos-diagnósticos",
+    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
+    "section": "Todos los gráficos diagnósticos",
+    "text": "Todos los gráficos diagnósticos\n\n\nCode\nplot(model3.3.reml.fit)\nqqnorm(model3.3.reml.fit)\nplot(model3.3.reml.fit, resid(., type = \"p\") ~ fitted(.),\n     abline = 0)"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#problema-de-investigación",
+    "href": "two-level-clusters/slides.html#problema-de-investigación",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "1. Problema de investigación",
+    "text": "1. Problema de investigación\nTreinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#variables",
+    "href": "two-level-clusters/slides.html#variables",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "3. Variables",
+    "text": "3. Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nweight\n1\nContinua\nOutcome\nGramos\n\n\nsex / sex1\n1\nCategórica\nCovariable\nMale = referencia; Female = 1\n\n\npup_id\n1\nIdentificador\nIdentificación\nUna cría\n\n\nlitter\n2\nIdentificador\nAgrupación aleatoria\nUna madre/camada\n\n\ntreatment\n2\nCategórica\nPredictor principal\nControl = referencia\n\n\nlitsize\n2\nCuantitativa\nCovariable\nNúmero de crías\n\n\ntrtgrp\n2\nCategórica\nEstructura residual\nControl vs. High_Low\n\n\n\n\n\n\nResumen por grupo de tratamiento\n\n\ntreatment\nCamadas\nCrias\nPeso_medio\nDE\n\n\n\n\nControl\n10\n131\n6.32\n0.74\n\n\nLow\n10\n126\n5.93\n0.43\n\n\nHigh\n7\n65\n5.89\n0.64"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#exploración-descriptiva",
+    "href": "two-level-clusters/slides.html#exploración-descriptiva",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "4. Exploración descriptiva",
+    "text": "4. Exploración descriptiva\nPeso según tratamiento y sexo\n\n\n\n\n\n\n\n\n\nPeso según tamaño de camada"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#objetivos-e-hipótesis",
+    "href": "two-level-clusters/slides.html#objetivos-e-hipótesis",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "5. Objetivos e hipótesis",
+    "text": "5. Objetivos e hipótesis\nObjetivo general: Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.\nObjetivos analíticos:\n\nDeterminar si existe variabilidad relevante entre camadas\nEvaluar si la varianza residual difiere entre grupos de tratamiento\nEvaluar si el efecto del tratamiento varía según el sexo\nEstimar el efecto ajustado del tratamiento sobre el peso\nSeleccionar el modelo que mejor represente los datos"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#estrategia-top-down",
+    "href": "two-level-clusters/slides.html#estrategia-top-down",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "6. Estrategia top-down",
+    "text": "6. Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]\n\n\n\n\n\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#ajuste-y-comparación-de-modelos",
+    "href": "two-level-clusters/slides.html#ajuste-y-comparación-de-modelos",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "7. Ajuste y comparación de modelos",
+    "text": "7. Ajuste y comparación de modelos\nModel 3.1 — Modelo inicial\n\n\nCode\nmodel3.1.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\"\n)\n\n\nH3.1 — ¿Es necesario el intercepto aleatorio?\n\n\nCode\nmodel3.1a.fit &lt;- gls(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  data = ratpup,\n  method = \"REML\"\n)\n\nlrt_h31 &lt;- anova(model3.1a.fit, model3.1.fit)\nlrt_h31\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1a.fit     1  8 506.5099 536.5305 -245.2550                        \nmodel3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001\n\n\n\nComo se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: p &lt; 0.001 → se mantiene el intercepto aleatorio.\n\nH3.2 — ¿Varianza residual heterogénea por tratamiento?\n\n\nCode\nmodel3.2a.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | treatment)\n)\nanova(model3.1.fit, model3.2a.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001\n\n\nH3.3 — ¿Se pueden agrupar High y Low?\n\n\nCode\nmodel3.2b.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\nanova(model3.2a.fit, model3.2b.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.2a.fit     1 11 381.8847 423.1630 -179.9423                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741\n\n\nH3.4 — ¿Model 3.2B mejor que varianza homogénea?\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001\n\n\nH3.5 — ¿Es significativa la interacción tratamiento × sexo?\n\n\nCode\nanova(model3.2b.fit)\n\n\n               numDF denDF  F-value p-value\n(Intercept)        1   292 9027.740  &lt;.0001\ntreatment          2    23    4.241  0.0271\nsex1               1   292   61.568  &lt;.0001\nlitsize            1    23   49.577  &lt;.0001\ntreatment:sex1     2   292    0.317  0.7288\n\n\n\nNo se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (p = 0.73).\n\nH3.6 — ¿Efecto global del tratamiento?\n\n\nCode\nmodel3.3.ml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\n\nmodel3.3a.ml.fit &lt;- lme(\n  weight ~ sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\n\nanova(model3.3a.ml.fit, model3.3.ml.fit)\n\n\n                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        \nmodel3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04\n\n\n\np &lt; 0.001 → el tratamiento tiene efecto global significativo.\n\nResumen de comparación de modelos\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n3.1 vs 3.1A\nIntercepto aleatorio\np &lt; 0.001\nMantener\n\n\n3.1 vs 3.2A\nVarianza heterogénea\np &lt; 0.001\nHeterogénea\n\n\n3.2A vs 3.2B\nAgrupar High/Low\np = 0.27\nElegir 3.2B\n\n\n3.1 vs 3.2B\nConfirmar 3.2B\np &lt; 0.001\nElegir 3.2B\n\n\nanova(3.2B)\nInteracción trat×sexo\np = 0.73\nEliminar\n\n\n3.3A vs 3.3 (ML)\nEfecto tratamiento\np &lt; 0.001\nMantener"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#modelo-final",
+    "href": "two-level-clusters/slides.html#modelo-final",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "8. Modelo final",
+    "text": "8. Modelo final\n\n\nCode\nmodel3.3.reml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\nsummary(model3.3.reml.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: ratpup \n       AIC      BIC    logLik\n  372.2784 402.3497 -178.1392\n\nRandom effects:\n Formula: ~1 | litter\n        (Intercept)  Residual\nStdDev:   0.3146374 0.5144324\n\nVariance function:\n Structure: Different standard deviations per stratum\n Formula: ~1 | trtgrp \n Parameter estimates:\n  Control  High_Low \n1.0000000 0.5889108 \nFixed effects:  weight ~ treatment + sex1 + litsize \n                  Value  Std.Error  DF   t-value p-value\n(Intercept)    8.327633 0.27406956 294 30.385107  0.0000\ntreatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091\ntreatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001\nsex1          -0.343431 0.04204323 294 -8.168531  0.0000\nlitsize       -0.130681 0.01855194  23 -7.044036  0.0000\n Correlation: \n              (Intr) trtmnL trtmnH sex1  \ntreatmentLow  -0.348                     \ntreatmentHigh -0.610  0.464              \nsex1          -0.103 -0.035 -0.006       \nlitsize       -0.913  0.064  0.403  0.043\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 \n\nNumber of Observations: 322\nNumber of Groups: 27 \n\n\nCode\nintervals(model3.3.reml.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                   lower       est.       upper\n(Intercept)    7.7882461  8.3276330  8.86701987\ntreatmentLow  -0.7486398 -0.4336625 -0.11868526\ntreatmentHigh -1.2406946 -0.8622677 -0.48384070\nsex1          -0.4261753 -0.3434314 -0.26068758\nlitsize       -0.1690581 -0.1306805 -0.09230291\n\n Random Effects:\n  Level: litter \n                    lower      est.     upper\nsd((Intercept)) 0.2272184 0.3146374 0.4356896\n\n Variance function:\n             lower      est.     upper\nHigh_Low 0.4998565 0.5889108 0.6938309\n\n Within-group standard error:\n    lower      est.     upper \n0.4536291 0.5144324 0.5833856"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#componentes-de-varianza-e-icc",
+    "href": "two-level-clusters/slides.html#componentes-de-varianza-e-icc",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "10. Componentes de varianza e ICC",
+    "text": "10. Componentes de varianza e ICC\n\n\nCode\nvc &lt;- VarCorr(model3.3.reml.fit)\n\nvar_litter &lt;- as.numeric(vc[\"(Intercept)\", \"Variance\"])\nvar_res_control &lt;- as.numeric(vc[\"Residual\", \"Variance\"])\n\nsd_ratio &lt;- coef(\n  model3.3.reml.fit$modelStruct$varStruct,\n  unconstrained = FALSE\n)\n\nvar_res_high_low &lt;- var_res_control * unname(sd_ratio)^2\n\nicc_control  &lt;- var_litter / (var_litter + var_res_control)\nicc_high_low &lt;- var_litter / (var_litter + var_res_high_low)\n\ncat(\"Varianza entre camadas:     \", round(var_litter, 4), \"\\n\")\n\n\nVarianza entre camadas:      0.099 \n\n\nCode\ncat(\"Varianza residual Control:  \", round(var_res_control, 4), \"\\n\")\n\n\nVarianza residual Control:   0.2646 \n\n\nCode\ncat(\"Varianza residual High/Low: \", round(var_res_high_low, 4), \"\\n\")\n\n\nVarianza residual High/Low:  0.0918 \n\n\nCode\ncat(\"ICC Control:                \", round(icc_control, 4), \"\\n\")\n\n\nICC Control:                 0.2722 \n\n\nCode\ncat(\"ICC High/Low:               \", round(icc_high_low, 4), \"\\n\")\n\n\nICC High/Low:                0.5189"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#diagnósticos",
+    "href": "two-level-clusters/slides.html#diagnósticos",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "12. Diagnósticos",
+    "text": "12. Diagnósticos"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#por-qué-lme-y-no-lmer",
+    "href": "two-level-clusters/slides.html#por-qué-lme-y-no-lmer",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "Por qué lme() y no lmer()",
+    "text": "Por qué lme() y no lmer()\n\nlmer() no permite varianzas residuales heterogéneas\nPara Model 3.2B y 3.3 es obligatorio usar lme() de nlme\nlmer() solo llega hasta Model 3.1 en este ejemplo"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#ml-vs-reml",
+    "href": "two-level-clusters/slides.html#ml-vs-reml",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "ML vs REML",
+    "text": "ML vs REML\n\n\n\nSituación\nMétodo\n\n\n\n\nComparar modelos con distintos efectos fijos\nML\n\n\nEstimar modelo final e interpretar parámetros\nREML\n\n\nComparar modelos con mismos efectos fijos\nREML"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#por-qué-dividir-el-p-value-en-h3.1",
+    "href": "two-level-clusters/slides.html#por-qué-dividir-el-p-value-en-h3.1",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "Por qué dividir el p-value en H3.1",
+    "text": "Por qué dividir el p-value en H3.1\nCuando se prueba si una varianza es cero, el parámetro está en el límite del espacio parametral. El LRT estándar no aplica directamente y el p-value se divide por 2."
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#código-completo-h3.6",
+    "href": "two-level-clusters/slides.html#código-completo-h3.6",
+    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
+    "section": "Código completo H3.6",
+    "text": "Código completo H3.6"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#todos-los-gráficos-diagnósticos",
+    "href": "two-level-clusters/slides.html#todos-los-gráficos-diagnósticos",
+    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
+    "section": "Todos los gráficos diagnósticos",
+    "text": "Todos los gráficos diagnósticos"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
+    "href": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.9 Interpretación de efectos fijos",
+    "text": "0.9 Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 3.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n8.328\n7.788\n8.867\n\n\ntreatmentLow\ntreatmentLow\n-0.434\n-0.749\n-0.119\n\n\ntreatmentHigh\ntreatmentHigh\n-0.862\n-1.241\n-0.484\n\n\nsex1\nsex1\n-0.343\n-0.426\n-0.261\n\n\nlitsize\nlitsize\n-0.131\n-0.169\n-0.092"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#predicciones",
+    "href": "two-level-clusters/index.html#predicciones",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "0.11 Predicciones",
+    "text": "0.11 Predicciones"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
+    "href": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
+    "title": "Modelos para datos en clusters de 2 niveles",
+    "section": "1.4 Estrategia top-down con decisiones",
+    "text": "1.4 Estrategia top-down con decisiones\n\n\nMostrar código\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]\n\n\n\n\n\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#interpretación-de-efectos-fijos",
+    "href": "two-level-clusters/slides.html#interpretación-de-efectos-fijos",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "9. Interpretación de efectos fijos",
+    "text": "9. Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 3.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n8.328\n7.788\n8.867\n\n\ntreatmentLow\ntreatmentLow\n-0.434\n-0.749\n-0.119\n\n\ntreatmentHigh\ntreatmentHigh\n-0.862\n-1.241\n-0.484\n\n\nsex1\nsex1\n-0.343\n-0.426\n-0.261\n\n\nlitsize\nlitsize\n-0.131\n-0.169\n-0.092"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#predicciones",
+    "href": "two-level-clusters/slides.html#predicciones",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "11. Predicciones",
+    "text": "11. Predicciones"
+  },
+  {
+    "objectID": "two-level-clusters/slides.html#estrategia-top-down-con-decisiones",
+    "href": "two-level-clusters/slides.html#estrategia-top-down-con-decisiones",
+    "title": "Modelos para datos agrupados en dos niveles",
+    "section": "Estrategia top-down con decisiones",
+    "text": "Estrategia top-down con decisiones\n\n\nCode\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]\n\n\n\n\n\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]"
   }
 ]

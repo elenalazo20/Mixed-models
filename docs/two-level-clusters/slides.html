@@ -6,12 +6,11 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.26">
 
   <meta name="author" content="Elena Lazo">
-  <meta name="dcterms.date" content="2026-06-26">
-  <title>Mixed Models - West, Finch &amp; Galecki – Two-Level Clustered Data: The Rat Pup Example</title>
+  <title>Mixed Models - West, Finch &amp; Galecki – Modelos para datos agrupados en dos niveles</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,13 +28,77 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-06e768f098560084c2d7120de8ad04fb.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-0fde88a82f0356838740f155f1088782.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
@@ -48,6 +111,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -124,14 +188,17 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
-<body class="quarto-dark">
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Two-Level Clustered Data: The Rat Pup Example</h1>
-  <p class="subtitle">West et al.&nbsp;- Cap. 3 (p.59)</p>
+  <h1 class="title">Modelos para datos agrupados en dos niveles</h1>
+  <p class="subtitle">Ejemplo de las crías de rata — West et al., capítulo 3</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -141,38 +208,705 @@ Elena Lazo
 </div>
 </div>
 
-  <p class="date">2026-06-26</p>
+  <p class="date">Invalid Date</p>
 </section>
-<section id="descripción-del-problema" class="slide level2">
-<h2>Descripción del problema</h2>
+<section id="problema-de-investigación" class="slide level2">
+<h2>1. Problema de investigación</h2>
+<p>Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis <strong>alta</strong>, dosis <strong>baja</strong> o <strong>control</strong> de un compuesto químico.</p>
+<p>El tratamiento fue asignado a nivel de la <strong>madre</strong>, por lo que todas las crías de una misma camada comparten el mismo tratamiento.</p>
+<blockquote>
+<p><strong>Pregunta central:</strong> ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?</p>
+</blockquote>
 </section>
 <section id="diseño-del-estudio" class="slide level2">
-<h2>Diseño del estudio</h2>
+<h2>2. Diseño del estudio</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a></a>flowchart TD</span>
+<span id="cb1-2"><a></a>    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]</span>
+<span id="cb1-3"><a></a>    B --&gt; C[Control\n10 camadas]</span>
+<span id="cb1-4"><a></a>    B --&gt; D[Dosis Baja\n10 camadas]</span>
+<span id="cb1-5"><a></a>    B --&gt; E[Dosis Alta\n7 camadas]</span>
+<span id="cb1-6"><a></a>    C --&gt; F[322 crías — Level 1]</span>
+<span id="cb1-7"><a></a>    D --&gt; F</span>
+<span id="cb1-8"><a></a>    E --&gt; F</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]
+    B --&gt; C[Control\n10 camadas]
+    B --&gt; D[Dosis Baja\n10 camadas]
+    B --&gt; E[Dosis Alta\n7 camadas]
+    C --&gt; F[322 crías — Level 1]
+    D --&gt; F
+    E --&gt; F
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Nivel 2 — camada:</strong> unidad de asignación del tratamiento</li>
+<li><strong>Nivel 1 — cría:</strong> unidad de medición</li>
+<li>Diseño <strong>desbalanceado:</strong> tamaño de camada varía de 2 a 18 crías</li>
+</ul>
 </section>
-<section id="hipótesis-y-objetivos" class="slide level2">
-<h2>Hipótesis y objetivos</h2>
+<section id="variables" class="slide level2">
+<h2>3. Variables</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nivel</th>
+<th>Tipo</th>
+<th>Rol</th>
+<th>Codificación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>weight</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Outcome</td>
+<td>Gramos</td>
+</tr>
+<tr class="even">
+<td><code>sex</code> / <code>sex1</code></td>
+<td>1</td>
+<td>Categórica</td>
+<td>Covariable</td>
+<td>Male = referencia; Female = 1</td>
+</tr>
+<tr class="odd">
+<td><code>pup_id</code></td>
+<td>1</td>
+<td>Identificador</td>
+<td>Identificación</td>
+<td>Una cría</td>
+</tr>
+<tr class="even">
+<td><code>litter</code></td>
+<td>2</td>
+<td>Identificador</td>
+<td>Agrupación aleatoria</td>
+<td>Una madre/camada</td>
+</tr>
+<tr class="odd">
+<td><code>treatment</code></td>
+<td>2</td>
+<td>Categórica</td>
+<td>Predictor principal</td>
+<td>Control = referencia</td>
+</tr>
+<tr class="even">
+<td><code>litsize</code></td>
+<td>2</td>
+<td>Cuantitativa</td>
+<td>Covariable</td>
+<td>Número de crías</td>
+</tr>
+<tr class="odd">
+<td><code>trtgrp</code></td>
+<td>2</td>
+<td>Categórica</td>
+<td>Estructura residual</td>
+<td>Control vs.&nbsp;High_Low</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Resumen por grupo de tratamiento</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">treatment</th>
+<th style="text-align: right;">Camadas</th>
+<th style="text-align: right;">Crias</th>
+<th style="text-align: right;">Peso_medio</th>
+<th style="text-align: right;">DE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">6.32</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">5.93</td>
+<td style="text-align: right;">0.43</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">5.89</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
-<section id="exploración-de-datos" class="slide level2">
-<h2>Exploración de datos</h2>
+<section id="exploración-descriptiva" class="slide level2">
+<h2>4. Exploración descriptiva</h2>
+<h3 id="peso-según-tratamiento-y-sexo">Peso según tratamiento y sexo</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/fig1-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<h3 id="peso-según-tamaño-de-camada">Peso según tamaño de camada</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/fig2-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="modelos-ajustados" class="slide level2">
-<h2>Modelos ajustados</h2>
+<section id="objetivos-e-hipótesis" class="slide level2 scrollable">
+<h2>5. Objetivos e hipótesis</h2>
+<p><strong>Objetivo general:</strong> Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.</p>
+<p><strong>Objetivos analíticos:</strong></p>
+<ol type="1">
+<li>Determinar si existe variabilidad relevante entre camadas</li>
+<li>Evaluar si la varianza residual difiere entre grupos de tratamiento</li>
+<li>Evaluar si el efecto del tratamiento varía según el sexo</li>
+<li>Estimar el efecto ajustado del tratamiento sobre el peso</li>
+<li>Seleccionar el modelo que mejor represente los datos</li>
+</ol>
 </section>
-<section id="comparación-de-modelos" class="slide level2">
-<h2>Comparación de modelos</h2>
+<section id="estrategia-top-down" class="slide level2">
+<h2>6. Estrategia top-down</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a></a>flowchart TD</span>
+<span id="cb2-2"><a></a>    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}</span>
+<span id="cb2-3"><a></a>    B --&gt; C{¿Qué estructura residual es adecuada?}</span>
+<span id="cb2-4"><a></a>    C --&gt; D{¿Se conserva la interacción?}</span>
+<span id="cb2-5"><a></a>    D --&gt; E{¿Hay efecto global del tratamiento?}</span>
+<span id="cb2-6"><a></a>    E --&gt; F[Modelo final]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}
+    B --&gt; C{¿Qué estructura residual es adecuada?}
+    C --&gt; D{¿Se conserva la interacción?}
+    D --&gt; E{¿Hay efecto global del tratamiento?}
+    E --&gt; F[Modelo final]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
-<section id="modelo-final-e-interpretación" class="slide level2">
-<h2>Modelo final e interpretación</h2>
+<section id="ajuste-y-comparación-de-modelos" class="slide level2">
+<h2>7. Ajuste y comparación de modelos</h2>
+<h3 id="model-3.1-modelo-inicial">Model 3.1 — Modelo inicial</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>model3.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb3-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize <span class="sc">+</span> treatment<span class="sc">:</span>sex1,</span>
+<span id="cb3-3"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb3-4"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb3-5"><a></a>  <span class="at">method =</span> <span class="st">"REML"</span></span>
+<span id="cb3-6"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<h3 id="h3.1-es-necesario-el-intercepto-aleatorio">H3.1 — ¿Es necesario el intercepto aleatorio?</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>model3<span class="fl">.1</span>a.fit <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
+<span id="cb4-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize <span class="sc">+</span> treatment<span class="sc">:</span>sex1,</span>
+<span id="cb4-3"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb4-4"><a></a>  <span class="at">method =</span> <span class="st">"REML"</span></span>
+<span id="cb4-5"><a></a>)</span>
+<span id="cb4-6"><a></a></span>
+<span id="cb4-7"><a></a>lrt_h31 <span class="ot">&lt;-</span> <span class="fu">anova</span>(model3<span class="fl">.1</span>a.fit, model3.<span class="fl">1.</span>fit)</span>
+<span id="cb4-8"><a></a>lrt_h31</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model3.1a.fit     1  8 506.5099 536.5305 -245.2550                        
+model3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001</code></pre>
+</div>
+</div>
+<blockquote>
+<p>Como se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: <strong>p &lt; 0.001</strong> → se mantiene el intercepto aleatorio.</p>
+</blockquote>
+<h3 id="h3.2-varianza-residual-heterogénea-por-tratamiento">H3.2 — ¿Varianza residual heterogénea por tratamiento?</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>model3<span class="fl">.2</span>a.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb6-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize <span class="sc">+</span> treatment<span class="sc">:</span>sex1,</span>
+<span id="cb6-3"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb6-4"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb6-5"><a></a>  <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb6-6"><a></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> treatment)</span>
+<span id="cb6-7"><a></a>)</span>
+<span id="cb6-8"><a></a><span class="fu">anova</span>(model3.<span class="fl">1.</span>fit, model3<span class="fl">.2</span>a.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model3.1.fit      1  9 419.1043 452.8775 -200.5522                        
+model3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001</code></pre>
+</div>
+</div>
+<h3 id="h3.3-se-pueden-agrupar-high-y-low">H3.3 — ¿Se pueden agrupar High y Low?</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>model3<span class="fl">.2</span>b.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb8-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize <span class="sc">+</span> treatment<span class="sc">:</span>sex1,</span>
+<span id="cb8-3"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb8-4"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb8-5"><a></a>  <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb8-6"><a></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> trtgrp)</span>
+<span id="cb8-7"><a></a>)</span>
+<span id="cb8-8"><a></a><span class="fu">anova</span>(model3<span class="fl">.2</span>a.fit, model3<span class="fl">.2</span>b.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model3.2a.fit     1 11 381.8847 423.1630 -179.9423                        
+model3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741</code></pre>
+</div>
+</div>
+<h3 id="h3.4-model-3.2b-mejor-que-varianza-homogénea">H3.4 — ¿Model 3.2B mejor que varianza homogénea?</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model3.1.fit      1  9 419.1043 452.8775 -200.5522                        
+model3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001</code></pre>
+</div>
+</div>
+<h3 id="h3.5-es-significativa-la-interacción-tratamiento-sexo">H3.5 — ¿Es significativa la interacción tratamiento × sexo?</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">anova</span>(model3<span class="fl">.2</span>b.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               numDF denDF  F-value p-value
+(Intercept)        1   292 9027.740  &lt;.0001
+treatment          2    23    4.241  0.0271
+sex1               1   292   61.568  &lt;.0001
+litsize            1    23   49.577  &lt;.0001
+treatment:sex1     2   292    0.317  0.7288</code></pre>
+</div>
+</div>
+<blockquote>
+<p>No se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (<strong>p = 0.73</strong>).</p>
+</blockquote>
+<h3 id="h3.6-efecto-global-del-tratamiento">H3.6 — ¿Efecto global del tratamiento?</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>model3.<span class="fl">3.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb13-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize,</span>
+<span id="cb13-3"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb13-4"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb13-5"><a></a>  <span class="at">method =</span> <span class="st">"ML"</span>,</span>
+<span id="cb13-6"><a></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> trtgrp)</span>
+<span id="cb13-7"><a></a>)</span>
+<span id="cb13-8"><a></a></span>
+<span id="cb13-9"><a></a>model3<span class="fl">.3</span>a.ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb13-10"><a></a>  weight <span class="sc">~</span> sex1 <span class="sc">+</span> litsize,</span>
+<span id="cb13-11"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb13-12"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb13-13"><a></a>  <span class="at">method =</span> <span class="st">"ML"</span>,</span>
+<span id="cb13-14"><a></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> trtgrp)</span>
+<span id="cb13-15"><a></a>)</span>
+<span id="cb13-16"><a></a></span>
+<span id="cb13-17"><a></a><span class="fu">anova</span>(model3<span class="fl">.3</span>a.ml.fit, model3.<span class="fl">3.</span>ml.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        
+model3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04</code></pre>
+</div>
+</div>
+<blockquote>
+<p><strong>p &lt; 0.001</strong> → el tratamiento tiene efecto global significativo.</p>
+</blockquote>
+<h3 id="resumen-de-comparación-de-modelos">Resumen de comparación de modelos</h3>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Comparación</th>
+<th>Componente evaluado</th>
+<th>Resultado</th>
+<th>Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3.1 vs 3.1A</td>
+<td>Intercepto aleatorio</td>
+<td>p &lt; 0.001</td>
+<td>Mantener</td>
+</tr>
+<tr class="even">
+<td>3.1 vs 3.2A</td>
+<td>Varianza heterogénea</td>
+<td>p &lt; 0.001</td>
+<td>Heterogénea</td>
+</tr>
+<tr class="odd">
+<td>3.2A vs 3.2B</td>
+<td>Agrupar High/Low</td>
+<td>p = 0.27</td>
+<td>Elegir 3.2B</td>
+</tr>
+<tr class="even">
+<td>3.1 vs 3.2B</td>
+<td>Confirmar 3.2B</td>
+<td>p &lt; 0.001</td>
+<td>Elegir 3.2B</td>
+</tr>
+<tr class="odd">
+<td>anova(3.2B)</td>
+<td>Interacción trat×sexo</td>
+<td>p = 0.73</td>
+<td>Eliminar</td>
+</tr>
+<tr class="even">
+<td>3.3A vs 3.3 (ML)</td>
+<td>Efecto tratamiento</td>
+<td>p &lt; 0.001</td>
+<td>Mantener</td>
+</tr>
+</tbody>
+</table>
 </section>
+<section id="modelo-final" class="slide level2">
+<h2>8. Modelo final</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>model3.<span class="fl">3.</span>reml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb15-2"><a></a>  weight <span class="sc">~</span> treatment <span class="sc">+</span> sex1 <span class="sc">+</span> litsize,</span>
+<span id="cb15-3"><a></a>  <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> litter,</span>
+<span id="cb15-4"><a></a>  <span class="at">data =</span> ratpup,</span>
+<span id="cb15-5"><a></a>  <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb15-6"><a></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> trtgrp)</span>
+<span id="cb15-7"><a></a>)</span>
+<span id="cb15-8"><a></a><span class="fu">summary</span>(model3.<span class="fl">3.</span>reml.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: ratpup 
+       AIC      BIC    logLik
+  372.2784 402.3497 -178.1392
+
+Random effects:
+ Formula: ~1 | litter
+        (Intercept)  Residual
+StdDev:   0.3146374 0.5144324
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | trtgrp 
+ Parameter estimates:
+  Control  High_Low 
+1.0000000 0.5889108 
+Fixed effects:  weight ~ treatment + sex1 + litsize 
+                  Value  Std.Error  DF   t-value p-value
+(Intercept)    8.327633 0.27406956 294 30.385107  0.0000
+treatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091
+treatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001
+sex1          -0.343431 0.04204323 294 -8.168531  0.0000
+litsize       -0.130681 0.01855194  23 -7.044036  0.0000
+ Correlation: 
+              (Intr) trtmnL trtmnH sex1  
+treatmentLow  -0.348                     
+treatmentHigh -0.610  0.464              
+sex1          -0.103 -0.035 -0.006       
+litsize       -0.913  0.064  0.403  0.043
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 
+
+Number of Observations: 322
+Number of Groups: 27 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">intervals</span>(model3.<span class="fl">3.</span>reml.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Approximate 95% confidence intervals
+
+ Fixed effects:
+                   lower       est.       upper
+(Intercept)    7.7882461  8.3276330  8.86701987
+treatmentLow  -0.7486398 -0.4336625 -0.11868526
+treatmentHigh -1.2406946 -0.8622677 -0.48384070
+sex1          -0.4261753 -0.3434314 -0.26068758
+litsize       -0.1690581 -0.1306805 -0.09230291
+
+ Random Effects:
+  Level: litter 
+                    lower      est.     upper
+sd((Intercept)) 0.2272184 0.3146374 0.4356896
+
+ Variance function:
+             lower      est.     upper
+High_Low 0.4998565 0.5889108 0.6938309
+
+ Within-group standard error:
+    lower      est.     upper 
+0.4536291 0.5144324 0.5833856 </code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-de-efectos-fijos" class="slide level2">
+<h2>9. Interpretación de efectos fijos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Efectos fijos — Model 3.3 (REML)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Efecto</th>
+<th style="text-align: right;">Estimacion</th>
+<th style="text-align: right;">IC_inferior</th>
+<th style="text-align: right;">IC_superior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">8.328</td>
+<td style="text-align: right;">7.788</td>
+<td style="text-align: right;">8.867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentLow</td>
+<td style="text-align: left;">treatmentLow</td>
+<td style="text-align: right;">-0.434</td>
+<td style="text-align: right;">-0.749</td>
+<td style="text-align: right;">-0.119</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHigh</td>
+<td style="text-align: left;">treatmentHigh</td>
+<td style="text-align: right;">-0.862</td>
+<td style="text-align: right;">-1.241</td>
+<td style="text-align: right;">-0.484</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sex1</td>
+<td style="text-align: left;">sex1</td>
+<td style="text-align: right;">-0.343</td>
+<td style="text-align: right;">-0.426</td>
+<td style="text-align: right;">-0.261</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">litsize</td>
+<td style="text-align: left;">litsize</td>
+<td style="text-align: right;">-0.131</td>
+<td style="text-align: right;">-0.169</td>
+<td style="text-align: right;">-0.092</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="componentes-de-varianza-e-icc" class="slide level2">
+<h2>10. Componentes de varianza e ICC</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>vc <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(model3.<span class="fl">3.</span>reml.fit)</span>
+<span id="cb19-2"><a></a></span>
+<span id="cb19-3"><a></a>var_litter <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(vc[<span class="st">"(Intercept)"</span>, <span class="st">"Variance"</span>])</span>
+<span id="cb19-4"><a></a>var_res_control <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(vc[<span class="st">"Residual"</span>, <span class="st">"Variance"</span>])</span>
+<span id="cb19-5"><a></a></span>
+<span id="cb19-6"><a></a>sd_ratio <span class="ot">&lt;-</span> <span class="fu">coef</span>(</span>
+<span id="cb19-7"><a></a>  model3.<span class="fl">3.</span>reml.fit<span class="sc">$</span>modelStruct<span class="sc">$</span>varStruct,</span>
+<span id="cb19-8"><a></a>  <span class="at">unconstrained =</span> <span class="cn">FALSE</span></span>
+<span id="cb19-9"><a></a>)</span>
+<span id="cb19-10"><a></a></span>
+<span id="cb19-11"><a></a>var_res_high_low <span class="ot">&lt;-</span> var_res_control <span class="sc">*</span> <span class="fu">unname</span>(sd_ratio)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb19-12"><a></a></span>
+<span id="cb19-13"><a></a>icc_control  <span class="ot">&lt;-</span> var_litter <span class="sc">/</span> (var_litter <span class="sc">+</span> var_res_control)</span>
+<span id="cb19-14"><a></a>icc_high_low <span class="ot">&lt;-</span> var_litter <span class="sc">/</span> (var_litter <span class="sc">+</span> var_res_high_low)</span>
+<span id="cb19-15"><a></a></span>
+<span id="cb19-16"><a></a><span class="fu">cat</span>(<span class="st">"Varianza entre camadas:     "</span>, <span class="fu">round</span>(var_litter, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza entre camadas:      0.099 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">cat</span>(<span class="st">"Varianza residual Control:  "</span>, <span class="fu">round</span>(var_res_control, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza residual Control:   0.2646 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">cat</span>(<span class="st">"Varianza residual High/Low: "</span>, <span class="fu">round</span>(var_res_high_low, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza residual High/Low:  0.0918 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">cat</span>(<span class="st">"ICC Control:                "</span>, <span class="fu">round</span>(icc_control, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>ICC Control:                 0.2722 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">cat</span>(<span class="st">"ICC High/Low:               "</span>, <span class="fu">round</span>(icc_high_low, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>ICC High/Low:                0.5189 </code></pre>
+</div>
+</div>
+</section>
+<section id="predicciones" class="slide level2">
+<h2>11. Predicciones</h2>
+
+<img data-src="index_files/figure-revealjs/predicciones-1.png" width="960" class="r-stretch"></section>
+<section id="diagnósticos" class="slide level2">
+<h2>12. Diagnósticos</h2>
+
+<img data-src="index_files/figure-revealjs/diagnosticos-1.png" width="960" class="r-stretch"></section>
 <section id="conclusiones" class="slide level2">
-<h2>Conclusiones</h2>
-
+<h2>13. Conclusiones</h2>
+<ul>
+<li>El tratamiento se asocia con una <strong>reducción del peso al nacer</strong></li>
+<li>La dosis alta presenta mayor reducción que la dosis baja</li>
+<li>El peso también se relaciona con el <strong>sexo</strong> y el <strong>tamaño de camada</strong></li>
+<li>Existe variabilidad relevante <strong>entre camadas</strong></li>
+<li>La varianza residual es <strong>heterogénea</strong> entre grupos de tratamiento</li>
+<li>El <strong>Model 3.3</strong> representa mejor la estructura jerárquica de los datos</li>
+</ul>
+<blockquote>
+<p>Ignorar la agrupación habría ocultado una parte importante de la estructura de los datos. El modelo mixto permitió estimar simultáneamente los efectos promedio del tratamiento y la variabilidad entre y dentro de las camadas.</p>
+</blockquote>
+</section>
+<section class="slide level2">
 
 </section>
+<section>
+<section id="diapositivas-de-respaldo" class="title-slide slide level1 center" data-visibility="uncounted">
+<h1>Diapositivas de Respaldo</h1>
+
+</section>
+<section id="por-qué-lme-y-no-lmer" class="slide level2">
+<h2>Por qué lme() y no lmer()</h2>
+<ul>
+<li><code>lmer()</code> no permite varianzas residuales heterogéneas</li>
+<li>Para Model 3.2B y 3.3 es <strong>obligatorio</strong> usar <code>lme()</code> de <code>nlme</code></li>
+<li><code>lmer()</code> solo llega hasta Model 3.1 en este ejemplo</li>
+</ul>
+</section>
+<section id="ml-vs-reml" class="slide level2">
+<h2>ML vs REML</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Situación</th>
+<th>Método</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Comparar modelos con distintos efectos fijos</td>
+<td>ML</td>
+</tr>
+<tr class="even">
+<td>Estimar modelo final e interpretar parámetros</td>
+<td>REML</td>
+</tr>
+<tr class="odd">
+<td>Comparar modelos con mismos efectos fijos</td>
+<td>REML</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="por-qué-dividir-el-p-value-en-h3.1" class="slide level2">
+<h2>Por qué dividir el p-value en H3.1</h2>
+<p>Cuando se prueba si una varianza es cero, el parámetro está en el <strong>límite del espacio parametral</strong>. El LRT estándar no aplica directamente y el p-value se divide por 2.</p>
+</section>
+<section id="estrategia-top-down-con-decisiones" class="slide level2">
+<h2>Estrategia top-down con decisiones</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb29-1"><a></a>flowchart TD</span>
+<span id="cb29-2"><a></a>    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}</span>
+<span id="cb29-3"><a></a>    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}</span>
+<span id="cb29-4"><a></a>    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}</span>
+<span id="cb29-5"><a></a>    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}</span>
+<span id="cb29-6"><a></a>    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}
+    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}
+    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}
+    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}
+    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+
+
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-
+<p>Bioestadística Avanzada</p>
 </div>
 </div></div>
 
@@ -183,7 +917,6 @@ Elena Lazo
   <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -205,9 +938,8 @@ Elena Lazo
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'chalkboard': {"buttons":true},
-'smaller': false,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': true,
  
         // Display controls in the bottom right corner
         controls: false,
@@ -332,7 +1064,7 @@ Elena Lazo
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'none',
+        transition: 'fade',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
@@ -377,7 +1109,7 @@ Elena Lazo
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
 
           RevealMath,
           RevealNotes,
@@ -386,6 +1118,82 @@ Elena Lazo
         ]
       });
     </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

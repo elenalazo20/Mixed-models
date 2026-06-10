@@ -1,33 +1,381 @@
 ---
-title: "Two-Level Clustered Data: The Rat Pup Example"
-subtitle: "West et al. - Cap. 3 (p.59)"
+title: "Modelos para datos en clusters de 2 niveles"
+subtitle: "Ejemplo de las crías de rata - West et al., capítulo 3"
 author: "Elena Lazo"
-date: 26-junio-2026
+date: "26-junio-2026"
+
 format:
   html:
+    theme: cosmo
     toc: true
+    toc-location: right
+    toc-depth: 3
+    toc-title: "Contenido"
+    number-sections: true
+    smooth-scroll: true
     code-fold: true
+    code-summary: "Mostrar código"
     code-tools: true
-  revealjs:
-    output-file: slides.html
-    theme: moon
-    slide-number: true
-    code-fold: true
-    chalkboard: true
+    embed-resources: true
+
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
-## Descripción del problema
+```{r setup, include=FALSE}
+library(nlme)
+library(ggplot2)
+library(dplyr)
+
+ratpup <- read.table(
+  "Rat_Pup.txt",
+  header = TRUE,
+  sep = "\t"
+)
+
+ratpup <- ratpup |>
+  mutate(
+    litter = factor(litter),
+    treatment = factor(treatment, levels = c("Control", "Low", "High")),
+    sex = factor(sex, levels = c("Male", "Female")),
+    sex1 = if_else(sex == "Female", 1, 0),
+    trtgrp = factor(
+      if_else(treatment == "Control", "Control", "High_Low"),
+      levels = c("Control", "High_Low")
+    )
+  )
+```
+
+## Problema de investigación 🐁💊
+
+Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos:
+dosis **alta**, dosis **baja** o **control** de un compuesto químico.
+
+El tratamiento fue asignado a nivel de la **madre**, por lo que todas
+las crías de una misma camada comparten el mismo tratamiento.
+
+> **Pregunta central:** ¿Existen diferencias en el peso al nacer de las
+> crías entre los grupos de tratamiento, considerando la dependencia entre
+> crías de una misma camada y ajustando por sexo y tamaño de camada?
 
 ## Diseño del estudio
 
-## Hipótesis y objetivos
+```{mermaid}
+flowchart TD
+    A[30 ratas hembra] --> B[Tratamiento asignado a nivel de madre]
+    B --> C[Control\n10 camadas]
+    B --> D[Dosis Baja\n10 camadas]
+    B --> E[Dosis Alta\n7 camadas]
+    C --> F[322 crías - Level 1]
+    D --> F
+    E --> F
+```
 
-## Exploración de datos
+- **Nivel 2 - camada:** unidad de asignación del tratamiento
+- **Nivel 1 - cría:** unidad de medición
+- Diseño **desbalanceado:** tamaño de camada varía de 2 a 18 crías
 
-## Modelos ajustados
+## Variables
 
-## Comparación de modelos
+| Variable | Nivel | Tipo | Rol | Codificación |
+|----------|-------|------|-----|--------------|
+| `weight` | 1 | Continua | Outcome | Gramos |
+| `sex` / `sex1` | 1 | Categórica | Covariable | Male = referencia; Female = 1 |
+| `pup_id` | 1 | Identificador | Identificación | Una cría |
+| `litter` | 2 | Identificador | Agrupación aleatoria | Una madre/camada |
+| `treatment` | 2 | Categórica | Predictor principal | Control = referencia |
+| `litsize` | 2 | Cuantitativa | Covariable | Número de crías |
+| `trtgrp` | 2 | Categórica | Estructura residual | Control vs. High_Low |
 
-## Modelo final e interpretación
+```{r descriptivos, echo=FALSE}
+ratpup |>
+  group_by(treatment) |>
+  summarise(
+    Camadas = n_distinct(litter),
+    Crias = n(),
+    Peso_medio = round(mean(weight), 2),
+    DE = round(sd(weight), 2)
+  ) |>
+  knitr::kable(caption = "Resumen por grupo de tratamiento")
+```
+
+## Exploración descriptiva
+
+### Peso según tratamiento y sexo
+
+```{r fig1, echo=FALSE}
+ggplot(ratpup, aes(x = treatment, y = weight, fill = sex)) +
+  geom_boxplot() +
+  labs(title = "Peso al nacer según tratamiento y sexo",
+       x = "Tratamiento", y = "Peso (g)") +
+  theme_minimal()
+```
+
+### Peso según tamaño de camada
+
+```{r fig2, echo=FALSE}
+ggplot(ratpup, aes(x = litsize, y = weight, color = treatment)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Peso al nacer según tamaño de camada",
+       x = "Tamaño de camada", y = "Peso (g)") +
+  theme_minimal()
+```
+
+## Objetivos e hipótesis
+
+**Objetivo general:** Evaluar la asociación entre el tratamiento materno
+y el peso al nacer, considerando la agrupación dentro de camadas.
+
+**Objetivos analíticos:**
+
+1. Determinar si existe variabilidad relevante entre camadas
+2. Evaluar si la varianza residual difiere entre grupos de tratamiento
+3. Evaluar si el efecto del tratamiento varía según el sexo
+4. Estimar el efecto ajustado del tratamiento sobre el peso
+5. Seleccionar el modelo que mejor represente los datos
+
+## Estrategia top-down
+
+```{mermaid}
+flowchart TD
+    A[Modelo cargado] --> B{¿Se necesita el efecto aleatorio?}
+    B --> C{¿Qué estructura residual es adecuada?}
+    C --> D{¿Se conserva la interacción?}
+    D --> E{¿Hay efecto global del tratamiento?}
+    E --> F[Modelo final]
+```
+
+## Ajuste y comparación de modelos
+
+### Model 3.1: Modelo inicial
+
+```{r model31, echo=TRUE}
+model3.1.fit <- lme(
+  weight ~ treatment + sex1 + litsize + treatment:sex1,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "REML")
+```
+
+### H3.1: ¿Es necesario el intercepto aleatorio?
+
+```{r h31, echo=TRUE}
+model3.1a.fit <- gls(
+  weight ~ treatment + sex1 + litsize + treatment:sex1,
+  data = ratpup,
+  method = "REML")
+
+lrt_h31 <- anova(model3.1a.fit, model3.1.fit)
+lrt_h31
+```
+
+> Como se contrasta un único componente de varianza contra cero, West
+> divide por dos el valor p del LRT. Resultado: **p < 0.001** →
+> se mantiene el intercepto aleatorio.
+
+### H3.2: ¿Varianza residual heterogénea por tratamiento?
+
+```{r h32, echo=TRUE}
+model3.2a.fit <- lme(
+  weight ~ treatment + sex1 + litsize + treatment:sex1,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "REML",
+  weights = varIdent(form = ~1 | treatment))
+anova(model3.1.fit, model3.2a.fit)
+```
+
+### H3.3: ¿Se pueden agrupar High y Low?
+
+```{r h33, echo=TRUE}
+model3.2b.fit <- lme(
+  weight ~ treatment + sex1 + litsize + treatment:sex1,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "REML",
+  weights = varIdent(form = ~1 | trtgrp))
+anova(model3.2a.fit, model3.2b.fit)
+```
+
+### H3.4: ¿Model 3.2B mejor que varianza homogénea?
+
+```{r h34, echo=FALSE}
+anova(model3.1.fit, model3.2b.fit)
+```
+
+### H3.5: ¿Es significativa la interacción tratamiento × sexo?
+
+```{r h35, echo=TRUE}
+anova(model3.2b.fit)
+```
+
+> No se encontró evidencia de que la diferencia de peso entre los
+> tratamientos cambie según el sexo de la cría (**p = 0.73**).
+
+### H3.6: ¿Efecto global del tratamiento?
+
+```{r h36, echo=TRUE}
+model3.3.ml.fit <- lme(
+  weight ~ treatment + sex1 + litsize,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "ML",
+  weights = varIdent(form = ~1 | trtgrp))
+
+model3.3a.ml.fit <- lme(
+  weight ~ sex1 + litsize,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "ML",
+  weights = varIdent(form = ~1 | trtgrp))
+
+anova(model3.3a.ml.fit, model3.3.ml.fit)
+```
+
+> **p < 0.001** → el tratamiento tiene efecto global significativo.
+
+### Resumen de comparación de modelos
+
+| Comparación | Componente evaluado | Resultado | Decisión |
+|-------------|---------------------|-----------|----------|
+| 3.1 vs 3.1A | Intercepto aleatorio | p < 0.001 | Mantener |
+| 3.1 vs 3.2A | Varianza heterogénea | p < 0.001 | Heterogénea |
+| 3.2A vs 3.2B | Agrupar High/Low | p = 0.27 | Elegir 3.2B |
+| 3.1 vs 3.2B | Confirmar 3.2B | p < 0.001 | Elegir 3.2B |
+| anova(3.2B) | Interacción trat×sexo | p = 0.73 | Eliminar |
+| 3.3A vs 3.3 (ML) | Efecto tratamiento | p < 0.001 | Mantener |
+
+## Modelo final
+
+```{r modelo_final, echo=TRUE}
+model3.3.reml.fit <- lme(
+  weight ~ treatment + sex1 + litsize,
+  random = ~1 | litter,
+  data = ratpup,
+  method = "REML",
+  weights = varIdent(form = ~1 | trtgrp))
+summary(model3.3.reml.fit)
+intervals(model3.3.reml.fit)
+```
+
+## Interpretación de efectos fijos
+
+```{r tabla_efectos, echo=FALSE}
+coefs <- intervals(model3.3.reml.fit)$fixed
+tabla <- data.frame(
+  Efecto = rownames(coefs),
+  Estimacion = round(coefs[, "est."], 3),
+  IC_inferior = round(coefs[, "lower"], 3),
+  IC_superior = round(coefs[, "upper"], 3))
+knitr::kable(tabla, caption = "Efectos fijos — Model 3.3 (REML)")
+```
+
+## Componentes de varianza e ICC
+
+```{r icc, echo=TRUE}
+vc <- VarCorr(model3.3.reml.fit)
+
+var_litter <- as.numeric(vc["(Intercept)", "Variance"])
+var_res_control <- as.numeric(vc["Residual", "Variance"])
+
+sd_ratio <- coef(
+  model3.3.reml.fit$modelStruct$varStruct,
+  unconstrained = FALSE)
+
+var_res_high_low <- var_res_control * unname(sd_ratio)^2
+
+icc_control  <- var_litter / (var_litter + var_res_control)
+icc_high_low <- var_litter / (var_litter + var_res_high_low)
+
+cat("Varianza entre camadas:     ", round(var_litter, 4), "\n")
+cat("Varianza residual Control:  ", round(var_res_control, 4), "\n")
+cat("Varianza residual High/Low: ", round(var_res_high_low, 4), "\n")
+cat("ICC Control:                ", round(icc_control, 4), "\n")
+cat("ICC High/Low:               ", round(icc_high_low, 4), "\n")
+```
+
+## Predicciones
+
+```{r predicciones, echo=FALSE}
+ratpup$pred_marginal    <- predict(model3.3.reml.fit, level = 0)
+ratpup$pred_condicional <- predict(model3.3.reml.fit, level = 1)
+
+ggplot(ratpup, aes(x = pred_marginal, y = pred_condicional,
+                   color = treatment)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(title = "Predicciones marginales vs. condicionales",
+       x = "Predicción marginal",
+       y = "Predicción condicional") +
+  theme_minimal()
+```
+
+## Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos_norm <- residuals(model3.3.reml.fit, type = "normalized")
+ajustados     <- fitted(model3.3.reml.fit, level = 1)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos_norm,
+     xlab = "Valores ajustados",
+     ylab = "Residuos normalizados",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos_norm, main = "Q-Q plot residuos normalizados")
+qqline(residuos_norm)
+```
 
 ## Conclusiones
+
+- El tratamiento se asocia con una **reducción del peso al nacer**
+- La dosis alta presenta mayor reducción que la dosis baja
+- El peso también se relaciona con el **sexo** y el **tamaño de camada**
+- Existe variabilidad relevante **entre camadas**
+- La varianza residual es **heterogénea** entre grupos de tratamiento
+- El **Model 3.3** representa mejor la estructura jerárquica de los datos
+
+> Ignorar la agrupación habría ocultado una parte importante de la
+> estructura de los datos. El modelo mixto permitió estimar
+> simultáneamente los efectos promedio del tratamiento y la
+> variabilidad entre y dentro de las camadas.
+
+---
+
+# Anexo 
+
+## Por qué lme() y no lmer()
+
+- `lmer()` no permite varianzas residuales heterogéneas
+- Para Model 3.2B y 3.3 es **obligatorio** usar `lme()` de `nlme`
+- `lmer()` solo llega hasta Model 3.1 en este ejemplo
+
+## ML vs REML
+
+| Situación | Método |
+|-----------|--------|
+| Comparar modelos con distintos efectos fijos | ML |
+| Estimar modelo final e interpretar parámetros | REML |
+| Comparar modelos con mismos efectos fijos | REML |
+
+## Por qué dividir el p-value en H3.1
+
+Cuando se prueba si una varianza es cero, el parámetro está en el
+**límite del espacio parametral**. El LRT estándar no aplica
+directamente y el p-value se divide por 2.
+
+## Estrategia top-down con decisiones
+
+```{mermaid}
+flowchart TD
+    A[Model 3.1] --> B{H3.1: ¿Intercepto aleatorio?}
+    B -->|Sí p<0.001| C{H3.2-3.4: ¿Varianza heterogénea?}
+    C -->|Sí elegir 3.2B| D{H3.5: ¿Interacción?}
+    D -->|No p=0.73| E{H3.6: ¿Efecto tratamiento?}
+    E -->|Sí p<0.001| F[Model 3.3 Final]
+```
