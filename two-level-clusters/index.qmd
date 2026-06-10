@@ -2,7 +2,7 @@
 title: "Two-Level Clustered Data: The Rat Pup Example"
 subtitle: "West et al. - Cap. 3 (p.59)"
 author: "Elena Lazo"
-date: today
+date: 26-junio-2026
 format:
   html:
     toc: true
