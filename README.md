@@ -24,13 +24,6 @@ Sitio web con ejemplos trabajados de modelos mixtos en R, basados en tres libros
 | Longitudinal Grouped (ARMD) | Galecki et al. | Cap. 2 (p.11-22) | Modelo longitudinal con obs. agrupadas |
 | Pre-Post Clusters (PRT) | Galecki et al. | Cap. 2 (p.20) | Modelo pre-post con datos en clusters |
 
-## 🛠️ Tecnologías
-
-- R 4.5.2
-- Quarto
-- lme4 / nlme
-- ggplot2
-
 ## 🌐 Sitio web
 
 👉 [elenalazo20.github.io/Mixed-models](https://elenalazo20.github.io/Mixed-models)
