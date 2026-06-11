@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Elena Lazo">
+<meta name="dcterms.date" content="2016-06-11">
 
-<title>Longitudinal Clusters (Dental Veener) – Mixed Models - West, Finch &amp; Galecki</title>
+<title>Longitudinal Data in Clusters – Mixed Models - West, Finch &amp; Galecki</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,6 +105,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -187,7 +192,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#próximamente" id="toc-próximamente" class="nav-link active" data-scroll-target="#próximamente">Próximamente</a></li>
+  <li><a href="#problema-de-investigación" id="toc-problema-de-investigación" class="nav-link active" data-scroll-target="#problema-de-investigación">1.🦷Problema de investigación</a></li>
+  <li><a href="#diseño-clustered-longitudinal" id="toc-diseño-clustered-longitudinal" class="nav-link" data-scroll-target="#diseño-clustered-longitudinal">2.🦷Diseño clustered longitudinal</a></li>
+  <li><a href="#estructura-de-los-datos" id="toc-estructura-de-los-datos" class="nav-link" data-scroll-target="#estructura-de-los-datos">3.🦷Estructura de los datos</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">4.🦷Variables</a></li>
+  <li><a href="#exploración-descriptiva" id="toc-exploración-descriptiva" class="nav-link" data-scroll-target="#exploración-descriptiva">5.🦷Exploración descriptiva</a></li>
+  <li><a href="#estrategia-top-down" id="toc-estrategia-top-down" class="nav-link" data-scroll-target="#estrategia-top-down">6.🦷Estrategia top-down</a></li>
+  <li><a href="#model-7.1-modelo-cargado" id="toc-model-7.1-modelo-cargado" class="nav-link" data-scroll-target="#model-7.1-modelo-cargado">7.🦷Model 7.1: Modelo cargado</a></li>
+  <li><a href="#h7.1-es-necesario-el-intercepto-aleatorio-de-diente" id="toc-h7.1-es-necesario-el-intercepto-aleatorio-de-diente" class="nav-link" data-scroll-target="#h7.1-es-necesario-el-intercepto-aleatorio-de-diente">8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?</a></li>
+  <li><a href="#h7.2-varianza-residual-heterogénea-por-tiempo" id="toc-h7.2-varianza-residual-heterogénea-por-tiempo" class="nav-link" data-scroll-target="#h7.2-varianza-residual-heterogénea-por-tiempo">9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?</a></li>
+  <li><a href="#h7.3-son-necesarias-las-interacciones-con-el-tiempo" id="toc-h7.3-son-necesarias-las-interacciones-con-el-tiempo" class="nav-link" data-scroll-target="#h7.3-son-necesarias-las-interacciones-con-el-tiempo">10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?</a></li>
+  <li><a href="#resumen-de-comparación-de-modelos" id="toc-resumen-de-comparación-de-modelos" class="nav-link" data-scroll-target="#resumen-de-comparación-de-modelos">11.🦷Resumen de comparación de modelos</a></li>
+  <li><a href="#modelo-final-model-7.3" id="toc-modelo-final-model-7.3" class="nav-link" data-scroll-target="#modelo-final-model-7.3">12. 🦷Modelo final — Model 7.3</a></li>
+  <li><a href="#interpretación-de-efectos-fijos" id="toc-interpretación-de-efectos-fijos" class="nav-link" data-scroll-target="#interpretación-de-efectos-fijos">13.🦷Interpretación de efectos fijos</a></li>
+  <li><a href="#componentes-de-varianza" id="toc-componentes-de-varianza" class="nav-link" data-scroll-target="#componentes-de-varianza">14.🦷Componentes de varianza</a></li>
+  <li><a href="#diagnósticos" id="toc-diagnósticos" class="nav-link" data-scroll-target="#diagnósticos">15.🦷Diagnósticos</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">16.🦷Conclusiones</a></li>
+  <li><a href="#anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita" id="toc-anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita" class="nav-link" data-scroll-target="#anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita">Anexo técnico — Ejemplo de estructura residual con correlación explícita</a></li>
+  <li><a href="#anexo-técnico-comparación-con-lmer" id="toc-anexo-técnico-comparación-con-lmer" class="nav-link" data-scroll-target="#anexo-técnico-comparación-con-lmer">Anexo técnico — Comparación con lmer()</a></li>
   </ul>
 </nav>
     </div>
@@ -196,14 +218,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Longitudinal Clusters (Dental Veener)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Longitudinal Data in Clusters</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">The Dental Veneer Example👄🦷 - West et al., Cap. 7 (p.&nbsp;307)</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elena Lazo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2016</p>
+    </div>
+  </div>
   
     
   </div>
@@ -213,9 +248,700 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="próximamente" class="level2">
-<h2 class="anchored" data-anchor-id="próximamente">Próximamente</h2>
-<p>Este ejemplo está en construcción.</p>
+<section id="problema-de-investigación" class="level2">
+<h2 class="anchored" data-anchor-id="problema-de-investigación">1.🦷Problema de investigación</h2>
+<p>Se estudia el efecto de una restauración dental (veneer) sobre el <strong>índice de fluido crevicular gingival</strong> (<code>gcf</code>) medido a los 3 y 6 meses. Los dientes están anidados dentro de pacientes.</p>
+<blockquote class="blockquote">
+<p><strong>Pregunta central:</strong> ¿Cambia el GCF a lo largo del tiempo y difiere este cambio según las características basales del paciente y el diente, considerando la estructura jerárquica de tres niveles?</p>
+</blockquote>
+</section>
+<section id="diseño-clustered-longitudinal" class="level2">
+<h2 class="anchored" data-anchor-id="diseño-clustered-longitudinal">2.🦷Diseño clustered longitudinal</h2>
+<p>Este es un diseño de <strong>tres niveles longitudinal</strong>:</p>
+<ul>
+<li><strong>Nivel 3 — paciente:</strong> unidad de muestreo principal</li>
+<li><strong>Nivel 2 — diente dentro de paciente:</strong> unidad de tratamiento</li>
+<li><strong>Nivel 1 — tiempo dentro de diente:</strong> medición repetida</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    A[Paciente] --&gt; B[Diente 1]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Diente 2]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Diente k]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[GCF 3 meses]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[GCF 6 meses]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[GCF 3 meses]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    C --&gt; H[GCF 6 meses]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Paciente] --&gt; B[Diente 1]
+    A --&gt; C[Diente 2]
+    A --&gt; D[Diente k]
+    B --&gt; E[GCF 3 meses]
+    B --&gt; F[GCF 6 meses]
+    C --&gt; G[GCF 3 meses]
+    C --&gt; H[GCF 6 meses]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="estructura-de-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="estructura-de-los-datos">3.🦷Estructura de los datos</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(veneer_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 110</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(veneer_data<span class="sc">$</span>patient)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>veneer_data <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(patient, tooth2) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(patient, <span class="at">name =</span> <span class="st">"dientes_por_paciente"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(dientes_por_paciente),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(dientes_por_paciente),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(dientes_por_paciente), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  min max media
+1   1   6   4.6</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(veneer_data<span class="sc">$</span>time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 3  6 
+55 55 </code></pre>
+</div>
+</div>
+</section>
+<section id="variables" class="level2">
+<h2 class="anchored" data-anchor-id="variables">4.🦷Variables</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nivel</th>
+<th>Tipo</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gcf</code></td>
+<td>1</td>
+<td>Continua</td>
+<td><strong>Outcome</strong></td>
+</tr>
+<tr class="even">
+<td><code>time</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Tiempo (3 o 6 meses)</td>
+</tr>
+<tr class="odd">
+<td><code>tooth</code></td>
+<td>2</td>
+<td>Identificador</td>
+<td>Diente</td>
+</tr>
+<tr class="even">
+<td><code>base.gcf</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Covariable — GCF basal</td>
+</tr>
+<tr class="odd">
+<td><code>cda</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Covariable — diferencia de contorno</td>
+</tr>
+<tr class="even">
+<td><code>patient</code></td>
+<td>3</td>
+<td>Identificador</td>
+<td>Paciente</td>
+</tr>
+<tr class="odd">
+<td><code>age</code></td>
+<td>3</td>
+<td>Continua</td>
+<td>Covariable — edad del paciente</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exploración-descriptiva" class="level2">
+<h2 class="anchored" data-anchor-id="exploración-descriptiva">5.🦷Exploración descriptiva</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estrategia-top-down" class="level2">
+<h2 class="anchored" data-anchor-id="estrategia-top-down">6.🦷Estrategia top-down</h2>
+<div class="cell" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    A[Model 7.1\nMedia cargada\nPaciente + diente aleatorios] --&gt; B{H7.1\n¿Intercepto aleatorio de diente?}</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Sí| C{H7.2\n¿Varianza residual heterogénea?}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    C --&gt;|No| D{H7.3\n¿Interacciones con el tiempo?}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    D --&gt;|No| E[Model 7.3 — Modelo Final]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Model 7.1\nMedia cargada\nPaciente + diente aleatorios] --&gt; B{H7.1\n¿Intercepto aleatorio de diente?}
+    B --&gt;|Sí| C{H7.2\n¿Varianza residual heterogénea?}
+    C --&gt;|No| D{H7.3\n¿Interacciones con el tiempo?}
+    D --&gt;|No| E[Model 7.3 — Modelo Final]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="model-7.1-modelo-cargado" class="level2">
+<h2 class="anchored" data-anchor-id="model-7.1-modelo-cargado">7.🦷Model 7.1: Modelo cargado</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: veneer_data 
+       AIC      BIC    logLik
+  873.1168 907.2415 -423.5584
+
+Random effects:
+ Formula: ~time | patient
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev    Corr  
+(Intercept) 23.566684 (Intr)
+time         6.687548 -0.95 
+
+ Formula: ~1 | tooth %in% patient
+        (Intercept) Residual
+StdDev:    6.852759 7.049071
+
+Fixed effects:  gcf ~ time + base.gcf + cda + age + time:base.gcf + time:cda +      time:age 
+                 Value Std.Error DF    t-value p-value
+(Intercept)   69.91682 28.398562 51  2.4619844  0.0172
+time          -6.01532  7.446321 51 -0.8078238  0.4229
+base.gcf      -0.31514  0.291658 41 -1.0805151  0.2862
+cda           -0.88240  1.082331 41 -0.8152742  0.4196
+age           -0.96960  0.607858 10 -1.5951183  0.1418
+time:base.gcf  0.06736  0.057690 51  1.1676068  0.2484
+time:cda       0.12583  0.218352 51  0.5762660  0.5670
+time:age       0.10903  0.165806 51  0.6575600  0.5138
+ Correlation: 
+              (Intr) time   bs.gcf cda    age    tm:bs. tim:cd
+time          -0.923                                          
+base.gcf      -0.349  0.229                                   
+cda           -0.361  0.240  0.326                            
+age           -0.917  0.880  0.117  0.121                     
+time:base.gcf  0.304 -0.264 -0.871 -0.283 -0.101              
+time:cda       0.311 -0.272 -0.277 -0.872 -0.103  0.317       
+time:age       0.846 -0.934 -0.074 -0.076 -0.936  0.084  0.085
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-1.46355870 -0.45282217 -0.08648688  0.35347360  2.51322448 
+
+Number of Observations: 110
+Number of Groups: 
+           patient tooth %in% patient 
+                12                 55 </code></pre>
+</div>
+</div>
+</section>
+<section id="h7.1-es-necesario-el-intercepto-aleatorio-de-diente" class="level2">
+<h2 class="anchored" data-anchor-id="h7.1-es-necesario-el-intercepto-aleatorio-de-diente">8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.1</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(<span class="at">patient =</span> <span class="sc">~</span> time),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>fit, model7<span class="fl">.1</span>A.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model7.1.fit      1 13 873.1168 907.2415 -423.5584                        
+model7.1A.fit     2 12 882.2828 913.7825 -429.1414 1 vs 2 11.16599   8e-04</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>West divide el valor p por 2 porque se evalúa un componente de varianza en el límite del espacio paramétrico. Si es significativo → se retiene el intercepto aleatorio de diente.</p>
+</blockquote>
+</section>
+<section id="h7.2-varianza-residual-heterogénea-por-tiempo" class="level2">
+<h2 class="anchored" data-anchor-id="h7.2-varianza-residual-heterogénea-por-tiempo">9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.2</span>C.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> time),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>fit, model7<span class="fl">.2</span>C.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test   L.Ratio p-value
+model7.1.fit      1 13 873.1168 907.2415 -423.5584                         
+model7.2C.fit     2 14 874.1636 910.9132 -423.0818 1 vs 2 0.9532284  0.3289</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Si no es significativo → se mantiene varianza residual homogénea.</p>
+</blockquote>
+</section>
+<section id="h7.3-son-necesarias-las-interacciones-con-el-tiempo" class="level2">
+<h2 class="anchored" data-anchor-id="h7.3-son-necesarias-las-interacciones-con-el-tiempo">10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">1.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  model7.<span class="fl">1.</span>fit,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>ml.fit, model7.<span class="fl">3.</span>ml.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model7.1.ml.fit     1 13 869.6504 904.7567 -421.8252                        
+model7.3.ml.fit     2 10 865.4919 892.4967 -422.7460 1 vs 2 1.841453   0.606</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Si no es significativo → se eliminan las interacciones.</p>
+</blockquote>
+</section>
+<section id="resumen-de-comparación-de-modelos" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-comparación-de-modelos">11.🦷Resumen de comparación de modelos</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 38%">
+<col style="width: 20%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Comparación</th>
+<th>Componente evaluado</th>
+<th>Resultado</th>
+<th>Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7.1 vs 7.1A</td>
+<td>Intercepto aleatorio diente</td>
+<td>Significativo</td>
+<td>Mantener</td>
+</tr>
+<tr class="even">
+<td>7.1 vs 7.2C</td>
+<td>Varianza residual heterogénea</td>
+<td>No significativo</td>
+<td>No retener</td>
+</tr>
+<tr class="odd">
+<td>7.1 vs 7.3 (ML)</td>
+<td>Interacciones con tiempo</td>
+<td>No significativo</td>
+<td>Eliminar</td>
+</tr>
+<tr class="even">
+<td><strong>Modelo final</strong></td>
+<td>—</td>
+<td>—</td>
+<td><strong>Model 7.3</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modelo-final-model-7.3" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-final-model-7.3">12. 🦷Modelo final — Model 7.3</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">3.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: veneer_data 
+       AIC      BIC    logLik
+  861.8552 888.3948 -420.9276
+
+Random effects:
+ Formula: ~time | patient
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev    Corr  
+(Intercept) 22.912616 (Intr)
+time         6.472081 -0.947
+
+ Formula: ~1 | tooth %in% patient
+        (Intercept) Residual
+StdDev:    6.888895 6.990511
+
+Fixed effects:  gcf ~ time + base.gcf + cda + age 
+               Value Std.Error DF   t-value p-value
+(Intercept) 45.73859 12.554978 54  3.643064  0.0006
+time         0.30098  1.936866 54  0.155396  0.8771
+base.gcf    -0.01831  0.143309 41 -0.127784  0.8989
+cda         -0.32930  0.529251 41 -0.622205  0.5373
+age         -0.57739  0.213966 10 -2.698528  0.0224
+ Correlation: 
+         (Intr) time   bs.gcf cda   
+time     -0.520                     
+base.gcf -0.384 -0.005              
+cda      -0.400 -0.004  0.328       
+age      -0.755 -0.009  0.165  0.173
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-1.64978322 -0.49047890 -0.08906288  0.29452691  2.57342345 
+
+Number of Observations: 110
+Number of Groups: 
+           patient tooth %in% patient 
+                12                 55 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">intervals</span>(model7.<span class="fl">3.</span>fit, <span class="at">which =</span> <span class="st">"fixed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Approximate 95% confidence intervals
+
+ Fixed effects:
+                 lower        est.      upper
+(Intercept) 20.5673728 45.73858816 70.9098035
+time        -3.5822002  0.30098138  4.1841630
+base.gcf    -0.3077311 -0.01831259  0.2711059
+cda         -1.3981475 -0.32930286  0.7395418
+age         -1.0541381 -0.57739260 -0.1006471</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-de-efectos-fijos" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-de-efectos-fijos">13.🦷Interpretación de efectos fijos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Efectos fijos — Model 7.3 (REML)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Efecto</th>
+<th style="text-align: right;">Estimacion</th>
+<th style="text-align: right;">IC_inferior</th>
+<th style="text-align: right;">IC_superior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">45.739</td>
+<td style="text-align: right;">20.567</td>
+<td style="text-align: right;">70.910</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">time</td>
+<td style="text-align: left;">time</td>
+<td style="text-align: right;">0.301</td>
+<td style="text-align: right;">-3.582</td>
+<td style="text-align: right;">4.184</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base.gcf</td>
+<td style="text-align: left;">base.gcf</td>
+<td style="text-align: right;">-0.018</td>
+<td style="text-align: right;">-0.308</td>
+<td style="text-align: right;">0.271</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cda</td>
+<td style="text-align: left;">cda</td>
+<td style="text-align: right;">-0.329</td>
+<td style="text-align: right;">-1.398</td>
+<td style="text-align: right;">0.740</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">-0.577</td>
+<td style="text-align: right;">-1.054</td>
+<td style="text-align: right;">-0.101</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="componentes-de-varianza" class="level2">
+<h2 class="anchored" data-anchor-id="componentes-de-varianza">14.🦷Componentes de varianza</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(model7.<span class="fl">3.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Variance        StdDev    Corr  
+patient =   pdLogChol(time)                 
+(Intercept) 524.98799       22.912616 (Intr)
+time         41.88784        6.472081 -0.947
+tooth =     pdLogChol(1)                    
+(Intercept)  47.45687        6.888895       
+Residual     48.86724        6.990511       </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>El modelo final tiene:</p>
+<ul>
+<li><strong>Intercepto y pendiente de tiempo aleatorios</strong> a nivel de paciente — los pacientes difieren en su nivel esperado de GCF y en cómo cambian en el tiempo</li>
+<li><strong>Intercepto aleatorio</strong> a nivel de diente — los dientes dentro de un paciente también difieren entre sí</li>
+<li><strong>Varianza residual homogénea</strong> — no fue necesario permitir varianzas distintas entre 3 y 6 meses</li>
+</ul>
+</blockquote>
+</section>
+<section id="diagnósticos" class="level2">
+<h2 class="anchored" data-anchor-id="diagnósticos">15.🦷Diagnósticos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/diagnosticos-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/eblups-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level2">
+<h2 class="anchored" data-anchor-id="conclusiones">16.🦷Conclusiones</h2>
+<ul>
+<li>El GCF se modela longitudinalmente entre los 3 y 6 meses</li>
+<li>Las interacciones con el tiempo no fueron necesarias en el modelo final</li>
+<li>Los pacientes difieren en su nivel basal y en su tasa de cambio en el tiempo</li>
+<li>Los dientes dentro de un mismo paciente también difieren entre sí</li>
+<li>No fue necesario permitir varianza residual heterogénea entre tiempos</li>
+<li>Las interacciones con el tiempo no fueron significativas</li>
+<li>El <strong>Model 7.3</strong> es el modelo final con solo efectos principales fijos</li>
+</ul>
+<blockquote class="blockquote">
+<p>El modelo final es un modelo lineal mixto longitudinal agrupado de tres niveles, con interceptos y pendientes aleatorias de tiempo a nivel de paciente e interceptos aleatorios a nivel de diente.</p>
+</blockquote>
+<hr>
+</section>
+<section id="anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita" class="level2">
+<h2 class="anchored" data-anchor-id="anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita">Anexo técnico — Ejemplo de estructura residual con correlación explícita</h2>
+<p>Estos modelos intentan modelar la correlación residual entre las dos mediciones del mismo diente usando estructuras de correlación explícitas. Como solo hay <strong>dos tiempos</strong>, algunos parámetros quedan <strong>aliased</strong> (no identificables) con el intercepto aleatorio de diente.</p>
+<blockquote class="blockquote">
+<p>Este código es solo ilustrativo — puede generar advertencias o no converger. No forma parte del flujo principal de análisis.</p>
+</blockquote>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.2</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">correlation =</span> <span class="fu">corCompSymm</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> patient<span class="sc">/</span>tooth),</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7<span class="fl">.2</span>A.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: veneer_data 
+       AIC      BIC    logLik
+  875.1168 911.8664 -423.5584
+
+Random effects:
+ Formula: ~time | patient
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev    Corr  
+(Intercept) 23.566351 (Intr)
+time         6.687478 -0.95 
+
+ Formula: ~1 | tooth %in% patient
+        (Intercept) Residual
+StdDev:    6.846979 7.054632
+
+Correlation Structure: Compound symmetry
+ Formula: ~1 | patient/tooth 
+ Parameter estimate(s):
+        Rho 
+0.001556108 
+Fixed effects:  gcf ~ time + base.gcf + cda + age + time:base.gcf + time:cda +      time:age 
+                 Value Std.Error DF    t-value p-value
+(Intercept)   69.91694 28.398316 51  2.4620100  0.0172
+time          -6.01534  7.446267 51 -0.8078335  0.4229
+base.gcf      -0.31514  0.291660 41 -1.0805078  0.2862
+cda           -0.88241  1.082337 41 -0.8152815  0.4196
+age           -0.96961  0.607851 10 -1.5951394  0.1418
+time:base.gcf  0.06736  0.057690 51  1.1675966  0.2484
+time:cda       0.12583  0.218354 51  0.5762693  0.5670
+time:age       0.10903  0.165805 51  0.6575685  0.5138
+ Correlation: 
+              (Intr) time   bs.gcf cda    age    tm:bs. tim:cd
+time          -0.923                                          
+base.gcf      -0.349  0.229                                   
+cda           -0.361  0.240  0.326                            
+age           -0.917  0.880  0.117  0.121                     
+time:base.gcf  0.304 -0.264 -0.871 -0.283 -0.101              
+time:cda       0.311 -0.272 -0.277 -0.872 -0.103  0.317       
+time:age       0.846 -0.934 -0.074 -0.076 -0.936  0.084  0.085
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-1.46531161 -0.45272059 -0.08684404  0.35275599  2.51315718 
+
+Number of Observations: 110
+Number of Groups: 
+           patient tooth %in% patient 
+                12                 55 </code></pre>
+</div>
+</div>
+</section>
+<section id="anexo-técnico-comparación-con-lmer" class="level2">
+<h2 class="anchored" data-anchor-id="anexo-técnico-comparación-con-lmer">Anexo técnico — Comparación con lmer()</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Capacidad</th>
+<th>lme()</th>
+<th>lmer()</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Efectos aleatorios anidados</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>Varianza residual heterogénea</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr class="odd">
+<td>Estructuras de correlación residual</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    (time <span class="sc">|</span> patient) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> patient<span class="sc">:</span>tooth),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">3.</span>lmer)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparación de efectos fijos</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== lme() ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">fixef</span>(model7.<span class="fl">3.</span>fit), <span class="dv">4</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== lmer() ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">fixef</span>(model7.<span class="fl">3.</span>lmer), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 
 
 <!-- -->
@@ -674,13 +1400,357 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Longitudinal Clusters (Dental Veener)"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Próximamente</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Este ejemplo está en construcción.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Longitudinal Data in Clusters"</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "The Dental Veneer Example👄🦷 - West et al., Cap. 7 (p. 307)"</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Elena Lazo"</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 11-junio-2016</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WWGbook)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(veneer)</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>veneer_data <span class="ot">&lt;-</span> veneer <span class="sc">|&gt;</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="fu">factor</span>(patient),</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="fu">factor</span>(tooth),</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth2  =</span> <span class="fu">interaction</span>(patient, tooth, <span class="at">drop =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(time)))</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.🦷Problema de investigación</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>Se estudia el efecto de una restauración dental (veneer) sobre</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>el **índice de fluido crevicular gingival** (<span class="in">`gcf`</span>) medido a los</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>3 y 6 meses. Los dientes están anidados dentro de pacientes.</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Pregunta central:** ¿Cambia el GCF a lo largo del tiempo</span></span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; y difiere este cambio según las características basales del</span></span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; paciente y el diente, considerando la estructura jerárquica</span></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; de tres niveles?</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.🦷Diseño clustered longitudinal</span></span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>Este es un diseño de **tres niveles longitudinal**:</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Nivel 3 — paciente:** unidad de muestreo principal</span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Nivel 2 — diente dentro de paciente:** unidad de tratamiento</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Nivel 1 — tiempo dentro de diente:** medición repetida</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>    A[Paciente] --&gt; B[Diente <span class="dv">1</span>]</span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Diente <span class="dv">2</span>]</span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Diente k]</span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[GCF <span class="dv">3</span> meses]</span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[GCF <span class="dv">6</span> meses]</span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[GCF <span class="dv">3</span> meses]</span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>    C --&gt; H[GCF <span class="dv">6</span> meses]</span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3.🦷Estructura de los datos</span></span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r estructura}</span></span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(veneer_data)</span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(veneer_data<span class="sc">$</span>patient)</span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>veneer_data <span class="sc">|&gt;</span></span>
+<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(patient, tooth2) <span class="sc">|&gt;</span></span>
+<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(patient, <span class="at">name =</span> <span class="st">"dientes_por_paciente"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(dientes_por_paciente),</span>
+<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(dientes_por_paciente),</span>
+<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(dientes_por_paciente), <span class="dv">1</span>))</span>
+<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(veneer_data<span class="sc">$</span>time)</span>
+<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.🦷Variables</span></span>
+<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variable <span class="pp">|</span> Nivel <span class="pp">|</span> Tipo <span class="pp">|</span> Rol <span class="pp">|</span></span>
+<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|-------|------|-----|</span></span>
+<span id="cb28-88"><a href="#cb28-88" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`gcf`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> **Outcome** <span class="pp">|</span></span>
+<span id="cb28-89"><a href="#cb28-89" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`time`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> Tiempo (3 o 6 meses) <span class="pp">|</span></span>
+<span id="cb28-90"><a href="#cb28-90" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tooth`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Identificador <span class="pp">|</span> Diente <span class="pp">|</span></span>
+<span id="cb28-91"><a href="#cb28-91" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`base.gcf`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — GCF basal <span class="pp">|</span></span>
+<span id="cb28-92"><a href="#cb28-92" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`cda`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — diferencia de contorno <span class="pp">|</span></span>
+<span id="cb28-93"><a href="#cb28-93" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`patient`</span> <span class="pp">|</span> 3 <span class="pp">|</span> Identificador <span class="pp">|</span> Paciente <span class="pp">|</span></span>
+<span id="cb28-94"><a href="#cb28-94" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`age`</span> <span class="pp">|</span> 3 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — edad del paciente <span class="pp">|</span></span>
+<span id="cb28-95"><a href="#cb28-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-96"><a href="#cb28-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5.🦷Exploración descriptiva</span></span>
+<span id="cb28-97"><a href="#cb28-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-98"><a href="#cb28-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig1, echo=FALSE}</span></span>
+<span id="cb28-99"><a href="#cb28-99" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(veneer_data,</span>
+<span id="cb28-100"><a href="#cb28-100" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(time), <span class="at">y =</span> gcf,</span>
+<span id="cb28-101"><a href="#cb28-101" aria-hidden="true" tabindex="-1"></a>           <span class="at">group =</span> tooth2,</span>
+<span id="cb28-102"><a href="#cb28-102" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="fu">factor</span>(patient))) <span class="sc">+</span></span>
+<span id="cb28-103"><a href="#cb28-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb28-104"><a href="#cb28-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb28-105"><a href="#cb28-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trayectorias de GCF por diente"</span>,</span>
+<span id="cb28-106"><a href="#cb28-106" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Tiempo (meses)"</span>, <span class="at">y =</span> <span class="st">"GCF"</span>) <span class="sc">+</span></span>
+<span id="cb28-107"><a href="#cb28-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb28-108"><a href="#cb28-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb28-109"><a href="#cb28-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-110"><a href="#cb28-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-111"><a href="#cb28-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, echo=FALSE}</span></span>
+<span id="cb28-112"><a href="#cb28-112" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(veneer_data,</span>
+<span id="cb28-113"><a href="#cb28-113" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(time), <span class="at">y =</span> gcf)) <span class="sc">+</span></span>
+<span id="cb28-114"><a href="#cb28-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"#8e44ad"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb28-115"><a href="#cb28-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribución de GCF por tiempo"</span>,</span>
+<span id="cb28-116"><a href="#cb28-116" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Tiempo (meses)"</span>, <span class="at">y =</span> <span class="st">"GCF"</span>) <span class="sc">+</span></span>
+<span id="cb28-117"><a href="#cb28-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb28-118"><a href="#cb28-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-119"><a href="#cb28-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-120"><a href="#cb28-120" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6.🦷Estrategia top-down</span></span>
+<span id="cb28-121"><a href="#cb28-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-124"><a href="#cb28-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb28-125"><a href="#cb28-125" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb28-126"><a href="#cb28-126" aria-hidden="true" tabindex="-1"></a>    A[Model <span class="fl">7.1</span>\nMedia cargada\nPaciente + diente aleatorios] --&gt; B{H7.<span class="dv">1</span>\n¿Intercepto aleatorio de diente?}</span>
+<span id="cb28-127"><a href="#cb28-127" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Sí| C{H7.<span class="dv">2</span>\n¿Varianza residual heterogénea?}</span>
+<span id="cb28-128"><a href="#cb28-128" aria-hidden="true" tabindex="-1"></a>    C --&gt;|No| D{H7.<span class="dv">3</span>\n¿Interacciones con el tiempo?}</span>
+<span id="cb28-129"><a href="#cb28-129" aria-hidden="true" tabindex="-1"></a>    D --&gt;|No| E[Model <span class="fl">7.3</span> — Modelo Final]</span>
+<span id="cb28-130"><a href="#cb28-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-131"><a href="#cb28-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-132"><a href="#cb28-132" aria-hidden="true" tabindex="-1"></a><span class="fu">## 7.🦷Model 7.1: Modelo cargado</span></span>
+<span id="cb28-133"><a href="#cb28-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-134"><a href="#cb28-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model71}</span></span>
+<span id="cb28-135"><a href="#cb28-135" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-136"><a href="#cb28-136" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb28-137"><a href="#cb28-137" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb28-138"><a href="#cb28-138" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb28-139"><a href="#cb28-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb28-140"><a href="#cb28-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb28-141"><a href="#cb28-141" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-142"><a href="#cb28-142" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb28-143"><a href="#cb28-143" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">1.</span>fit)</span>
+<span id="cb28-144"><a href="#cb28-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-145"><a href="#cb28-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-146"><a href="#cb28-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## 8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?</span></span>
+<span id="cb28-147"><a href="#cb28-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-148"><a href="#cb28-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h71}</span></span>
+<span id="cb28-149"><a href="#cb28-149" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.1</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-150"><a href="#cb28-150" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb28-151"><a href="#cb28-151" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb28-152"><a href="#cb28-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(<span class="at">patient =</span> <span class="sc">~</span> time),</span>
+<span id="cb28-153"><a href="#cb28-153" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-154"><a href="#cb28-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb28-155"><a href="#cb28-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-156"><a href="#cb28-156" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>fit, model7<span class="fl">.1</span>A.fit)</span>
+<span id="cb28-157"><a href="#cb28-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-158"><a href="#cb28-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-159"><a href="#cb28-159" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; West divide el valor p por 2 porque se evalúa un componente</span></span>
+<span id="cb28-160"><a href="#cb28-160" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; de varianza en el límite del espacio paramétrico.</span></span>
+<span id="cb28-161"><a href="#cb28-161" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Si es significativo → se retiene el intercepto aleatorio de diente.</span></span>
+<span id="cb28-162"><a href="#cb28-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-163"><a href="#cb28-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## 9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?</span></span>
+<span id="cb28-164"><a href="#cb28-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-165"><a href="#cb28-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h72}</span></span>
+<span id="cb28-166"><a href="#cb28-166" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.2</span>C.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-167"><a href="#cb28-167" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb28-168"><a href="#cb28-168" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb28-169"><a href="#cb28-169" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb28-170"><a href="#cb28-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb28-171"><a href="#cb28-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb28-172"><a href="#cb28-172" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> time),</span>
+<span id="cb28-173"><a href="#cb28-173" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-174"><a href="#cb28-174" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb28-175"><a href="#cb28-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-176"><a href="#cb28-176" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>fit, model7<span class="fl">.2</span>C.fit)</span>
+<span id="cb28-177"><a href="#cb28-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-178"><a href="#cb28-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-179"><a href="#cb28-179" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Si no es significativo → se mantiene varianza residual homogénea.</span></span>
+<span id="cb28-180"><a href="#cb28-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-181"><a href="#cb28-181" aria-hidden="true" tabindex="-1"></a><span class="fu">## 10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?</span></span>
+<span id="cb28-182"><a href="#cb28-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-183"><a href="#cb28-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h73}</span></span>
+<span id="cb28-184"><a href="#cb28-184" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">1.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb28-185"><a href="#cb28-185" aria-hidden="true" tabindex="-1"></a>  model7.<span class="fl">1.</span>fit,</span>
+<span id="cb28-186"><a href="#cb28-186" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb28-187"><a href="#cb28-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-188"><a href="#cb28-188" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-189"><a href="#cb28-189" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age,</span>
+<span id="cb28-190"><a href="#cb28-190" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb28-191"><a href="#cb28-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb28-192"><a href="#cb28-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb28-193"><a href="#cb28-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-194"><a href="#cb28-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb28-195"><a href="#cb28-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-196"><a href="#cb28-196" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model7.<span class="fl">1.</span>ml.fit, model7.<span class="fl">3.</span>ml.fit)</span>
+<span id="cb28-197"><a href="#cb28-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-198"><a href="#cb28-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-199"><a href="#cb28-199" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Si no es significativo → se eliminan las interacciones.</span></span>
+<span id="cb28-200"><a href="#cb28-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-201"><a href="#cb28-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## 11.🦷Resumen de comparación de modelos</span></span>
+<span id="cb28-202"><a href="#cb28-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-203"><a href="#cb28-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Comparación <span class="pp">|</span> Componente evaluado <span class="pp">|</span> Resultado <span class="pp">|</span> Decisión <span class="pp">|</span></span>
+<span id="cb28-204"><a href="#cb28-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------------|---------------------|-----------|----------|</span></span>
+<span id="cb28-205"><a href="#cb28-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 7.1 vs 7.1A <span class="pp">|</span> Intercepto aleatorio diente <span class="pp">|</span> Significativo <span class="pp">|</span> Mantener <span class="pp">|</span></span>
+<span id="cb28-206"><a href="#cb28-206" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 7.1 vs 7.2C <span class="pp">|</span> Varianza residual heterogénea <span class="pp">|</span> No significativo <span class="pp">|</span> No retener <span class="pp">|</span></span>
+<span id="cb28-207"><a href="#cb28-207" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 7.1 vs 7.3 (ML) <span class="pp">|</span> Interacciones con tiempo <span class="pp">|</span> No significativo <span class="pp">|</span> Eliminar <span class="pp">|</span></span>
+<span id="cb28-208"><a href="#cb28-208" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Modelo final** | — | — | **Model 7.3** <span class="pp">|</span></span>
+<span id="cb28-209"><a href="#cb28-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-210"><a href="#cb28-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## 12. 🦷Modelo final — Model 7.3</span></span>
+<span id="cb28-211"><a href="#cb28-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-212"><a href="#cb28-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r modelo_final}</span></span>
+<span id="cb28-213"><a href="#cb28-213" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-214"><a href="#cb28-214" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age,</span>
+<span id="cb28-215"><a href="#cb28-215" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb28-216"><a href="#cb28-216" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb28-217"><a href="#cb28-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb28-218"><a href="#cb28-218" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-219"><a href="#cb28-219" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb28-220"><a href="#cb28-220" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">3.</span>fit)</span>
+<span id="cb28-221"><a href="#cb28-221" aria-hidden="true" tabindex="-1"></a><span class="fu">intervals</span>(model7.<span class="fl">3.</span>fit, <span class="at">which =</span> <span class="st">"fixed"</span>)</span>
+<span id="cb28-222"><a href="#cb28-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-223"><a href="#cb28-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-224"><a href="#cb28-224" aria-hidden="true" tabindex="-1"></a><span class="fu">## 13.🦷Interpretación de efectos fijos</span></span>
+<span id="cb28-225"><a href="#cb28-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-226"><a href="#cb28-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tabla_efectos, echo=FALSE}</span></span>
+<span id="cb28-227"><a href="#cb28-227" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">intervals</span>(model7.<span class="fl">3.</span>fit, <span class="at">which =</span> <span class="st">"fixed"</span>)<span class="sc">$</span>fixed</span>
+<span id="cb28-228"><a href="#cb28-228" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb28-229"><a href="#cb28-229" aria-hidden="true" tabindex="-1"></a>  <span class="at">Efecto      =</span> <span class="fu">rownames</span>(coefs),</span>
+<span id="cb28-230"><a href="#cb28-230" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimacion  =</span> <span class="fu">round</span>(coefs[, <span class="st">"est."</span>], <span class="dv">3</span>),</span>
+<span id="cb28-231"><a href="#cb28-231" aria-hidden="true" tabindex="-1"></a>  <span class="at">IC_inferior =</span> <span class="fu">round</span>(coefs[, <span class="st">"lower"</span>], <span class="dv">3</span>),</span>
+<span id="cb28-232"><a href="#cb28-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">IC_superior =</span> <span class="fu">round</span>(coefs[, <span class="st">"upper"</span>], <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb28-233"><a href="#cb28-233" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Efectos fijos — Model 7.3 (REML)"</span>)</span>
+<span id="cb28-234"><a href="#cb28-234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-235"><a href="#cb28-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-236"><a href="#cb28-236" aria-hidden="true" tabindex="-1"></a><span class="fu">## 14.🦷Componentes de varianza</span></span>
+<span id="cb28-237"><a href="#cb28-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-238"><a href="#cb28-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r varianza}</span></span>
+<span id="cb28-239"><a href="#cb28-239" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(model7.<span class="fl">3.</span>fit)</span>
+<span id="cb28-240"><a href="#cb28-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-241"><a href="#cb28-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-242"><a href="#cb28-242" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; El modelo final tiene:</span></span>
+<span id="cb28-243"><a href="#cb28-243" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
+<span id="cb28-244"><a href="#cb28-244" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Intercepto y pendiente de tiempo aleatorios** a nivel</span></span>
+<span id="cb28-245"><a href="#cb28-245" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   de paciente — los pacientes difieren en su nivel esperado</span></span>
+<span id="cb28-246"><a href="#cb28-246" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   de GCF y en cómo cambian en el tiempo</span></span>
+<span id="cb28-247"><a href="#cb28-247" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Intercepto aleatorio** a nivel de diente — los dientes</span></span>
+<span id="cb28-248"><a href="#cb28-248" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   dentro de un paciente también difieren entre sí</span></span>
+<span id="cb28-249"><a href="#cb28-249" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Varianza residual homogénea** — no fue necesario</span></span>
+<span id="cb28-250"><a href="#cb28-250" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   permitir varianzas distintas entre 3 y 6 meses</span></span>
+<span id="cb28-251"><a href="#cb28-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-252"><a href="#cb28-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## 15.🦷Diagnósticos</span></span>
+<span id="cb28-253"><a href="#cb28-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-254"><a href="#cb28-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnosticos, echo=FALSE}</span></span>
+<span id="cb28-255"><a href="#cb28-255" aria-hidden="true" tabindex="-1"></a>residuos_norm <span class="ot">&lt;-</span> <span class="fu">residuals</span>(model7.<span class="fl">3.</span>fit, <span class="at">type =</span> <span class="st">"normalized"</span>)</span>
+<span id="cb28-256"><a href="#cb28-256" aria-hidden="true" tabindex="-1"></a>ajustados     <span class="ot">&lt;-</span> <span class="fu">fitted</span>(model7.<span class="fl">3.</span>fit, <span class="at">level =</span> <span class="dv">2</span>)</span>
+<span id="cb28-257"><a href="#cb28-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-258"><a href="#cb28-258" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb28-259"><a href="#cb28-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-260"><a href="#cb28-260" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ajustados, residuos_norm,</span>
+<span id="cb28-261"><a href="#cb28-261" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Valores ajustados"</span>,</span>
+<span id="cb28-262"><a href="#cb28-262" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Residuos normalizados"</span>,</span>
+<span id="cb28-263"><a href="#cb28-263" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Residuos vs ajustados"</span>)</span>
+<span id="cb28-264"><a href="#cb28-264" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb28-265"><a href="#cb28-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-266"><a href="#cb28-266" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(residuos_norm, <span class="at">main =</span> <span class="st">"Q-Q plot residuos"</span>)</span>
+<span id="cb28-267"><a href="#cb28-267" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(residuos_norm)</span>
+<span id="cb28-268"><a href="#cb28-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-269"><a href="#cb28-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-270"><a href="#cb28-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eblups, echo=FALSE}</span></span>
+<span id="cb28-271"><a href="#cb28-271" aria-hidden="true" tabindex="-1"></a>re_patient <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model7.<span class="fl">3.</span>fit, <span class="at">level =</span> <span class="dv">1</span>)</span>
+<span id="cb28-272"><a href="#cb28-272" aria-hidden="true" tabindex="-1"></a>re_tooth   <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model7.<span class="fl">3.</span>fit, <span class="at">level =</span> <span class="dv">2</span>)</span>
+<span id="cb28-273"><a href="#cb28-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-274"><a href="#cb28-274" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb28-275"><a href="#cb28-275" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_patient[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs paciente"</span>)</span>
+<span id="cb28-276"><a href="#cb28-276" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_patient[, <span class="dv">1</span>])</span>
+<span id="cb28-277"><a href="#cb28-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-278"><a href="#cb28-278" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_tooth[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs diente"</span>)</span>
+<span id="cb28-279"><a href="#cb28-279" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_tooth[, <span class="dv">1</span>])</span>
+<span id="cb28-280"><a href="#cb28-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-281"><a href="#cb28-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-282"><a href="#cb28-282" aria-hidden="true" tabindex="-1"></a><span class="fu">## 16.🦷Conclusiones</span></span>
+<span id="cb28-283"><a href="#cb28-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-284"><a href="#cb28-284" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El GCF se modela longitudinalmente entre los 3 y 6 meses</span>
+<span id="cb28-285"><a href="#cb28-285" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Las interacciones con el tiempo no fueron necesarias en </span>
+<span id="cb28-286"><a href="#cb28-286" aria-hidden="true" tabindex="-1"></a>  el modelo final</span>
+<span id="cb28-287"><a href="#cb28-287" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Los pacientes difieren en su nivel basal y en su tasa</span>
+<span id="cb28-288"><a href="#cb28-288" aria-hidden="true" tabindex="-1"></a>  de cambio en el tiempo</span>
+<span id="cb28-289"><a href="#cb28-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Los dientes dentro de un mismo paciente también difieren</span>
+<span id="cb28-290"><a href="#cb28-290" aria-hidden="true" tabindex="-1"></a>  entre sí</span>
+<span id="cb28-291"><a href="#cb28-291" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No fue necesario permitir varianza residual heterogénea</span>
+<span id="cb28-292"><a href="#cb28-292" aria-hidden="true" tabindex="-1"></a>  entre tiempos</span>
+<span id="cb28-293"><a href="#cb28-293" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Las interacciones con el tiempo no fueron significativas</span>
+<span id="cb28-294"><a href="#cb28-294" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El **Model 7.3** es el modelo final con solo efectos</span>
+<span id="cb28-295"><a href="#cb28-295" aria-hidden="true" tabindex="-1"></a>  principales fijos</span>
+<span id="cb28-296"><a href="#cb28-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-297"><a href="#cb28-297" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; El modelo final es un modelo lineal mixto longitudinal</span></span>
+<span id="cb28-298"><a href="#cb28-298" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; agrupado de tres niveles, con interceptos y pendientes</span></span>
+<span id="cb28-299"><a href="#cb28-299" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; aleatorias de tiempo a nivel de paciente e interceptos</span></span>
+<span id="cb28-300"><a href="#cb28-300" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; aleatorios a nivel de diente.</span></span>
+<span id="cb28-301"><a href="#cb28-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-302"><a href="#cb28-302" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb28-303"><a href="#cb28-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-304"><a href="#cb28-304" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anexo técnico — Ejemplo de estructura residual con correlación explícita</span></span>
+<span id="cb28-305"><a href="#cb28-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-306"><a href="#cb28-306" aria-hidden="true" tabindex="-1"></a>Estos modelos intentan modelar la correlación residual entre</span>
+<span id="cb28-307"><a href="#cb28-307" aria-hidden="true" tabindex="-1"></a>las dos mediciones del mismo diente usando estructuras de</span>
+<span id="cb28-308"><a href="#cb28-308" aria-hidden="true" tabindex="-1"></a>correlación explícitas. Como solo hay **dos tiempos**, algunos</span>
+<span id="cb28-309"><a href="#cb28-309" aria-hidden="true" tabindex="-1"></a>parámetros quedan **aliased** (no identificables) con el</span>
+<span id="cb28-310"><a href="#cb28-310" aria-hidden="true" tabindex="-1"></a>intercepto aleatorio de diente.</span>
+<span id="cb28-311"><a href="#cb28-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-312"><a href="#cb28-312" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Este código es solo ilustrativo — puede generar advertencias</span></span>
+<span id="cb28-313"><a href="#cb28-313" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; o no converger. No forma parte del flujo principal de análisis.</span></span>
+<span id="cb28-314"><a href="#cb28-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-315"><a href="#cb28-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r modelo72A, error=TRUE, warning=TRUE}</span></span>
+<span id="cb28-316"><a href="#cb28-316" aria-hidden="true" tabindex="-1"></a>model7<span class="fl">.2</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb28-317"><a href="#cb28-317" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb28-318"><a href="#cb28-318" aria-hidden="true" tabindex="-1"></a>    time<span class="sc">:</span>base.gcf <span class="sc">+</span> time<span class="sc">:</span>cda <span class="sc">+</span> time<span class="sc">:</span>age,</span>
+<span id="cb28-319"><a href="#cb28-319" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="fu">list</span>(</span>
+<span id="cb28-320"><a href="#cb28-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">patient =</span> <span class="sc">~</span> time,</span>
+<span id="cb28-321"><a href="#cb28-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">tooth   =</span> <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb28-322"><a href="#cb28-322" aria-hidden="true" tabindex="-1"></a>  <span class="at">correlation =</span> <span class="fu">corCompSymm</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> patient<span class="sc">/</span>tooth),</span>
+<span id="cb28-323"><a href="#cb28-323" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-324"><a href="#cb28-324" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb28-325"><a href="#cb28-325" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7<span class="fl">.2</span>A.fit)</span>
+<span id="cb28-326"><a href="#cb28-326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb28-327"><a href="#cb28-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-328"><a href="#cb28-328" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anexo técnico — Comparación con lmer()</span></span>
+<span id="cb28-329"><a href="#cb28-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-330"><a href="#cb28-330" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Capacidad <span class="pp">|</span> lme() <span class="pp">|</span> lmer() <span class="pp">|</span></span>
+<span id="cb28-331"><a href="#cb28-331" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----------|-------|--------|</span></span>
+<span id="cb28-332"><a href="#cb28-332" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Efectos aleatorios anidados <span class="pp">|</span> ✅ <span class="pp">|</span> ✅ <span class="pp">|</span></span>
+<span id="cb28-333"><a href="#cb28-333" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Varianza residual heterogénea <span class="pp">|</span> ✅ <span class="pp">|</span> ❌ <span class="pp">|</span></span>
+<span id="cb28-334"><a href="#cb28-334" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Estructuras de correlación residual <span class="pp">|</span> ✅ <span class="pp">|</span> ❌ <span class="pp">|</span></span>
+<span id="cb28-335"><a href="#cb28-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-336"><a href="#cb28-336" aria-hidden="true" tabindex="-1"></a><span class="in">```{r lmer_anexo, eval=FALSE}</span></span>
+<span id="cb28-337"><a href="#cb28-337" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb28-338"><a href="#cb28-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-339"><a href="#cb28-339" aria-hidden="true" tabindex="-1"></a>model7.<span class="fl">3.</span>lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb28-340"><a href="#cb28-340" aria-hidden="true" tabindex="-1"></a>  gcf <span class="sc">~</span> time <span class="sc">+</span> base.gcf <span class="sc">+</span> cda <span class="sc">+</span> age <span class="sc">+</span></span>
+<span id="cb28-341"><a href="#cb28-341" aria-hidden="true" tabindex="-1"></a>    (time <span class="sc">|</span> patient) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> patient<span class="sc">:</span>tooth),</span>
+<span id="cb28-342"><a href="#cb28-342" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> veneer_data,</span>
+<span id="cb28-343"><a href="#cb28-343" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb28-344"><a href="#cb28-344" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-345"><a href="#cb28-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-346"><a href="#cb28-346" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model7.<span class="fl">3.</span>lmer)</span>
+<span id="cb28-347"><a href="#cb28-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-348"><a href="#cb28-348" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparación de efectos fijos</span></span>
+<span id="cb28-349"><a href="#cb28-349" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== lme() ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-350"><a href="#cb28-350" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">fixef</span>(model7.<span class="fl">3.</span>fit), <span class="dv">4</span>)</span>
+<span id="cb28-351"><a href="#cb28-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-352"><a href="#cb28-352" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== lmer() ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-353"><a href="#cb28-353" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">fixef</span>(model7.<span class="fl">3.</span>lmer), <span class="dv">4</span>)</span>
+<span id="cb28-354"><a href="#cb28-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

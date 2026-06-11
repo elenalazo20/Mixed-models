@@ -93,9 +93,9 @@
   {
     "objectID": "longitudinal-clusters/index.html",
     "href": "longitudinal-clusters/index.html",
-    "title": "Longitudinal Clusters (Dental Veener)",
+    "title": "Longitudinal Data in Clusters",
     "section": "",
-    "text": "Este ejemplo está en construcción."
+    "text": "Se estudia el efecto de una restauración dental (veneer) sobre el índice de fluido crevicular gingival (gcf) medido a los 3 y 6 meses. Los dientes están anidados dentro de pacientes.\n\nPregunta central: ¿Cambia el GCF a lo largo del tiempo y difiere este cambio según las características basales del paciente y el diente, considerando la estructura jerárquica de tres niveles?"
   },
   {
     "objectID": "longitudinal-clusters/index.html#próximamente",
@@ -831,5 +831,131 @@
     "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
     "section": "18.🧠Conclusiones",
     "text": "18.🧠Conclusiones\n\nEl VSAE crece con la edad siguiendo una trayectoria cuadrática\nLa tasa de crecimiento lineal difiere entre grupos — los grupos 1 y 2 crecen a ritmos distintos que el grupo 3\nLa curvatura es común para todos los grupos\nLos niños no difieren en su VSAE inicial a los 2 años, pero sí en cómo evolucionan\nEl Model 6.3 captura esta estructura con pendientes lineal y cuadrática aleatorias por niño\n\n\nWest selecciona un modelo sin intercepto aleatorio pero con pendientes lineal y cuadrática aleatorias, porque la variabilidad inicial era prácticamente nula, mientras que las trayectorias posteriores sí variaban entre niños."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#problema-de-investigación",
+    "href": "longitudinal-clusters/index.html#problema-de-investigación",
+    "title": "Longitudinal Data in Clusters",
+    "section": "",
+    "text": "Se estudia el efecto de una restauración dental (veneer) sobre el índice de fluido crevicular gingival (gcf) medido a los 3 y 6 meses. Los dientes están anidados dentro de pacientes.\n\nPregunta central: ¿Cambia el GCF a lo largo del tiempo y difiere este cambio según las características basales del paciente y el diente, considerando la estructura jerárquica de tres niveles?"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#diseño-clustered-longitudinal",
+    "href": "longitudinal-clusters/index.html#diseño-clustered-longitudinal",
+    "title": "Longitudinal Data in Clusters",
+    "section": "2.🦷Diseño clustered longitudinal",
+    "text": "2.🦷Diseño clustered longitudinal\nEste es un diseño de tres niveles longitudinal:\n\nNivel 3 — paciente: unidad de muestreo principal\nNivel 2 — diente dentro de paciente: unidad de tratamiento\nNivel 1 — tiempo dentro de diente: medición repetida\n\n\n\nCode\nflowchart TD\n    A[Paciente] --&gt; B[Diente 1]\n    A --&gt; C[Diente 2]\n    A --&gt; D[Diente k]\n    B --&gt; E[GCF 3 meses]\n    B --&gt; F[GCF 6 meses]\n    C --&gt; G[GCF 3 meses]\n    C --&gt; H[GCF 6 meses]\n\n\n\n\n\nflowchart TD\n    A[Paciente] --&gt; B[Diente 1]\n    A --&gt; C[Diente 2]\n    A --&gt; D[Diente k]\n    B --&gt; E[GCF 3 meses]\n    B --&gt; F[GCF 6 meses]\n    C --&gt; G[GCF 3 meses]\n    C --&gt; H[GCF 6 meses]"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#estructura-de-los-datos",
+    "href": "longitudinal-clusters/index.html#estructura-de-los-datos",
+    "title": "Longitudinal Data in Clusters",
+    "section": "3.🦷Estructura de los datos",
+    "text": "3.🦷Estructura de los datos\n\n\nCode\nnrow(veneer_data)\n\n\n[1] 110\n\n\nCode\nn_distinct(veneer_data$patient)\n\n\n[1] 12\n\n\nCode\nveneer_data |&gt;\n  distinct(patient, tooth2) |&gt;\n  count(patient, name = \"dientes_por_paciente\") |&gt;\n  summarise(\n    min   = min(dientes_por_paciente),\n    max   = max(dientes_por_paciente),\n    media = round(mean(dientes_por_paciente), 1))\n\n\n  min max media\n1   1   6   4.6\n\n\nCode\ntable(veneer_data$time)\n\n\n\n 3  6 \n55 55"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#variables",
+    "href": "longitudinal-clusters/index.html#variables",
+    "title": "Longitudinal Data in Clusters",
+    "section": "4.🦷Variables",
+    "text": "4.🦷Variables\n\n\n\nVariable\nNivel\nTipo\nRol\n\n\n\n\ngcf\n1\nContinua\nOutcome\n\n\ntime\n1\nContinua\nTiempo (3 o 6 meses)\n\n\ntooth\n2\nIdentificador\nDiente\n\n\nbase.gcf\n2\nContinua\nCovariable — GCF basal\n\n\ncda\n2\nContinua\nCovariable — diferencia de contorno\n\n\npatient\n3\nIdentificador\nPaciente\n\n\nage\n3\nContinua\nCovariable — edad del paciente"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#exploración-descriptiva",
+    "href": "longitudinal-clusters/index.html#exploración-descriptiva",
+    "title": "Longitudinal Data in Clusters",
+    "section": "5.🦷Exploración descriptiva",
+    "text": "5.🦷Exploración descriptiva"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#estrategia-top-down",
+    "href": "longitudinal-clusters/index.html#estrategia-top-down",
+    "title": "Longitudinal Data in Clusters",
+    "section": "6.🦷Estrategia top-down",
+    "text": "6.🦷Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Model 7.1\\nMedia cargada\\nPaciente + diente aleatorios] --&gt; B{H7.1\\n¿Intercepto aleatorio de diente?}\n    B --&gt;|Sí| C{H7.2\\n¿Varianza residual heterogénea?}\n    C --&gt;|No| D{H7.3\\n¿Interacciones con el tiempo?}\n    D --&gt;|No| E[Model 7.3 — Modelo Final]\n\n\n\n\n\nflowchart TD\n    A[Model 7.1\\nMedia cargada\\nPaciente + diente aleatorios] --&gt; B{H7.1\\n¿Intercepto aleatorio de diente?}\n    B --&gt;|Sí| C{H7.2\\n¿Varianza residual heterogénea?}\n    C --&gt;|No| D{H7.3\\n¿Interacciones con el tiempo?}\n    D --&gt;|No| E[Model 7.3 — Modelo Final]"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#model-7.1-modelo-cargado",
+    "href": "longitudinal-clusters/index.html#model-7.1-modelo-cargado",
+    "title": "Longitudinal Data in Clusters",
+    "section": "7.🦷Model 7.1: Modelo cargado",
+    "text": "7.🦷Model 7.1: Modelo cargado\n\n\nCode\nmodel7.1.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age +\n    time:base.gcf + time:cda + time:age,\n  random = list(\n    patient = ~ time,\n    tooth   = ~ 1),\n  data = veneer_data,\n  method = \"REML\")\nsummary(model7.1.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: veneer_data \n       AIC      BIC    logLik\n  873.1168 907.2415 -423.5584\n\nRandom effects:\n Formula: ~time | patient\n Structure: General positive-definite, Log-Cholesky parametrization\n            StdDev    Corr  \n(Intercept) 23.566684 (Intr)\ntime         6.687548 -0.95 \n\n Formula: ~1 | tooth %in% patient\n        (Intercept) Residual\nStdDev:    6.852759 7.049071\n\nFixed effects:  gcf ~ time + base.gcf + cda + age + time:base.gcf + time:cda +      time:age \n                 Value Std.Error DF    t-value p-value\n(Intercept)   69.91682 28.398562 51  2.4619844  0.0172\ntime          -6.01532  7.446321 51 -0.8078238  0.4229\nbase.gcf      -0.31514  0.291658 41 -1.0805151  0.2862\ncda           -0.88240  1.082331 41 -0.8152742  0.4196\nage           -0.96960  0.607858 10 -1.5951183  0.1418\ntime:base.gcf  0.06736  0.057690 51  1.1676068  0.2484\ntime:cda       0.12583  0.218352 51  0.5762660  0.5670\ntime:age       0.10903  0.165806 51  0.6575600  0.5138\n Correlation: \n              (Intr) time   bs.gcf cda    age    tm:bs. tim:cd\ntime          -0.923                                          \nbase.gcf      -0.349  0.229                                   \ncda           -0.361  0.240  0.326                            \nage           -0.917  0.880  0.117  0.121                     \ntime:base.gcf  0.304 -0.264 -0.871 -0.283 -0.101              \ntime:cda       0.311 -0.272 -0.277 -0.872 -0.103  0.317       \ntime:age       0.846 -0.934 -0.074 -0.076 -0.936  0.084  0.085\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-1.46355870 -0.45282217 -0.08648688  0.35347360  2.51322448 \n\nNumber of Observations: 110\nNumber of Groups: \n           patient tooth %in% patient \n                12                 55"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#h7.1-es-necesario-el-intercepto-aleatorio-de-diente",
+    "href": "longitudinal-clusters/index.html#h7.1-es-necesario-el-intercepto-aleatorio-de-diente",
+    "title": "Longitudinal Data in Clusters",
+    "section": "8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?",
+    "text": "8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?\n\n\nCode\nmodel7.1A.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age +\n    time:base.gcf + time:cda + time:age,\n  random = list(patient = ~ time),\n  data = veneer_data,\n  method = \"REML\")\n\nanova(model7.1.fit, model7.1A.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel7.1.fit      1 13 873.1168 907.2415 -423.5584                        \nmodel7.1A.fit     2 12 882.2828 913.7825 -429.1414 1 vs 2 11.16599   8e-04\n\n\n\nWest divide el valor p por 2 porque se evalúa un componente de varianza en el límite del espacio paramétrico. Si es significativo → se retiene el intercepto aleatorio de diente."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#h7.2-varianza-residual-heterogénea-por-tiempo",
+    "href": "longitudinal-clusters/index.html#h7.2-varianza-residual-heterogénea-por-tiempo",
+    "title": "Longitudinal Data in Clusters",
+    "section": "9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?",
+    "text": "9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?\n\n\nCode\nmodel7.2C.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age +\n    time:base.gcf + time:cda + time:age,\n  random = list(\n    patient = ~ time,\n    tooth   = ~ 1),\n  weights = varIdent(form = ~ 1 | time),\n  data = veneer_data,\n  method = \"REML\")\n\nanova(model7.1.fit, model7.2C.fit)\n\n\n              Model df      AIC      BIC    logLik   Test   L.Ratio p-value\nmodel7.1.fit      1 13 873.1168 907.2415 -423.5584                         \nmodel7.2C.fit     2 14 874.1636 910.9132 -423.0818 1 vs 2 0.9532284  0.3289\n\n\n\nSi no es significativo → se mantiene varianza residual homogénea."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#h7.3-son-necesarias-las-interacciones-con-el-tiempo",
+    "href": "longitudinal-clusters/index.html#h7.3-son-necesarias-las-interacciones-con-el-tiempo",
+    "title": "Longitudinal Data in Clusters",
+    "section": "10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?",
+    "text": "10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?\n\n\nCode\nmodel7.1.ml.fit &lt;- update(\n  model7.1.fit,\n  method = \"ML\")\n\nmodel7.3.ml.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age,\n  random = list(\n    patient = ~ time,\n    tooth   = ~ 1),\n  data = veneer_data,\n  method = \"ML\")\n\nanova(model7.1.ml.fit, model7.3.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel7.1.ml.fit     1 13 869.6504 904.7567 -421.8252                        \nmodel7.3.ml.fit     2 10 865.4919 892.4967 -422.7460 1 vs 2 1.841453   0.606\n\n\n\nSi no es significativo → se eliminan las interacciones."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#resumen-de-comparación-de-modelos",
+    "href": "longitudinal-clusters/index.html#resumen-de-comparación-de-modelos",
+    "title": "Longitudinal Data in Clusters",
+    "section": "11.🦷Resumen de comparación de modelos",
+    "text": "11.🦷Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n7.1 vs 7.1A\nIntercepto aleatorio diente\nSignificativo\nMantener\n\n\n7.1 vs 7.2C\nVarianza residual heterogénea\nNo significativo\nNo retener\n\n\n7.1 vs 7.3 (ML)\nInteracciones con tiempo\nNo significativo\nEliminar\n\n\nModelo final\n—\n—\nModel 7.3"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#modelo-final-model-7.3",
+    "href": "longitudinal-clusters/index.html#modelo-final-model-7.3",
+    "title": "Longitudinal Data in Clusters",
+    "section": "12. 🦷Modelo final — Model 7.3",
+    "text": "12. 🦷Modelo final — Model 7.3\n\n\nCode\nmodel7.3.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age,\n  random = list(\n    patient = ~ time,\n    tooth   = ~ 1),\n  data = veneer_data,\n  method = \"REML\")\nsummary(model7.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: veneer_data \n       AIC      BIC    logLik\n  861.8552 888.3948 -420.9276\n\nRandom effects:\n Formula: ~time | patient\n Structure: General positive-definite, Log-Cholesky parametrization\n            StdDev    Corr  \n(Intercept) 22.912616 (Intr)\ntime         6.472081 -0.947\n\n Formula: ~1 | tooth %in% patient\n        (Intercept) Residual\nStdDev:    6.888895 6.990511\n\nFixed effects:  gcf ~ time + base.gcf + cda + age \n               Value Std.Error DF   t-value p-value\n(Intercept) 45.73859 12.554978 54  3.643064  0.0006\ntime         0.30098  1.936866 54  0.155396  0.8771\nbase.gcf    -0.01831  0.143309 41 -0.127784  0.8989\ncda         -0.32930  0.529251 41 -0.622205  0.5373\nage         -0.57739  0.213966 10 -2.698528  0.0224\n Correlation: \n         (Intr) time   bs.gcf cda   \ntime     -0.520                     \nbase.gcf -0.384 -0.005              \ncda      -0.400 -0.004  0.328       \nage      -0.755 -0.009  0.165  0.173\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-1.64978322 -0.49047890 -0.08906288  0.29452691  2.57342345 \n\nNumber of Observations: 110\nNumber of Groups: \n           patient tooth %in% patient \n                12                 55 \n\n\nCode\nintervals(model7.3.fit, which = \"fixed\")\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                 lower        est.      upper\n(Intercept) 20.5673728 45.73858816 70.9098035\ntime        -3.5822002  0.30098138  4.1841630\nbase.gcf    -0.3077311 -0.01831259  0.2711059\ncda         -1.3981475 -0.32930286  0.7395418\nage         -1.0541381 -0.57739260 -0.1006471"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#interpretación-de-efectos-fijos",
+    "href": "longitudinal-clusters/index.html#interpretación-de-efectos-fijos",
+    "title": "Longitudinal Data in Clusters",
+    "section": "13.🦷Interpretación de efectos fijos",
+    "text": "13.🦷Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 7.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n45.739\n20.567\n70.910\n\n\ntime\ntime\n0.301\n-3.582\n4.184\n\n\nbase.gcf\nbase.gcf\n-0.018\n-0.308\n0.271\n\n\ncda\ncda\n-0.329\n-1.398\n0.740\n\n\nage\nage\n-0.577\n-1.054\n-0.101"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#componentes-de-varianza",
+    "href": "longitudinal-clusters/index.html#componentes-de-varianza",
+    "title": "Longitudinal Data in Clusters",
+    "section": "14.🦷Componentes de varianza",
+    "text": "14.🦷Componentes de varianza\n\n\nCode\nVarCorr(model7.3.fit)\n\n\n            Variance        StdDev    Corr  \npatient =   pdLogChol(time)                 \n(Intercept) 524.98799       22.912616 (Intr)\ntime         41.88784        6.472081 -0.947\ntooth =     pdLogChol(1)                    \n(Intercept)  47.45687        6.888895       \nResidual     48.86724        6.990511       \n\n\n\nEl modelo final tiene:\n\nIntercepto y pendiente de tiempo aleatorios a nivel de paciente — los pacientes difieren en su nivel esperado de GCF y en cómo cambian en el tiempo\nIntercepto aleatorio a nivel de diente — los dientes dentro de un paciente también difieren entre sí\nVarianza residual homogénea — no fue necesario permitir varianzas distintas entre 3 y 6 meses"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#diagnósticos",
+    "href": "longitudinal-clusters/index.html#diagnósticos",
+    "title": "Longitudinal Data in Clusters",
+    "section": "15.🦷Diagnósticos",
+    "text": "15.🦷Diagnósticos"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#conclusiones",
+    "href": "longitudinal-clusters/index.html#conclusiones",
+    "title": "Longitudinal Data in Clusters",
+    "section": "16.🦷Conclusiones",
+    "text": "16.🦷Conclusiones\n\nEl GCF se modela longitudinalmente entre los 3 y 6 meses\nLas interacciones con el tiempo no fueron necesarias en el modelo final\nLos pacientes difieren en su nivel basal y en su tasa de cambio en el tiempo\nLos dientes dentro de un mismo paciente también difieren entre sí\nNo fue necesario permitir varianza residual heterogénea entre tiempos\nLas interacciones con el tiempo no fueron significativas\nEl Model 7.3 es el modelo final con solo efectos principales fijos\n\n\nEl modelo final es un modelo lineal mixto longitudinal agrupado de tres niveles, con interceptos y pendientes aleatorias de tiempo a nivel de paciente e interceptos aleatorios a nivel de diente."
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita",
+    "href": "longitudinal-clusters/index.html#anexo-técnico-ejemplo-de-estructura-residual-con-correlación-explícita",
+    "title": "Longitudinal Data in Clusters",
+    "section": "Anexo técnico — Ejemplo de estructura residual con correlación explícita",
+    "text": "Anexo técnico — Ejemplo de estructura residual con correlación explícita\nEstos modelos intentan modelar la correlación residual entre las dos mediciones del mismo diente usando estructuras de correlación explícitas. Como solo hay dos tiempos, algunos parámetros quedan aliased (no identificables) con el intercepto aleatorio de diente.\n\nEste código es solo ilustrativo — puede generar advertencias o no converger. No forma parte del flujo principal de análisis.\n\n\n\nCode\nmodel7.2A.fit &lt;- lme(\n  gcf ~ time + base.gcf + cda + age +\n    time:base.gcf + time:cda + time:age,\n  random = list(\n    patient = ~ time,\n    tooth   = ~ 1),\n  correlation = corCompSymm(form = ~ 1 | patient/tooth),\n  data = veneer_data,\n  method = \"REML\")\nsummary(model7.2A.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: veneer_data \n       AIC      BIC    logLik\n  875.1168 911.8664 -423.5584\n\nRandom effects:\n Formula: ~time | patient\n Structure: General positive-definite, Log-Cholesky parametrization\n            StdDev    Corr  \n(Intercept) 23.566351 (Intr)\ntime         6.687478 -0.95 \n\n Formula: ~1 | tooth %in% patient\n        (Intercept) Residual\nStdDev:    6.846979 7.054632\n\nCorrelation Structure: Compound symmetry\n Formula: ~1 | patient/tooth \n Parameter estimate(s):\n        Rho \n0.001556108 \nFixed effects:  gcf ~ time + base.gcf + cda + age + time:base.gcf + time:cda +      time:age \n                 Value Std.Error DF    t-value p-value\n(Intercept)   69.91694 28.398316 51  2.4620100  0.0172\ntime          -6.01534  7.446267 51 -0.8078335  0.4229\nbase.gcf      -0.31514  0.291660 41 -1.0805078  0.2862\ncda           -0.88241  1.082337 41 -0.8152815  0.4196\nage           -0.96961  0.607851 10 -1.5951394  0.1418\ntime:base.gcf  0.06736  0.057690 51  1.1675966  0.2484\ntime:cda       0.12583  0.218354 51  0.5762693  0.5670\ntime:age       0.10903  0.165805 51  0.6575685  0.5138\n Correlation: \n              (Intr) time   bs.gcf cda    age    tm:bs. tim:cd\ntime          -0.923                                          \nbase.gcf      -0.349  0.229                                   \ncda           -0.361  0.240  0.326                            \nage           -0.917  0.880  0.117  0.121                     \ntime:base.gcf  0.304 -0.264 -0.871 -0.283 -0.101              \ntime:cda       0.311 -0.272 -0.277 -0.872 -0.103  0.317       \ntime:age       0.846 -0.934 -0.074 -0.076 -0.936  0.084  0.085\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-1.46531161 -0.45272059 -0.08684404  0.35275599  2.51315718 \n\nNumber of Observations: 110\nNumber of Groups: \n           patient tooth %in% patient \n                12                 55"
+  },
+  {
+    "objectID": "longitudinal-clusters/index.html#anexo-técnico-comparación-con-lmer",
+    "href": "longitudinal-clusters/index.html#anexo-técnico-comparación-con-lmer",
+    "title": "Longitudinal Data in Clusters",
+    "section": "Anexo técnico — Comparación con lmer()",
+    "text": "Anexo técnico — Comparación con lmer()\n\n\n\nCapacidad\nlme()\nlmer()\n\n\n\n\nEfectos aleatorios anidados\n✅\n✅\n\n\nVarianza residual heterogénea\n✅\n❌\n\n\nEstructuras de correlación residual\n✅\n❌\n\n\n\n\n\nCode\nlibrary(lme4)\n\nmodel7.3.lmer &lt;- lmer(\n  gcf ~ time + base.gcf + cda + age +\n    (time | patient) + (1 | patient:tooth),\n  data = veneer_data,\n  REML = TRUE\n)\n\nsummary(model7.3.lmer)\n\n# Comparación de efectos fijos\ncat(\"=== lme() ===\\n\")\nround(fixef(model7.3.fit), 4)\n\ncat(\"\\n=== lmer() ===\\n\")\nround(fixef(model7.3.lmer), 4)"
   }
 ]

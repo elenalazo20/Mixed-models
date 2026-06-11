@@ -1,8 +1,351 @@
 ---
-title: "Longitudinal Clusters (Dental Veener)"
+title: "Longitudinal Data in Clusters"
+subtitle: "The Dental Veneer Example👄🦷 - West et al., Cap. 7 (p. 307)"
+author: "Elena Lazo"
+date: 11-junio-2016
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(WWGbook)
+library(nlme)
+library(dplyr)
+library(ggplot2)
 
-Este ejemplo está en construcción.
+data(veneer)
+
+veneer_data <- veneer |>
+  mutate(
+    patient = factor(patient),
+    tooth   = factor(tooth),
+    tooth2  = interaction(patient, tooth, drop = TRUE),
+    time = as.numeric(as.character(time)))
+```
+
+## 1.🦷Problema de investigación
+
+Se estudia el efecto de una restauración dental (veneer) sobre
+el **índice de fluido crevicular gingival** (`gcf`) medido a los
+3 y 6 meses. Los dientes están anidados dentro de pacientes.
+
+> **Pregunta central:** ¿Cambia el GCF a lo largo del tiempo
+> y difiere este cambio según las características basales del
+> paciente y el diente, considerando la estructura jerárquica
+> de tres niveles?
+
+## 2.🦷Diseño clustered longitudinal
+
+Este es un diseño de **tres niveles longitudinal**:
+
+- **Nivel 3 — paciente:** unidad de muestreo principal
+- **Nivel 2 — diente dentro de paciente:** unidad de tratamiento
+- **Nivel 1 — tiempo dentro de diente:** medición repetida
+
+```{mermaid}
+flowchart TD
+    A[Paciente] --> B[Diente 1]
+    A --> C[Diente 2]
+    A --> D[Diente k]
+    B --> E[GCF 3 meses]
+    B --> F[GCF 6 meses]
+    C --> G[GCF 3 meses]
+    C --> H[GCF 6 meses]
+```
+
+## 3.🦷Estructura de los datos
+
+```{r estructura}
+nrow(veneer_data)
+n_distinct(veneer_data$patient)
+
+veneer_data |>
+  distinct(patient, tooth2) |>
+  count(patient, name = "dientes_por_paciente") |>
+  summarise(
+    min   = min(dientes_por_paciente),
+    max   = max(dientes_por_paciente),
+    media = round(mean(dientes_por_paciente), 1))
+
+table(veneer_data$time)
+```
+
+## 4.🦷Variables
+
+| Variable | Nivel | Tipo | Rol |
+|----------|-------|------|-----|
+| `gcf` | 1 | Continua | **Outcome** |
+| `time` | 1 | Continua | Tiempo (3 o 6 meses) |
+| `tooth` | 2 | Identificador | Diente |
+| `base.gcf` | 2 | Continua | Covariable — GCF basal |
+| `cda` | 2 | Continua | Covariable — diferencia de contorno |
+| `patient` | 3 | Identificador | Paciente |
+| `age` | 3 | Continua | Covariable — edad del paciente |
+
+## 5.🦷Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(veneer_data,
+       aes(x = factor(time), y = gcf,
+           group = tooth2,
+           color = factor(patient))) +
+  geom_line(alpha = 0.4) +
+  geom_point(alpha = 0.5) +
+  labs(title = "Trayectorias de GCF por diente",
+       x = "Tiempo (meses)", y = "GCF") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+```{r fig2, echo=FALSE}
+ggplot(veneer_data,
+       aes(x = factor(time), y = gcf)) +
+  geom_boxplot(fill = "#8e44ad", alpha = 0.7) +
+  labs(title = "Distribución de GCF por tiempo",
+       x = "Tiempo (meses)", y = "GCF") +
+  theme_minimal()
+```
+
+## 6.🦷Estrategia top-down
+
+```{mermaid}
+flowchart TD
+    A[Model 7.1\nMedia cargada\nPaciente + diente aleatorios] --> B{H7.1\n¿Intercepto aleatorio de diente?}
+    B -->|Sí| C{H7.2\n¿Varianza residual heterogénea?}
+    C -->|No| D{H7.3\n¿Interacciones con el tiempo?}
+    D -->|No| E[Model 7.3 — Modelo Final]
+```
+
+## 7.🦷Model 7.1: Modelo cargado
+
+```{r model71}
+model7.1.fit <- lme(
+  gcf ~ time + base.gcf + cda + age +
+    time:base.gcf + time:cda + time:age,
+  random = list(
+    patient = ~ time,
+    tooth   = ~ 1),
+  data = veneer_data,
+  method = "REML")
+summary(model7.1.fit)
+```
+
+## 8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?
+
+```{r h71}
+model7.1A.fit <- lme(
+  gcf ~ time + base.gcf + cda + age +
+    time:base.gcf + time:cda + time:age,
+  random = list(patient = ~ time),
+  data = veneer_data,
+  method = "REML")
+
+anova(model7.1.fit, model7.1A.fit)
+```
+
+> West divide el valor p por 2 porque se evalúa un componente
+> de varianza en el límite del espacio paramétrico.
+> Si es significativo → se retiene el intercepto aleatorio de diente.
+
+## 9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?
+
+```{r h72}
+model7.2C.fit <- lme(
+  gcf ~ time + base.gcf + cda + age +
+    time:base.gcf + time:cda + time:age,
+  random = list(
+    patient = ~ time,
+    tooth   = ~ 1),
+  weights = varIdent(form = ~ 1 | time),
+  data = veneer_data,
+  method = "REML")
+
+anova(model7.1.fit, model7.2C.fit)
+```
+
+> Si no es significativo → se mantiene varianza residual homogénea.
+
+## 10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?
+
+```{r h73}
+model7.1.ml.fit <- update(
+  model7.1.fit,
+  method = "ML")
+
+model7.3.ml.fit <- lme(
+  gcf ~ time + base.gcf + cda + age,
+  random = list(
+    patient = ~ time,
+    tooth   = ~ 1),
+  data = veneer_data,
+  method = "ML")
+
+anova(model7.1.ml.fit, model7.3.ml.fit)
+```
+
+> Si no es significativo → se eliminan las interacciones.
+
+## 11.🦷Resumen de comparación de modelos
+
+| Comparación | Componente evaluado | Resultado | Decisión |
+|-------------|---------------------|-----------|----------|
+| 7.1 vs 7.1A | Intercepto aleatorio diente | Significativo | Mantener |
+| 7.1 vs 7.2C | Varianza residual heterogénea | No significativo | No retener |
+| 7.1 vs 7.3 (ML) | Interacciones con tiempo | No significativo | Eliminar |
+| **Modelo final** | — | — | **Model 7.3** |
+
+## 12. 🦷Modelo final — Model 7.3
+
+```{r modelo_final}
+model7.3.fit <- lme(
+  gcf ~ time + base.gcf + cda + age,
+  random = list(
+    patient = ~ time,
+    tooth   = ~ 1),
+  data = veneer_data,
+  method = "REML")
+summary(model7.3.fit)
+intervals(model7.3.fit, which = "fixed")
+```
+
+## 13.🦷Interpretación de efectos fijos
+
+```{r tabla_efectos, echo=FALSE}
+coefs <- intervals(model7.3.fit, which = "fixed")$fixed
+data.frame(
+  Efecto      = rownames(coefs),
+  Estimacion  = round(coefs[, "est."], 3),
+  IC_inferior = round(coefs[, "lower"], 3),
+  IC_superior = round(coefs[, "upper"], 3)) |>
+  knitr::kable(caption = "Efectos fijos — Model 7.3 (REML)")
+```
+
+## 14.🦷Componentes de varianza
+
+```{r varianza}
+VarCorr(model7.3.fit)
+```
+
+> El modelo final tiene:
+>
+> - **Intercepto y pendiente de tiempo aleatorios** a nivel
+>   de paciente — los pacientes difieren en su nivel esperado
+>   de GCF y en cómo cambian en el tiempo
+> - **Intercepto aleatorio** a nivel de diente — los dientes
+>   dentro de un paciente también difieren entre sí
+> - **Varianza residual homogénea** — no fue necesario
+>   permitir varianzas distintas entre 3 y 6 meses
+
+## 15.🦷Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos_norm <- residuals(model7.3.fit, type = "normalized")
+ajustados     <- fitted(model7.3.fit, level = 2)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos_norm,
+     xlab = "Valores ajustados",
+     ylab = "Residuos normalizados",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos_norm, main = "Q-Q plot residuos")
+qqline(residuos_norm)
+```
+
+```{r eblups, echo=FALSE}
+re_patient <- ranef(model7.3.fit, level = 1)
+re_tooth   <- ranef(model7.3.fit, level = 2)
+
+par(mfrow = c(1, 2))
+qqnorm(re_patient[, 1], main = "Q-Q EBLUPs paciente")
+qqline(re_patient[, 1])
+
+qqnorm(re_tooth[, 1], main = "Q-Q EBLUPs diente")
+qqline(re_tooth[, 1])
+```
+
+## 16.🦷Conclusiones
+
+- El GCF se modela longitudinalmente entre los 3 y 6 meses
+- Las interacciones con el tiempo no fueron necesarias en 
+  el modelo final
+- Los pacientes difieren en su nivel basal y en su tasa
+  de cambio en el tiempo
+- Los dientes dentro de un mismo paciente también difieren
+  entre sí
+- No fue necesario permitir varianza residual heterogénea
+  entre tiempos
+- Las interacciones con el tiempo no fueron significativas
+- El **Model 7.3** es el modelo final con solo efectos
+  principales fijos
+
+> El modelo final es un modelo lineal mixto longitudinal
+> agrupado de tres niveles, con interceptos y pendientes
+> aleatorias de tiempo a nivel de paciente e interceptos
+> aleatorios a nivel de diente.
+
+---
+
+## Anexo técnico — Ejemplo de estructura residual con correlación explícita
+
+Estos modelos intentan modelar la correlación residual entre
+las dos mediciones del mismo diente usando estructuras de
+correlación explícitas. Como solo hay **dos tiempos**, algunos
+parámetros quedan **aliased** (no identificables) con el
+intercepto aleatorio de diente.
+
+> Este código es solo ilustrativo — puede generar advertencias
+> o no converger. No forma parte del flujo principal de análisis.
+
+```{r modelo72A, error=TRUE, warning=TRUE}
+model7.2A.fit <- lme(
+  gcf ~ time + base.gcf + cda + age +
+    time:base.gcf + time:cda + time:age,
+  random = list(
+    patient = ~ time,
+    tooth   = ~ 1),
+  correlation = corCompSymm(form = ~ 1 | patient/tooth),
+  data = veneer_data,
+  method = "REML")
+summary(model7.2A.fit)
+```
+
+## Anexo técnico — Comparación con lmer()
+
+| Capacidad | lme() | lmer() |
+|-----------|-------|--------|
+| Efectos aleatorios anidados | ✅ | ✅ |
+| Varianza residual heterogénea | ✅ | ❌ |
+| Estructuras de correlación residual | ✅ | ❌ |
+
+```{r lmer_anexo, eval=FALSE}
+library(lme4)
+
+model7.3.lmer <- lmer(
+  gcf ~ time + base.gcf + cda + age +
+    (time | patient) + (1 | patient:tooth),
+  data = veneer_data,
+  REML = TRUE
+)
+
+summary(model7.3.lmer)
+
+# Comparación de efectos fijos
+cat("=== lme() ===\n")
+round(fixef(model7.3.fit), 4)
+
+cat("\n=== lmer() ===\n")
+round(fixef(model7.3.lmer), 4)
+```
 
