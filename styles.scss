@@ -1,0 +1,68 @@
+/*-- scss:defaults --*/
+
+$primary: #8e44ad;
+$link-color: #7b3fb2;
+$body-bg: #fbf8ff;
+$body-color: #2f243a;
+$code-bg: #f1e7ff;
+$code-color: #4b276b;
+
+/*-- scss:rules --*/
+
+h1, h2, h3 {
+  color: #6f2da8;
+}
+
+.quarto-title-banner {
+  background: linear-gradient(135deg, #f3e8ff 0%, #ead7ff 100%);
+  color: #3b2552;
+}
+
+.quarto-title h1.title {
+  color: #3b2552;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #6f2da8;
+}
+
+.sidebar nav[role="doc-toc"] ul > li > a.active {
+  color: #6f2da8 !important;
+  border-left: 3px solid #8e44ad;
+}
+
+.sidebar nav[role="doc-toc"] ul > li > a:hover {
+  color: #8e44ad !important;
+}
+
+a {
+  color: #7b3fb2;
+}
+
+a:hover {
+  color: #5e2a88;
+}
+
+.callout-note {
+  border-left-color: #8e44ad;
+}
+
+.table caption {
+  color: #6f2da8;
+  font-weight: 600;
+}
+
+thead {
+  background-color: #f1e7ff;
+}
+
+code {
+  background-color: #f1e7ff;
+  color: #4b276b;
+}
+
+.cell-output {
+  border-left: 3px solid #d8b4f8;
+  padding-left: 0.8rem;
+}

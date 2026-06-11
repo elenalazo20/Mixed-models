@@ -1,12 +1,14 @@
 ---
 title: "Modelos para datos en clusters de 2 niveles"
-subtitle: "Ejemplo de las crías de rata - West et al., capítulo 3"
+subtitle: "Ejemplo de las crías de rata 🐁💊- West et al., capítulo 3 "
 author: "Elena Lazo"
 date: "26-junio-2026"
 
 format:
   html:
-    theme: cosmo
+    theme:
+      - cosmo
+      - styles.scss
     toc: true
     toc-location: right
     toc-depth: 3
@@ -17,23 +19,17 @@ format:
     code-summary: "Mostrar código"
     code-tools: true
     embed-resources: true
-
-execute:
-  echo: true
-  warning: false
-  message: false
+    title-block-banner: "#f3e8ff"
+    title-block-banner-color: "#3b2552"
 ---
 
 ```{r setup, include=FALSE}
 library(nlme)
 library(ggplot2)
 library(dplyr)
+library(WWGbook)
 
-ratpup <- read.table(
-  "Rat_Pup.txt",
-  header = TRUE,
-  sep = "\t"
-)
+data(ratpup)
 
 ratpup <- ratpup |>
   mutate(
@@ -43,12 +39,10 @@ ratpup <- ratpup |>
     sex1 = if_else(sex == "Female", 1, 0),
     trtgrp = factor(
       if_else(treatment == "Control", "Control", "High_Low"),
-      levels = c("Control", "High_Low")
-    )
-  )
+      levels = c("Control", "High_Low")))
 ```
 
-## Problema de investigación 🐁💊
+## 🐁Problema de investigación
 
 Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos:
 dosis **alta**, dosis **baja** o **control** de un compuesto químico.
@@ -60,7 +54,7 @@ las crías de una misma camada comparten el mismo tratamiento.
 > crías entre los grupos de tratamiento, considerando la dependencia entre
 > crías de una misma camada y ajustando por sexo y tamaño de camada?
 
-## Diseño del estudio
+## 🐁Diseño del estudio
 
 ```{mermaid}
 flowchart TD
@@ -77,7 +71,7 @@ flowchart TD
 - **Nivel 1 - cría:** unidad de medición
 - Diseño **desbalanceado:** tamaño de camada varía de 2 a 18 crías
 
-## Variables
+## 🐁Variables
 
 | Variable | Nivel | Tipo | Rol | Codificación |
 |----------|-------|------|-----|--------------|
@@ -101,7 +95,7 @@ ratpup |>
   knitr::kable(caption = "Resumen por grupo de tratamiento")
 ```
 
-## Exploración descriptiva
+## 🐁Exploración descriptiva
 
 ### Peso según tratamiento y sexo
 
@@ -124,7 +118,7 @@ ggplot(ratpup, aes(x = litsize, y = weight, color = treatment)) +
   theme_minimal()
 ```
 
-## Objetivos e hipótesis
+## 🐁Objetivos e hipótesis
 
 **Objetivo general:** Evaluar la asociación entre el tratamiento materno
 y el peso al nacer, considerando la agrupación dentro de camadas.
@@ -137,7 +131,7 @@ y el peso al nacer, considerando la agrupación dentro de camadas.
 4. Estimar el efecto ajustado del tratamiento sobre el peso
 5. Seleccionar el modelo que mejor represente los datos
 
-## Estrategia top-down
+## 🐁Estrategia top-down
 
 ```{mermaid}
 flowchart TD
@@ -148,7 +142,7 @@ flowchart TD
     E --> F[Modelo final]
 ```
 
-## Ajuste y comparación de modelos
+## 🐁Ajuste y comparación de modelos
 
 ### Model 3.1: Modelo inicial
 
@@ -248,7 +242,7 @@ anova(model3.3a.ml.fit, model3.3.ml.fit)
 | anova(3.2B) | Interacción trat×sexo | p = 0.73 | Eliminar |
 | 3.3A vs 3.3 (ML) | Efecto tratamiento | p < 0.001 | Mantener |
 
-## Modelo final
+## 🐁Modelo final
 
 ```{r modelo_final, echo=TRUE}
 model3.3.reml.fit <- lme(
@@ -261,7 +255,7 @@ summary(model3.3.reml.fit)
 intervals(model3.3.reml.fit)
 ```
 
-## Interpretación de efectos fijos
+## 🐁Interpretación de efectos fijos
 
 ```{r tabla_efectos, echo=FALSE}
 coefs <- intervals(model3.3.reml.fit)$fixed
@@ -273,7 +267,7 @@ tabla <- data.frame(
 knitr::kable(tabla, caption = "Efectos fijos — Model 3.3 (REML)")
 ```
 
-## Componentes de varianza e ICC
+## 🐁Componentes de varianza e ICC
 
 ```{r icc, echo=TRUE}
 vc <- VarCorr(model3.3.reml.fit)
@@ -297,7 +291,7 @@ cat("ICC Control:                ", round(icc_control, 4), "\n")
 cat("ICC High/Low:               ", round(icc_high_low, 4), "\n")
 ```
 
-## Predicciones
+## 🐁Predicciones
 
 ```{r predicciones, echo=FALSE}
 ratpup$pred_marginal    <- predict(model3.3.reml.fit, level = 0)
@@ -313,7 +307,7 @@ ggplot(ratpup, aes(x = pred_marginal, y = pred_condicional,
   theme_minimal()
 ```
 
-## Diagnósticos
+## 🐁Diagnósticos
 
 ```{r diagnosticos, echo=FALSE}
 residuos_norm <- residuals(model3.3.reml.fit, type = "normalized")
@@ -331,7 +325,7 @@ qqnorm(residuos_norm, main = "Q-Q plot residuos normalizados")
 qqline(residuos_norm)
 ```
 
-## Conclusiones
+## 🐁Conclusiones
 
 - El tratamiento se asocia con una **reducción del peso al nacer**
 - La dosis alta presenta mayor reducción que la dosis baja

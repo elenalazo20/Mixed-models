@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Elena Lazo">
+<meta name="dcterms.date" content="2026-06-11">
 
-<title>Three-Level Clusters (Classroom) – Mixed Models - West, Finch &amp; Galecki</title>
+<title>Modelos para datos en clusters de 3 niveles – Mixed Models - West, Finch &amp; Galecki</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,6 +105,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -187,7 +192,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#próximamente" id="toc-próximamente" class="nav-link active" data-scroll-target="#próximamente">Próximamente</a></li>
+  <li><a href="#problema-de-investigación" id="toc-problema-de-investigación" class="nav-link active" data-scroll-target="#problema-de-investigación">1.📚Problema de investigación</a></li>
+  <li><a href="#estructura-jerárquica" id="toc-estructura-jerárquica" class="nav-link" data-scroll-target="#estructura-jerárquica">2.📚Estructura jerárquica</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">3.📚Variables</a></li>
+  <li><a href="#exploración-descriptiva" id="toc-exploración-descriptiva" class="nav-link" data-scroll-target="#exploración-descriptiva">4.📚Exploración descriptiva</a></li>
+  <li><a href="#estrategia-step-up" id="toc-estrategia-step-up" class="nav-link" data-scroll-target="#estrategia-step-up">5.📚Estrategia step-up</a></li>
+  <li><a href="#model-4.1-modelo-incondicional" id="toc-model-4.1-modelo-incondicional" class="nav-link" data-scroll-target="#model-4.1-modelo-incondicional">6.📚Model 4.1: Modelo incondicional</a></li>
+  <li><a href="#h4.1-hay-variabilidad-entre-salones" id="toc-h4.1-hay-variabilidad-entre-salones" class="nav-link" data-scroll-target="#h4.1-hay-variabilidad-entre-salones">7.📚H4.1: ¿Hay variabilidad entre salones?</a></li>
+  <li><a href="#model-4.2-covariables-del-estudiante-nivel-1" id="toc-model-4.2-covariables-del-estudiante-nivel-1" class="nav-link" data-scroll-target="#model-4.2-covariables-del-estudiante-nivel-1">8.📚Model 4.2: Covariables del estudiante (Nivel 1)</a></li>
+  <li><a href="#h4.2-aportan-las-variables-del-estudiante" id="toc-h4.2-aportan-las-variables-del-estudiante" class="nav-link" data-scroll-target="#h4.2-aportan-las-variables-del-estudiante">9.📚H4.2: ¿Aportan las variables del estudiante?</a></li>
+  <li><a href="#model-4.3-covariables-del-salón-nivel-2" id="toc-model-4.3-covariables-del-salón-nivel-2" class="nav-link" data-scroll-target="#model-4.3-covariables-del-salón-nivel-2">10.📚Model 4.3: Covariables del salón (Nivel 2)</a></li>
+  <li><a href="#model-4.4-covariable-de-escuela-nivel-3" id="toc-model-4.4-covariable-de-escuela-nivel-3" class="nav-link" data-scroll-target="#model-4.4-covariable-de-escuela-nivel-3">11.📚Model 4.4: Covariable de escuela (Nivel 3)</a></li>
+  <li><a href="#resumen-de-comparación-de-modelos" id="toc-resumen-de-comparación-de-modelos" class="nav-link" data-scroll-target="#resumen-de-comparación-de-modelos">12.📚Resumen de comparación de modelos</a></li>
+  <li><a href="#modelo-final-interpretación-de-efectos-fijos" id="toc-modelo-final-interpretación-de-efectos-fijos" class="nav-link" data-scroll-target="#modelo-final-interpretación-de-efectos-fijos">13.📚Modelo final — Interpretación de efectos fijos</a></li>
+  <li><a href="#componentes-de-varianza-e-icc" id="toc-componentes-de-varianza-e-icc" class="nav-link" data-scroll-target="#componentes-de-varianza-e-icc">14.📚Componentes de varianza e ICC</a></li>
+  <li><a href="#diagnósticos" id="toc-diagnósticos" class="nav-link" data-scroll-target="#diagnósticos">15.📚Diagnósticos</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">16.📚Conclusiones</a></li>
   </ul>
 </nav>
     </div>
@@ -196,14 +216,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Three-Level Clusters (Classroom)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Modelos para datos en clusters de 3 niveles</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">The Classroom Example📚🎒 - West et al., Cap. 4 (p.&nbsp;135)</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elena Lazo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -213,9 +246,742 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="próximamente" class="level2">
-<h2 class="anchored" data-anchor-id="próximamente">Próximamente</h2>
-<p>Este ejemplo está en construcción.</p>
+<section id="problema-de-investigación" class="level2">
+<h2 class="anchored" data-anchor-id="problema-de-investigación">1.📚Problema de investigación</h2>
+<p>Este ejemplo analiza el <strong>progreso en matemáticas</strong> de estudiantes de primer grado. Los estudiantes están agrupados dentro de salones y los salones dentro de escuelas — estructura de <strong>tres niveles</strong>.</p>
+<blockquote class="blockquote">
+<p><strong>Pregunta central:</strong> ¿Qué factores a nivel de estudiante, salón y escuela se asocian con el progreso en matemáticas, considerando la estructura jerárquica de tres niveles?</p>
+</blockquote>
+</section>
+<section id="estructura-jerárquica" class="level2">
+<h2 class="anchored" data-anchor-id="estructura-jerárquica">2.📚Estructura jerárquica</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tamaño total</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(classroom_analysis)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1081</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Niveles — contando salones como combinación escuela-salón</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_salones <span class="ot">&lt;-</span> classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">escuelas    =</span> <span class="fu">n_distinct</span>(schoolid),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">salones     =</span> n_salones,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">estudiantes =</span> <span class="fu">n_distinct</span>(childid))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  escuelas salones estudiantes
+1      105     285        1081</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Salones por escuela</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(schoolid, <span class="at">name =</span> <span class="st">"salones_por_escuela"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(salones_por_escuela),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(salones_por_escuela),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(salones_por_escuela), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  min max media
+1   1   9   2.7</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estudiantes por salón</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(schoolid, classid, <span class="at">name =</span> <span class="st">"est_por_salon"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(est_por_salon),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(est_por_salon),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(est_por_salon), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  min max media
+1   1  10   3.8</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificar si classid se repite entre escuelas</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(classid) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] classid n      
+&lt;0 rows&gt; (o 0- extensión row.names)</code></pre>
+</div>
+</div>
+</section>
+<section id="variables" class="level2">
+<h2 class="anchored" data-anchor-id="variables">3.📚Variables</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nivel</th>
+<th>Tipo</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mathgain</code></td>
+<td>1</td>
+<td>Continua</td>
+<td><strong>Outcome</strong></td>
+</tr>
+<tr class="even">
+<td><code>mathkind</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Covariable — puntaje inicial</td>
+</tr>
+<tr class="odd">
+<td><code>sex</code></td>
+<td>1</td>
+<td>Categórica</td>
+<td>Covariable</td>
+</tr>
+<tr class="even">
+<td><code>minority</code></td>
+<td>1</td>
+<td>Categórica</td>
+<td>Covariable</td>
+</tr>
+<tr class="odd">
+<td><code>ses</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Covariable</td>
+</tr>
+<tr class="even">
+<td><code>childid</code></td>
+<td>1</td>
+<td>Identificador</td>
+<td>Estudiante</td>
+</tr>
+<tr class="odd">
+<td><code>yearstea</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Covariable — años enseñando</td>
+</tr>
+<tr class="even">
+<td><code>mathprep</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Covariable — preparación matemática</td>
+</tr>
+<tr class="odd">
+<td><code>mathknow</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Covariable — conocimiento matemático</td>
+</tr>
+<tr class="even">
+<td><code>classid</code></td>
+<td>2</td>
+<td>Identificador</td>
+<td>Salón</td>
+</tr>
+<tr class="odd">
+<td><code>housepov</code></td>
+<td>3</td>
+<td>Continua</td>
+<td>Covariable — pobreza escuela</td>
+</tr>
+<tr class="even">
+<td><code>schoolid</code></td>
+<td>3</td>
+<td>Identificador</td>
+<td>Escuela</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exploración-descriptiva" class="level2">
+<h2 class="anchored" data-anchor-id="exploración-descriptiva">4.📚Exploración descriptiva</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estrategia-step-up" class="level2">
+<h2 class="anchored" data-anchor-id="estrategia-step-up">5.📚Estrategia step-up</h2>
+<p>A diferencia del capítulo 3 que usaba <strong>top-down</strong>, aquí West usa una estrategia <strong>step-up</strong>: parte del modelo más simple y va agregando complejidad.</p>
+<div class="cell" data-layout-align="default">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    A[Model 4.1\nModelo incondicional] --&gt; B{H4.1\n¿Variación entre salones?}</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    B --&gt; C[Model 4.2\nCovariables nivel 1]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    C --&gt; D{H4.2\n¿Aportan variables del estudiante?}</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    D --&gt; E[Model 4.3\nCovariables nivel 2]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    E --&gt; F[Model 4.4\nCovariable nivel 3]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    F --&gt; G[Modelo final: Model 4.2]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Model 4.1\nModelo incondicional] --&gt; B{H4.1\n¿Variación entre salones?}
+    B --&gt; C[Model 4.2\nCovariables nivel 1]
+    C --&gt; D{H4.2\n¿Aportan variables del estudiante?}
+    D --&gt; E[Model 4.3\nCovariables nivel 2]
+    E --&gt; F[Model 4.4\nCovariable nivel 3]
+    F --&gt; G[Modelo final: Model 4.2]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="model-4.1-modelo-incondicional" class="level2">
+<h2 class="anchored" data-anchor-id="model-4.1-modelo-incondicional">6.📚Model 4.1: Modelo incondicional</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: classroom_analysis 
+       AIC      BIC    logLik
+  10701.23 10721.17 -5346.616
+
+Random effects:
+ Formula: ~1 | schoolid
+        (Intercept)
+StdDev:    8.567492
+
+ Formula: ~1 | classid %in% schoolid
+        (Intercept) Residual
+StdDev:    10.81313 31.95277
+
+Fixed effects:  mathgain ~ 1 
+               Value Std.Error  DF  t-value p-value
+(Intercept) 57.76131  1.498602 796 38.54346       0
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-4.30557391 -0.61148664 -0.03961529  0.55084920  5.62083279 
+
+Number of Observations: 1081
+Number of Groups: 
+             schoolid classid %in% schoolid 
+                  105                   285 </code></pre>
+</div>
+</div>
+</section>
+<section id="h4.1-hay-variabilidad-entre-salones" class="level2">
+<h2 class="anchored" data-anchor-id="h4.1-hay-variabilidad-entre-salones">7.📚H4.1: ¿Hay variabilidad entre salones?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model4<span class="fl">.1</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model4<span class="fl">.1</span>A.fit, model4.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model4.1A.fit     1  3 10708.30 10723.26 -5351.152                        
+model4.1.fit      2  4 10701.23 10721.17 -5346.616 1 vs 2 9.072633  0.0026</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Si el LRT es significativo, se conserva el intercepto aleatorio de salón dentro de escuela.</p>
+</blockquote>
+</section>
+<section id="model-4.2-covariables-del-estudiante-nivel-1" class="level2">
+<h2 class="anchored" data-anchor-id="model-4.2-covariables-del-estudiante-nivel-1">8.📚Model 4.2: Covariables del estudiante (Nivel 1)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">2.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">2.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: classroom_analysis 
+       AIC      BIC    logLik
+  10334.53 10374.38 -5159.267
+
+Random effects:
+ Formula: ~1 | schoolid
+        (Intercept)
+StdDev:    8.137653
+
+ Formula: ~1 | classid %in% schoolid
+        (Intercept) Residual
+StdDev:    9.589501 26.73725
+
+Fixed effects:  mathgain ~ mathkind + sex + minority + ses 
+                Value Std.Error  DF    t-value p-value
+(Intercept) 286.66229 11.080434 792  25.871034  0.0000
+mathkind     -0.47687  0.022699 792 -21.008488  0.0000
+sex          -1.36021  1.719783 792  -0.790922  0.4292
+minority     -8.50743  2.374568 792  -3.582728  0.0004
+ses           5.39986  1.274105 792   4.238157  0.0000
+ Correlation: 
+         (Intr) mthknd sex    minrty
+mathkind -0.979                     
+sex      -0.070 -0.005              
+minority -0.304  0.164 -0.018       
+ses       0.137 -0.166  0.021  0.166
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-3.4565766 -0.6218058 -0.0375118  0.5607274  4.3174874 
+
+Number of Observations: 1081
+Number of Groups: 
+             schoolid classid %in% schoolid 
+                  105                   285 </code></pre>
+</div>
+</div>
+</section>
+<section id="h4.2-aportan-las-variables-del-estudiante" class="level2">
+<h2 class="anchored" data-anchor-id="h4.2-aportan-las-variables-del-estudiante">9.📚H4.2: ¿Aportan las variables del estudiante?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">1.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">2.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model4.<span class="fl">1.</span>ml.fit, model4.<span class="fl">2.</span>ml.fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+model4.1.ml.fit     1  4 10703.87 10723.82 -5347.936                        
+model4.2.ml.fit     2  8 10339.90 10379.79 -5161.952 1 vs 2 371.9688  &lt;.0001</code></pre>
+</div>
+</div>
+</section>
+<section id="model-4.3-covariables-del-salón-nivel-2" class="level2">
+<h2 class="anchored" data-anchor-id="model-4.3-covariables-del-salón-nivel-2">10.📚Model 4.3: Covariables del salón (Nivel 2)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">3.</span>fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  model4.<span class="fl">2.</span>fit,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed =</span> mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    yearstea <span class="sc">+</span> mathprep <span class="sc">+</span> mathknow)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">3.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: classroom_analysis 
+    AIC      BIC    logLik
+  10335 10389.76 -5156.499
+
+Random effects:
+ Formula: ~1 | schoolid
+        (Intercept)
+StdDev:    8.671285
+
+ Formula: ~1 | classid %in% schoolid
+        (Intercept) Residual
+StdDev:    9.310153 26.71766
+
+Fixed effects:  mathgain ~ mathkind + sex + minority + ses + yearstea + mathprep +      mathknow 
+                Value Std.Error  DF    t-value p-value
+(Intercept) 282.02452 11.701687 792  24.101185  0.0000
+mathkind     -0.47501  0.022747 792 -20.882471  0.0000
+sex          -1.33950  1.718580 792  -0.779423  0.4360
+minority     -7.86886  2.418081 792  -3.254177  0.0012
+ses           5.41925  1.275995 792   4.247078  0.0000
+yearstea      0.03974  0.117070 177   0.339435  0.7347
+mathprep      1.09485  1.148493 177   0.953296  0.3417
+mathknow      1.91448  1.147015 177   1.669094  0.0969
+ Correlation: 
+         (Intr) mthknd sex    minrty ses    yearst mthprp
+mathkind -0.943                                          
+sex      -0.069 -0.005                                   
+minority -0.302  0.166 -0.015                            
+ses       0.121 -0.163  0.020  0.159                     
+yearstea -0.092  0.005  0.015  0.040 -0.033              
+mathprep -0.283  0.052 -0.002  0.017  0.043 -0.168       
+mathknow -0.049  0.029  0.007  0.146 -0.015  0.015  0.004
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-3.3989531 -0.6289628 -0.0413954  0.5564112  4.3029072 
+
+Number of Observations: 1081
+Number of Groups: 
+             schoolid classid %in% schoolid 
+                  105                   285 </code></pre>
+</div>
+</div>
+</section>
+<section id="model-4.4-covariable-de-escuela-nivel-3" class="level2">
+<h2 class="anchored" data-anchor-id="model-4.4-covariable-de-escuela-nivel-3">11.📚Model 4.4: Covariable de escuela (Nivel 3)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">4.</span>fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  model4.<span class="fl">2.</span>fit,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed =</span> mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    housepov</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">4.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: classroom_analysis 
+       AIC      BIC    logLik
+  10329.17 10373.99 -5155.585
+
+Random effects:
+ Formula: ~1 | schoolid
+        (Intercept)
+StdDev:    8.256866
+
+ Formula: ~1 | classid %in% schoolid
+        (Intercept) Residual
+StdDev:    9.504459 26.74128
+
+Fixed effects:  mathgain ~ mathkind + sex + minority + ses + housepov 
+                Value Std.Error  DF    t-value p-value
+(Intercept) 288.54331 11.241920 792  25.666727  0.0000
+mathkind     -0.47768  0.022715 792 -21.029574  0.0000
+sex          -1.34763  1.719861 792  -0.783568  0.4335
+minority     -8.05608  2.424007 792  -3.323455  0.0009
+ses           5.29868  1.278906 792   4.143138  0.0000
+housepov     -9.63456  9.920088 103  -0.971217  0.3337
+ Correlation: 
+         (Intr) mthknd sex    minrty ses   
+mathkind -0.970                            
+sex      -0.068 -0.005                     
+minority -0.262  0.155 -0.015              
+ses       0.120 -0.162  0.020  0.145       
+housepov -0.167  0.032 -0.009 -0.194  0.085
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-3.45213250 -0.62383379 -0.03940704  0.56577574  4.32114273 
+
+Number of Observations: 1081
+Number of Groups: 
+             schoolid classid %in% schoolid 
+                  105                   285 </code></pre>
+</div>
+</div>
+</section>
+<section id="resumen-de-comparación-de-modelos" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-comparación-de-modelos">12.📚Resumen de comparación de modelos</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 23%">
+<col style="width: 31%">
+<col style="width: 17%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th>Efectos fijos</th>
+<th>Efectos aleatorios</th>
+<th>Propósito</th>
+<th>Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>4.1</td>
+<td>Intercepto</td>
+<td>Escuela + salón</td>
+<td>Partición inicial de varianza</td>
+<td>Base</td>
+</tr>
+<tr class="even">
+<td>4.1A</td>
+<td>Intercepto</td>
+<td>Escuela</td>
+<td>Probar salón</td>
+<td>Se rechaza</td>
+</tr>
+<tr class="odd">
+<td>4.2</td>
+<td>Nivel 1</td>
+<td>Escuela + salón</td>
+<td>Agregar estudiante</td>
+<td><strong>Modelo final</strong></td>
+</tr>
+<tr class="even">
+<td>4.3</td>
+<td>Nivel 1 + Nivel 2</td>
+<td>Escuela + salón</td>
+<td>Probar maestro/salón</td>
+<td>No se retiene</td>
+</tr>
+<tr class="odd">
+<td>4.4</td>
+<td>Nivel 1 + Nivel 3</td>
+<td>Escuela + salón</td>
+<td>Probar escuela</td>
+<td>No se retiene</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 29%">
+<col style="width: 25%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pregunta</th>
+<th>Comparación</th>
+<th>Resultado</th>
+<th>Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>¿Hay variación entre salones?</td>
+<td>4.1A vs 4.1</td>
+<td>p &lt; 0.01</td>
+<td>Mantener salón</td>
+</tr>
+<tr class="even">
+<td>¿Aportan variables del estudiante?</td>
+<td>4.1 vs 4.2</td>
+<td>p &lt; 0.001</td>
+<td>Mantener nivel 1</td>
+</tr>
+<tr class="odd">
+<td>¿Aportan variables del salón?</td>
+<td>Model 4.3</td>
+<td>p &gt; 0.10</td>
+<td>No retener</td>
+</tr>
+<tr class="even">
+<td>¿Aporta <code>housepov</code>?</td>
+<td>Model 4.4</td>
+<td>p = 0.25</td>
+<td>No retener</td>
+</tr>
+<tr class="odd">
+<td><strong>Modelo final</strong></td>
+<td>—</td>
+<td>—</td>
+<td><strong>Model 4.2</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modelo-final-interpretación-de-efectos-fijos" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-final-interpretación-de-efectos-fijos">13.📚Modelo final — Interpretación de efectos fijos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Efectos fijos — Model 4.2 (REML)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Efecto</th>
+<th style="text-align: right;">Estimacion</th>
+<th style="text-align: right;">IC_inferior</th>
+<th style="text-align: right;">IC_superior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">286.662</td>
+<td style="text-align: right;">264.912</td>
+<td style="text-align: right;">308.413</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mathkind</td>
+<td style="text-align: left;">mathkind</td>
+<td style="text-align: right;">-0.477</td>
+<td style="text-align: right;">-0.521</td>
+<td style="text-align: right;">-0.432</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sex</td>
+<td style="text-align: left;">sex</td>
+<td style="text-align: right;">-1.360</td>
+<td style="text-align: right;">-4.736</td>
+<td style="text-align: right;">2.016</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">minority</td>
+<td style="text-align: left;">minority</td>
+<td style="text-align: right;">-8.507</td>
+<td style="text-align: right;">-13.169</td>
+<td style="text-align: right;">-3.846</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ses</td>
+<td style="text-align: left;">ses</td>
+<td style="text-align: right;">5.400</td>
+<td style="text-align: right;">2.899</td>
+<td style="text-align: right;">7.901</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="componentes-de-varianza-e-icc" class="level2">
+<h2 class="anchored" data-anchor-id="componentes-de-varianza-e-icc">14.📚Componentes de varianza e ICC</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>vc <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(model4.<span class="fl">2.</span>reml.fit)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Variance     StdDev   
+schoolid =  pdLogChol(1)          
+(Intercept)  66.22139     8.137653
+classid =   pdLogChol(1)          
+(Intercept)  91.95853     9.589501
+Residual    714.88075    26.737254</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(vc[, <span class="st">"Variance"</span>])</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> vars[<span class="sc">!</span><span class="fu">is.na</span>(vars)]</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>var_escuela <span class="ot">&lt;-</span> vars[<span class="dv">1</span>]</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>var_salon   <span class="ot">&lt;-</span> vars[<span class="dv">2</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>var_res     <span class="ot">&lt;-</span> vars[<span class="dv">3</span>]</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>var_total   <span class="ot">&lt;-</span> var_escuela <span class="sc">+</span> var_salon <span class="sc">+</span> var_res</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>icc_escuela     <span class="ot">&lt;-</span> var_escuela <span class="sc">/</span> var_total</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>icc_mismo_salon <span class="ot">&lt;-</span> (var_escuela <span class="sc">+</span> var_salon) <span class="sc">/</span> var_total</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>prop_salon      <span class="ot">&lt;-</span> var_salon <span class="sc">/</span> var_total</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza escuela:          "</span>, <span class="fu">round</span>(var_escuela, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza escuela:           66.2214 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza salón:            "</span>, <span class="fu">round</span>(var_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza salón:             91.9585 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza residual:         "</span>, <span class="fu">round</span>(var_res, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Varianza residual:          714.8808 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ICC misma escuela:         "</span>, <span class="fu">round</span>(icc_escuela, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>ICC misma escuela:          0.0758 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ICC mismo salón:           "</span>, <span class="fu">round</span>(icc_mismo_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>ICC mismo salón:            0.1812 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Proporción salón adicional:"</span>, <span class="fu">round</span>(prop_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Proporción salón adicional: 0.1053 </code></pre>
+</div>
+</div>
+</section>
+<section id="diagnósticos" class="level2">
+<h2 class="anchored" data-anchor-id="diagnósticos">15.📚Diagnósticos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/diagnosticos-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/eblups-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level2">
+<h2 class="anchored" data-anchor-id="conclusiones">16.📚Conclusiones</h2>
+<ul>
+<li>Existe variabilidad significativa entre salones dentro de escuelas</li>
+<li>Las variables del estudiante (<code>mathkind</code>, <code>sex</code>, <code>minority</code>, <code>ses</code>) mejoran el ajuste</li>
+<li>Las variables del salón y escuela no retienen significancia</li>
+<li>El <strong>Model 4.2</strong> es el modelo final</li>
+<li>El puntaje inicial (<code>mathkind</code>) es el predictor más importante del progreso en matemáticas</li>
+</ul>
 
 
 <!-- -->
@@ -674,13 +1440,329 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Three-Level Clusters (Classroom)"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Próximamente</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Este ejemplo está en construcción.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Modelos para datos en clusters de 3 niveles"</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "The Classroom Example📚🎒 - West et al., Cap. 4 (p. 135)"</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Elena Lazo"</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 11-junio-2026</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WWGbook)</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(classroom)</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>classroom <span class="ot">&lt;-</span> classroom <span class="sc">|&gt;</span></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">schoolid =</span> <span class="fu">factor</span>(schoolid),</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">classid  =</span> <span class="fu">factor</span>(classid),</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">childid  =</span> <span class="fu">factor</span>(childid))</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Base analítica completa — misma muestra para todos los modelos</span></span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="ot">&lt;-</span> classroom <span class="sc">|&gt;</span></span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>    mathgain, schoolid, classid, childid,</span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>    mathkind, sex, minority, ses,</span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>    yearstea, mathprep, mathknow,</span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>    housepov) <span class="sc">|&gt;</span></span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.📚Problema de investigación</span></span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>Este ejemplo analiza el **progreso en matemáticas** de estudiantes</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>de primer grado. Los estudiantes están agrupados dentro de salones</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>y los salones dentro de escuelas — estructura de **tres niveles**.</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Pregunta central:** ¿Qué factores a nivel de estudiante, salón</span></span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; y escuela se asocian con el progreso en matemáticas, considerando</span></span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; la estructura jerárquica de tres niveles?</span></span>
+<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.📚Estructura jerárquica</span></span>
+<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r estructura}</span></span>
+<span id="cb38-56"><a href="#cb38-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Tamaño total</span></span>
+<span id="cb38-57"><a href="#cb38-57" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(classroom_analysis)</span>
+<span id="cb38-58"><a href="#cb38-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-59"><a href="#cb38-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Niveles — contando salones como combinación escuela-salón</span></span>
+<span id="cb38-60"><a href="#cb38-60" aria-hidden="true" tabindex="-1"></a>n_salones <span class="ot">&lt;-</span> classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb38-62"><a href="#cb38-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span>
+<span id="cb38-63"><a href="#cb38-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-64"><a href="#cb38-64" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb38-65"><a href="#cb38-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb38-66"><a href="#cb38-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">escuelas    =</span> <span class="fu">n_distinct</span>(schoolid),</span>
+<span id="cb38-67"><a href="#cb38-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">salones     =</span> n_salones,</span>
+<span id="cb38-68"><a href="#cb38-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">estudiantes =</span> <span class="fu">n_distinct</span>(childid))</span>
+<span id="cb38-69"><a href="#cb38-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-70"><a href="#cb38-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Salones por escuela</span></span>
+<span id="cb38-71"><a href="#cb38-71" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb38-72"><a href="#cb38-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb38-73"><a href="#cb38-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(schoolid, <span class="at">name =</span> <span class="st">"salones_por_escuela"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-74"><a href="#cb38-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb38-75"><a href="#cb38-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(salones_por_escuela),</span>
+<span id="cb38-76"><a href="#cb38-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(salones_por_escuela),</span>
+<span id="cb38-77"><a href="#cb38-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(salones_por_escuela), <span class="dv">1</span>))</span>
+<span id="cb38-78"><a href="#cb38-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-79"><a href="#cb38-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Estudiantes por salón</span></span>
+<span id="cb38-80"><a href="#cb38-80" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb38-81"><a href="#cb38-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(schoolid, classid, <span class="at">name =</span> <span class="st">"est_por_salon"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-82"><a href="#cb38-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb38-83"><a href="#cb38-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">min   =</span> <span class="fu">min</span>(est_por_salon),</span>
+<span id="cb38-84"><a href="#cb38-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">max   =</span> <span class="fu">max</span>(est_por_salon),</span>
+<span id="cb38-85"><a href="#cb38-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(est_por_salon), <span class="dv">1</span>))</span>
+<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificar si classid se repite entre escuelas</span></span>
+<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>classroom_analysis <span class="sc">|&gt;</span></span>
+<span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(schoolid, classid) <span class="sc">|&gt;</span></span>
+<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(classid) <span class="sc">|&gt;</span></span>
+<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3.📚Variables</span></span>
+<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variable <span class="pp">|</span> Nivel <span class="pp">|</span> Tipo <span class="pp">|</span> Rol <span class="pp">|</span></span>
+<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|-------|------|-----|</span></span>
+<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`mathgain`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> **Outcome** <span class="pp">|</span></span>
+<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`mathkind`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — puntaje inicial <span class="pp">|</span></span>
+<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`sex`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Categórica <span class="pp">|</span> Covariable <span class="pp">|</span></span>
+<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`minority`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Categórica <span class="pp">|</span> Covariable <span class="pp">|</span></span>
+<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`ses`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable <span class="pp">|</span></span>
+<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`childid`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Identificador <span class="pp">|</span> Estudiante <span class="pp">|</span></span>
+<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`yearstea`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — años enseñando <span class="pp">|</span></span>
+<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`mathprep`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — preparación matemática <span class="pp">|</span></span>
+<span id="cb38-106"><a href="#cb38-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`mathknow`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — conocimiento matemático <span class="pp">|</span></span>
+<span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`classid`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Identificador <span class="pp">|</span> Salón <span class="pp">|</span></span>
+<span id="cb38-108"><a href="#cb38-108" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`housepov`</span> <span class="pp">|</span> 3 <span class="pp">|</span> Continua <span class="pp">|</span> Covariable — pobreza escuela <span class="pp">|</span></span>
+<span id="cb38-109"><a href="#cb38-109" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`schoolid`</span> <span class="pp">|</span> 3 <span class="pp">|</span> Identificador <span class="pp">|</span> Escuela <span class="pp">|</span></span>
+<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-111"><a href="#cb38-111" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.📚Exploración descriptiva</span></span>
+<span id="cb38-112"><a href="#cb38-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-113"><a href="#cb38-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig1, echo=FALSE}</span></span>
+<span id="cb38-114"><a href="#cb38-114" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(classroom_analysis, <span class="fu">aes</span>(<span class="at">x =</span> mathgain)) <span class="sc">+</span></span>
+<span id="cb38-115"><a href="#cb38-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"#8e44ad"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb38-116"><a href="#cb38-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribución del progreso en matemáticas"</span>,</span>
+<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Progreso (mathgain)"</span>, <span class="at">y =</span> <span class="st">"Frecuencia"</span>) <span class="sc">+</span></span>
+<span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb38-119"><a href="#cb38-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-120"><a href="#cb38-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-121"><a href="#cb38-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, echo=FALSE}</span></span>
+<span id="cb38-122"><a href="#cb38-122" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(classroom_analysis, <span class="fu">aes</span>(<span class="at">x =</span> mathkind, <span class="at">y =</span> mathgain)) <span class="sc">+</span></span>
+<span id="cb38-123"><a href="#cb38-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#8e44ad"</span>) <span class="sc">+</span></span>
+<span id="cb38-124"><a href="#cb38-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"#5b2c6f"</span>) <span class="sc">+</span></span>
+<span id="cb38-125"><a href="#cb38-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Progreso vs puntaje inicial"</span>,</span>
+<span id="cb38-126"><a href="#cb38-126" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Puntaje inicial (mathkind)"</span>,</span>
+<span id="cb38-127"><a href="#cb38-127" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Progreso (mathgain)"</span>) <span class="sc">+</span></span>
+<span id="cb38-128"><a href="#cb38-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb38-129"><a href="#cb38-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-130"><a href="#cb38-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-131"><a href="#cb38-131" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5.📚Estrategia step-up</span></span>
+<span id="cb38-132"><a href="#cb38-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-133"><a href="#cb38-133" aria-hidden="true" tabindex="-1"></a>A diferencia del capítulo 3 que usaba **top-down**, aquí West</span>
+<span id="cb38-134"><a href="#cb38-134" aria-hidden="true" tabindex="-1"></a>usa una estrategia **step-up**: parte del modelo más simple</span>
+<span id="cb38-135"><a href="#cb38-135" aria-hidden="true" tabindex="-1"></a>y va agregando complejidad.</span>
+<span id="cb38-136"><a href="#cb38-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-139"><a href="#cb38-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb38-140"><a href="#cb38-140" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb38-141"><a href="#cb38-141" aria-hidden="true" tabindex="-1"></a>    A[Model <span class="fl">4.1</span>\nModelo incondicional] --&gt; B{H4.<span class="dv">1</span>\n¿Variación entre salones?}</span>
+<span id="cb38-142"><a href="#cb38-142" aria-hidden="true" tabindex="-1"></a>    B --&gt; C[Model <span class="fl">4.2</span>\nCovariables nivel <span class="dv">1</span>]</span>
+<span id="cb38-143"><a href="#cb38-143" aria-hidden="true" tabindex="-1"></a>    C --&gt; D{H4.<span class="dv">2</span>\n¿Aportan variables del estudiante?}</span>
+<span id="cb38-144"><a href="#cb38-144" aria-hidden="true" tabindex="-1"></a>    D --&gt; E[Model <span class="fl">4.3</span>\nCovariables nivel <span class="dv">2</span>]</span>
+<span id="cb38-145"><a href="#cb38-145" aria-hidden="true" tabindex="-1"></a>    E --&gt; F[Model <span class="fl">4.4</span>\nCovariable nivel <span class="dv">3</span>]</span>
+<span id="cb38-146"><a href="#cb38-146" aria-hidden="true" tabindex="-1"></a>    F --&gt; G[Modelo final: Model <span class="fl">4.2</span>]</span>
+<span id="cb38-147"><a href="#cb38-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-148"><a href="#cb38-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-149"><a href="#cb38-149" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6.📚Model 4.1: Modelo incondicional</span></span>
+<span id="cb38-150"><a href="#cb38-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-151"><a href="#cb38-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model41}</span></span>
+<span id="cb38-152"><a href="#cb38-152" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-153"><a href="#cb38-153" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb38-154"><a href="#cb38-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb38-155"><a href="#cb38-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-156"><a href="#cb38-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb38-157"><a href="#cb38-157" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">1.</span>fit)</span>
+<span id="cb38-158"><a href="#cb38-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-159"><a href="#cb38-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-160"><a href="#cb38-160" aria-hidden="true" tabindex="-1"></a><span class="fu">## 7.📚H4.1: ¿Hay variabilidad entre salones?</span></span>
+<span id="cb38-161"><a href="#cb38-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-162"><a href="#cb38-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h41}</span></span>
+<span id="cb38-163"><a href="#cb38-163" aria-hidden="true" tabindex="-1"></a>model4<span class="fl">.1</span>A.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-164"><a href="#cb38-164" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb38-165"><a href="#cb38-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid,</span>
+<span id="cb38-166"><a href="#cb38-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-167"><a href="#cb38-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb38-168"><a href="#cb38-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-169"><a href="#cb38-169" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model4<span class="fl">.1</span>A.fit, model4.<span class="fl">1.</span>fit)</span>
+<span id="cb38-170"><a href="#cb38-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-171"><a href="#cb38-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-172"><a href="#cb38-172" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Si el LRT es significativo, se conserva el intercepto aleatorio</span></span>
+<span id="cb38-173"><a href="#cb38-173" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; de salón dentro de escuela.</span></span>
+<span id="cb38-174"><a href="#cb38-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-175"><a href="#cb38-175" aria-hidden="true" tabindex="-1"></a><span class="fu">## 8.📚Model 4.2: Covariables del estudiante (Nivel 1)</span></span>
+<span id="cb38-176"><a href="#cb38-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-177"><a href="#cb38-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model42}</span></span>
+<span id="cb38-178"><a href="#cb38-178" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">2.</span>fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-179"><a href="#cb38-179" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses,</span>
+<span id="cb38-180"><a href="#cb38-180" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb38-181"><a href="#cb38-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-182"><a href="#cb38-182" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb38-183"><a href="#cb38-183" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">2.</span>fit)</span>
+<span id="cb38-184"><a href="#cb38-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-185"><a href="#cb38-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-186"><a href="#cb38-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## 9.📚H4.2: ¿Aportan las variables del estudiante?</span></span>
+<span id="cb38-187"><a href="#cb38-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-188"><a href="#cb38-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h42}</span></span>
+<span id="cb38-189"><a href="#cb38-189" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">1.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-190"><a href="#cb38-190" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb38-191"><a href="#cb38-191" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb38-192"><a href="#cb38-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-193"><a href="#cb38-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb38-194"><a href="#cb38-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-195"><a href="#cb38-195" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">2.</span>ml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-196"><a href="#cb38-196" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses,</span>
+<span id="cb38-197"><a href="#cb38-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb38-198"><a href="#cb38-198" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-199"><a href="#cb38-199" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ML"</span>)</span>
+<span id="cb38-200"><a href="#cb38-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-201"><a href="#cb38-201" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model4.<span class="fl">1.</span>ml.fit, model4.<span class="fl">2.</span>ml.fit)</span>
+<span id="cb38-202"><a href="#cb38-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-203"><a href="#cb38-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-204"><a href="#cb38-204" aria-hidden="true" tabindex="-1"></a><span class="fu">## 10.📚Model 4.3: Covariables del salón (Nivel 2)</span></span>
+<span id="cb38-205"><a href="#cb38-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-206"><a href="#cb38-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model43}</span></span>
+<span id="cb38-207"><a href="#cb38-207" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">3.</span>fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb38-208"><a href="#cb38-208" aria-hidden="true" tabindex="-1"></a>  model4.<span class="fl">2.</span>fit,</span>
+<span id="cb38-209"><a href="#cb38-209" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed =</span> mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses <span class="sc">+</span></span>
+<span id="cb38-210"><a href="#cb38-210" aria-hidden="true" tabindex="-1"></a>    yearstea <span class="sc">+</span> mathprep <span class="sc">+</span> mathknow)</span>
+<span id="cb38-211"><a href="#cb38-211" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">3.</span>fit)</span>
+<span id="cb38-212"><a href="#cb38-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-213"><a href="#cb38-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-214"><a href="#cb38-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## 11.📚Model 4.4: Covariable de escuela (Nivel 3)</span></span>
+<span id="cb38-215"><a href="#cb38-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-216"><a href="#cb38-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model44}</span></span>
+<span id="cb38-217"><a href="#cb38-217" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">4.</span>fit <span class="ot">&lt;-</span> <span class="fu">update</span>(</span>
+<span id="cb38-218"><a href="#cb38-218" aria-hidden="true" tabindex="-1"></a>  model4.<span class="fl">2.</span>fit,</span>
+<span id="cb38-219"><a href="#cb38-219" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed =</span> mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses <span class="sc">+</span></span>
+<span id="cb38-220"><a href="#cb38-220" aria-hidden="true" tabindex="-1"></a>    housepov</span>
+<span id="cb38-221"><a href="#cb38-221" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-222"><a href="#cb38-222" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4.<span class="fl">4.</span>fit)</span>
+<span id="cb38-223"><a href="#cb38-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-224"><a href="#cb38-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-225"><a href="#cb38-225" aria-hidden="true" tabindex="-1"></a><span class="fu">## 12.📚Resumen de comparación de modelos</span></span>
+<span id="cb38-226"><a href="#cb38-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-227"><a href="#cb38-227" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Modelo <span class="pp">|</span> Efectos fijos <span class="pp">|</span> Efectos aleatorios <span class="pp">|</span> Propósito <span class="pp">|</span> Decisión <span class="pp">|</span></span>
+<span id="cb38-228"><a href="#cb38-228" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|---------------|--------------------|-----------|----------|</span></span>
+<span id="cb38-229"><a href="#cb38-229" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4.1 <span class="pp">|</span> Intercepto <span class="pp">|</span> Escuela + salón <span class="pp">|</span> Partición inicial de varianza <span class="pp">|</span> Base <span class="pp">|</span></span>
+<span id="cb38-230"><a href="#cb38-230" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4.1A <span class="pp">|</span> Intercepto <span class="pp">|</span> Escuela <span class="pp">|</span> Probar salón <span class="pp">|</span> Se rechaza <span class="pp">|</span></span>
+<span id="cb38-231"><a href="#cb38-231" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4.2 <span class="pp">|</span> Nivel 1 <span class="pp">|</span> Escuela + salón <span class="pp">|</span> Agregar estudiante <span class="pp">|</span> **Modelo final** <span class="pp">|</span></span>
+<span id="cb38-232"><a href="#cb38-232" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4.3 <span class="pp">|</span> Nivel 1 + Nivel 2 <span class="pp">|</span> Escuela + salón <span class="pp">|</span> Probar maestro/salón <span class="pp">|</span> No se retiene <span class="pp">|</span></span>
+<span id="cb38-233"><a href="#cb38-233" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4.4 <span class="pp">|</span> Nivel 1 + Nivel 3 <span class="pp">|</span> Escuela + salón <span class="pp">|</span> Probar escuela <span class="pp">|</span> No se retiene <span class="pp">|</span></span>
+<span id="cb38-234"><a href="#cb38-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-235"><a href="#cb38-235" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Pregunta <span class="pp">|</span> Comparación <span class="pp">|</span> Resultado <span class="pp">|</span> Decisión <span class="pp">|</span></span>
+<span id="cb38-236"><a href="#cb38-236" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|-------------|-----------|----------|</span></span>
+<span id="cb38-237"><a href="#cb38-237" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ¿Hay variación entre salones? <span class="pp">|</span> 4.1A vs 4.1 <span class="pp">|</span> p &lt; 0.01 <span class="pp">|</span> Mantener salón <span class="pp">|</span></span>
+<span id="cb38-238"><a href="#cb38-238" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ¿Aportan variables del estudiante? <span class="pp">|</span> 4.1 vs 4.2 <span class="pp">|</span> p &lt; 0.001 <span class="pp">|</span> Mantener nivel 1 <span class="pp">|</span></span>
+<span id="cb38-239"><a href="#cb38-239" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ¿Aportan variables del salón? <span class="pp">|</span> Model 4.3 <span class="pp">|</span> p &gt; 0.10 <span class="pp">|</span> No retener <span class="pp">|</span></span>
+<span id="cb38-240"><a href="#cb38-240" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ¿Aporta <span class="in">`housepov`</span>? <span class="pp">|</span> Model 4.4 <span class="pp">|</span> p = 0.25 <span class="pp">|</span> No retener <span class="pp">|</span></span>
+<span id="cb38-241"><a href="#cb38-241" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Modelo final** | — | — | **Model 4.2** <span class="pp">|</span></span>
+<span id="cb38-242"><a href="#cb38-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-243"><a href="#cb38-243" aria-hidden="true" tabindex="-1"></a><span class="fu">## 13.📚Modelo final — Interpretación de efectos fijos</span></span>
+<span id="cb38-244"><a href="#cb38-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-245"><a href="#cb38-245" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tabla_efectos, echo=FALSE}</span></span>
+<span id="cb38-246"><a href="#cb38-246" aria-hidden="true" tabindex="-1"></a>model4.<span class="fl">2.</span>reml.fit <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb38-247"><a href="#cb38-247" aria-hidden="true" tabindex="-1"></a>  mathgain <span class="sc">~</span> mathkind <span class="sc">+</span> sex <span class="sc">+</span> minority <span class="sc">+</span> ses,</span>
+<span id="cb38-248"><a href="#cb38-248" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> schoolid<span class="sc">/</span>classid,</span>
+<span id="cb38-249"><a href="#cb38-249" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> classroom_analysis,</span>
+<span id="cb38-250"><a href="#cb38-250" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb38-251"><a href="#cb38-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-252"><a href="#cb38-252" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">intervals</span>(model4.<span class="fl">2.</span>reml.fit)<span class="sc">$</span>fixed</span>
+<span id="cb38-253"><a href="#cb38-253" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb38-254"><a href="#cb38-254" aria-hidden="true" tabindex="-1"></a>  <span class="at">Efecto      =</span> <span class="fu">rownames</span>(coefs),</span>
+<span id="cb38-255"><a href="#cb38-255" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimacion  =</span> <span class="fu">round</span>(coefs[, <span class="st">"est."</span>], <span class="dv">3</span>),</span>
+<span id="cb38-256"><a href="#cb38-256" aria-hidden="true" tabindex="-1"></a>  <span class="at">IC_inferior =</span> <span class="fu">round</span>(coefs[, <span class="st">"lower"</span>], <span class="dv">3</span>),</span>
+<span id="cb38-257"><a href="#cb38-257" aria-hidden="true" tabindex="-1"></a>  <span class="at">IC_superior =</span> <span class="fu">round</span>(coefs[, <span class="st">"upper"</span>], <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb38-258"><a href="#cb38-258" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Efectos fijos — Model 4.2 (REML)"</span>)</span>
+<span id="cb38-259"><a href="#cb38-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-260"><a href="#cb38-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-261"><a href="#cb38-261" aria-hidden="true" tabindex="-1"></a><span class="fu">## 14.📚Componentes de varianza e ICC</span></span>
+<span id="cb38-262"><a href="#cb38-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-263"><a href="#cb38-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r icc}</span></span>
+<span id="cb38-264"><a href="#cb38-264" aria-hidden="true" tabindex="-1"></a>vc <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(model4.<span class="fl">2.</span>reml.fit)</span>
+<span id="cb38-265"><a href="#cb38-265" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vc)</span>
+<span id="cb38-266"><a href="#cb38-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-267"><a href="#cb38-267" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(vc[, <span class="st">"Variance"</span>])</span>
+<span id="cb38-268"><a href="#cb38-268" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> vars[<span class="sc">!</span><span class="fu">is.na</span>(vars)]</span>
+<span id="cb38-269"><a href="#cb38-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-270"><a href="#cb38-270" aria-hidden="true" tabindex="-1"></a>var_escuela <span class="ot">&lt;-</span> vars[<span class="dv">1</span>]</span>
+<span id="cb38-271"><a href="#cb38-271" aria-hidden="true" tabindex="-1"></a>var_salon   <span class="ot">&lt;-</span> vars[<span class="dv">2</span>]</span>
+<span id="cb38-272"><a href="#cb38-272" aria-hidden="true" tabindex="-1"></a>var_res     <span class="ot">&lt;-</span> vars[<span class="dv">3</span>]</span>
+<span id="cb38-273"><a href="#cb38-273" aria-hidden="true" tabindex="-1"></a>var_total   <span class="ot">&lt;-</span> var_escuela <span class="sc">+</span> var_salon <span class="sc">+</span> var_res</span>
+<span id="cb38-274"><a href="#cb38-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-275"><a href="#cb38-275" aria-hidden="true" tabindex="-1"></a>icc_escuela     <span class="ot">&lt;-</span> var_escuela <span class="sc">/</span> var_total</span>
+<span id="cb38-276"><a href="#cb38-276" aria-hidden="true" tabindex="-1"></a>icc_mismo_salon <span class="ot">&lt;-</span> (var_escuela <span class="sc">+</span> var_salon) <span class="sc">/</span> var_total</span>
+<span id="cb38-277"><a href="#cb38-277" aria-hidden="true" tabindex="-1"></a>prop_salon      <span class="ot">&lt;-</span> var_salon <span class="sc">/</span> var_total</span>
+<span id="cb38-278"><a href="#cb38-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-279"><a href="#cb38-279" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza escuela:          "</span>, <span class="fu">round</span>(var_escuela, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-280"><a href="#cb38-280" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza salón:            "</span>, <span class="fu">round</span>(var_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-281"><a href="#cb38-281" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Varianza residual:         "</span>, <span class="fu">round</span>(var_res, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-282"><a href="#cb38-282" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ICC misma escuela:         "</span>, <span class="fu">round</span>(icc_escuela, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-283"><a href="#cb38-283" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ICC mismo salón:           "</span>, <span class="fu">round</span>(icc_mismo_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-284"><a href="#cb38-284" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Proporción salón adicional:"</span>, <span class="fu">round</span>(prop_salon, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb38-285"><a href="#cb38-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-286"><a href="#cb38-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-287"><a href="#cb38-287" aria-hidden="true" tabindex="-1"></a><span class="fu">## 15.📚Diagnósticos</span></span>
+<span id="cb38-288"><a href="#cb38-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-289"><a href="#cb38-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnosticos, echo=FALSE}</span></span>
+<span id="cb38-290"><a href="#cb38-290" aria-hidden="true" tabindex="-1"></a>residuos_norm <span class="ot">&lt;-</span> <span class="fu">residuals</span>(model4.<span class="fl">2.</span>reml.fit, <span class="at">type =</span> <span class="st">"normalized"</span>)</span>
+<span id="cb38-291"><a href="#cb38-291" aria-hidden="true" tabindex="-1"></a>ajustados     <span class="ot">&lt;-</span> <span class="fu">fitted</span>(model4.<span class="fl">2.</span>reml.fit, <span class="at">level =</span> <span class="dv">2</span>)</span>
+<span id="cb38-292"><a href="#cb38-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-293"><a href="#cb38-293" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb38-294"><a href="#cb38-294" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ajustados, residuos_norm,</span>
+<span id="cb38-295"><a href="#cb38-295" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Valores ajustados"</span>,</span>
+<span id="cb38-296"><a href="#cb38-296" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Residuos normalizados"</span>,</span>
+<span id="cb38-297"><a href="#cb38-297" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Residuos vs ajustados"</span>)</span>
+<span id="cb38-298"><a href="#cb38-298" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb38-299"><a href="#cb38-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-300"><a href="#cb38-300" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(residuos_norm, <span class="at">main =</span> <span class="st">"Q-Q plot residuos"</span>)</span>
+<span id="cb38-301"><a href="#cb38-301" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(residuos_norm)</span>
+<span id="cb38-302"><a href="#cb38-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-303"><a href="#cb38-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-304"><a href="#cb38-304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eblups, echo=FALSE}</span></span>
+<span id="cb38-305"><a href="#cb38-305" aria-hidden="true" tabindex="-1"></a>re_school <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model4.<span class="fl">2.</span>reml.fit, <span class="at">level =</span> <span class="dv">1</span>)</span>
+<span id="cb38-306"><a href="#cb38-306" aria-hidden="true" tabindex="-1"></a>re_class  <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model4.<span class="fl">2.</span>reml.fit, <span class="at">level =</span> <span class="dv">2</span>)</span>
+<span id="cb38-307"><a href="#cb38-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-308"><a href="#cb38-308" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb38-309"><a href="#cb38-309" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_school[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs escuela"</span>)</span>
+<span id="cb38-310"><a href="#cb38-310" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_school[, <span class="dv">1</span>])</span>
+<span id="cb38-311"><a href="#cb38-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-312"><a href="#cb38-312" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_class[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs salón"</span>)</span>
+<span id="cb38-313"><a href="#cb38-313" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_class[, <span class="dv">1</span>])</span>
+<span id="cb38-314"><a href="#cb38-314" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-315"><a href="#cb38-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-316"><a href="#cb38-316" aria-hidden="true" tabindex="-1"></a><span class="fu">## 16.📚Conclusiones</span></span>
+<span id="cb38-317"><a href="#cb38-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-318"><a href="#cb38-318" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Existe variabilidad significativa entre salones dentro de escuelas</span>
+<span id="cb38-319"><a href="#cb38-319" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Las variables del estudiante (<span class="in">`mathkind`</span>, <span class="in">`sex`</span>, <span class="in">`minority`</span>, <span class="in">`ses`</span>)</span>
+<span id="cb38-320"><a href="#cb38-320" aria-hidden="true" tabindex="-1"></a>  mejoran el ajuste</span>
+<span id="cb38-321"><a href="#cb38-321" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Las variables del salón y escuela no retienen significancia</span>
+<span id="cb38-322"><a href="#cb38-322" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El **Model 4.2** es el modelo final</span>
+<span id="cb38-323"><a href="#cb38-323" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El puntaje inicial (<span class="in">`mathkind`</span>) es el predictor más importante</span>
+<span id="cb38-324"><a href="#cb38-324" aria-hidden="true" tabindex="-1"></a>  del progreso en matemáticas</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
