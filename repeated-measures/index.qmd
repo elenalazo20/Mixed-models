@@ -1,8 +1,331 @@
 ---
-title: "Repeated Measures (Rat Brain)"
+title: "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)"
+subtitle: "The Rat Brain Example🧠🐁 - West et al., Cap. 5 (p. 199)"
+author: "Elena Lazo"
+date: 11-junio-2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(WWGbook)
+library(nlme)
+library(emmeans)
+library(dplyr)
+library(ggplot2)
+library(lmerTest)
 
-Este ejemplo está en construcción.
+data(rat.brain)
 
+rat_brain <- rat.brain |>
+  mutate(
+    animal = factor(animal),
+    region.f = factor(case_when(
+      region == 1 ~ 1,
+      region == 2 ~ 2,
+      region == 3 ~ 0)),
+    treat = case_when(
+      treatment == 1 ~ 0,
+      treatment == 2 ~ 1))
+```
+
+## 1.🐁Problema de investigación
+
+Se mide la **activación cerebral** (`activate`) en 5 ratas en
+3 regiones cerebrales bajo 2 condiciones de tratamiento
+(basal y carbachol).
+
+> **Pregunta central:** ¿Difiere la activación cerebral entre
+> regiones y tratamientos, considerando que cada rata contribuye
+> con múltiples observaciones?
+
+## 2.🐁Diseño de medidas repetidas
+
+- Cada rata tiene **6 observaciones** (3 regiones × 2 tratamientos)
+- Las observaciones dentro de una misma rata **no son independientes**
+- Es un diseño de **medidas repetidas** — las medidas se repiten
+  en los mismos sujetos
+
+```{r verificacion}
+str(rat_brain)
+table(rat_brain$region, rat_brain$region.f)
+table(rat_brain$treatment, rat_brain$treat)
+nrow(rat_brain)
+```
+
+## 3.🐁Variables
+
+| Variable | Tipo | Rol | Codificación |
+|----------|------|-----|--------------|
+| `activate` | Continua | **Outcome** | Activación cerebral |
+| `region.f` | Categórica | Factor intra-sujeto | VDB = 0 (ref), BST = 1, LS = 2 |
+| `treat` | Categórica | Factor intra-sujeto | Basal = 0 (ref), Carbachol = 1 |
+| `animal` | Identificador | Sujeto | 5 ratas |
+
+## 4.🐁Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(rat_brain, aes(x = region.f, y = activate,
+                      color = factor(treat),
+                      group = interaction(animal, treat))) +
+  geom_line(alpha = 0.5) +
+  geom_point() +
+  scale_color_manual(values = c("#8e44ad", "#2C5F2D"),
+                     labels = c("Basal", "Carbachol")) +
+  labs(title = "Activación cerebral por región y tratamiento",
+       x = "Región cerebral", y = "Activación",
+       color = "Tratamiento") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+ggplot(rat_brain, aes(x = region.f, y = activate,
+                      fill = factor(treat))) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8e44ad", "#2C5F2D"),
+                    labels = c("Basal", "Carbachol")) +
+  labs(title = "Distribución de activación por región y tratamiento",
+       x = "Región cerebral", y = "Activación",
+       fill = "Tratamiento") +
+  theme_minimal()
+```
+
+## 5.🐁Estrategia top-down
+
+```{mermaid}
+flowchart TD
+    A[Model 5.1\nIntercepto aleatorio por rata] --> B{H5.1\n¿Varía el efecto del tratamiento entre ratas?}
+    B -->|Sí p<0.001| C[Model 5.2\nIntercepto + tratamiento aleatorio]
+    C --> D{H5.2\n¿Varianza residual heterogénea?}
+    D -->|No p=0.66| E{H5.3\n¿Interacción región x tratamiento?}
+    E -->|Sí| F[Model 5.2 — Modelo Final]
+```
+
+## 6.🐁Model 5.1: Intercepto aleatorio
+
+```{r model51}
+model5.1.fit <- lme(
+  activate ~ region.f * treat,
+  random = ~ 1 | animal,
+  method = "REML",
+  data = rat_brain)
+summary(model5.1.fit)
+```
+
+## 7.🐁H5.1: ¿Varía el efecto del tratamiento entre ratas?
+
+```{r h51}
+model5.2.fit <- update(
+  model5.1.fit,
+  random = ~ treat | animal)
+
+anova(model5.1.fit, model5.2.fit)
+```
+
+> West calcula el valor p con una distribución mezcla de
+> chi-cuadrado porque se evalúan componentes de varianza en
+> el límite del espacio paramétrico.
+> Resultado: **estadístico = 26.1, p < 0.001** →
+> se retiene el efecto aleatorio del tratamiento.
+
+## 8.🐁H5.2: ¿Varianza residual heterogénea por tratamiento?
+
+```{r h52}
+model5.3.fit <- lme(
+  activate ~ region.f * treat,
+  random = ~ treat | animal,
+  weights = varIdent(form = ~ 1 | treat),
+  method = "REML",
+  data = rat_brain)
+
+anova(model5.2.fit, model5.3.fit)
+```
+
+> **p = 0.66** → no se necesita varianza residual heterogénea.
+> Se prefiere el **Model 5.2**.
+
+## 9.🐁H5.3: ¿Es significativa la interacción región × tratamiento?
+
+```{r h53}
+anova(model5.2.fit)
+```
+
+> La interacción `region.f:treat` es significativa →
+> el efecto del tratamiento depende de la región cerebral.
+> Se mantiene el **Model 5.2** como modelo final.
+
+## 10.🐁Resumen de comparación de modelos
+
+| Comparación | Componente evaluado | Resultado | Decisión |
+|-------------|---------------------|-----------|----------|
+| 5.1 vs 5.2 | Efecto aleatorio tratamiento | p < 0.001 | Mantener |
+| 5.2 vs 5.3 | Varianza residual heterogénea | p = 0.66 | No retener |
+| anova(5.2) | Interacción región × tratamiento | Significativa | Mantener |
+| **Modelo final** | — | — | **Model 5.2** |
+
+## 11.🐁Modelo final
+
+```{r modelo_final}
+summary(model5.2.fit)
+VarCorr(model5.2.fit)
+intervals(model5.2.fit)
+```
+
+## 12.🐁Interpretación de la interacción
+
+Como la interacción región × tratamiento es significativa,
+no conviene interpretar efectos principales por separado.
+
+```{r emmeans1}
+# Efecto del tratamiento dentro de cada región
+emm1 <- emmeans(
+  model5.2.fit,
+  ~ treat | region.f,
+  at = list(treat = c(0, 1)))
+emm1
+pairs(emm1)
+```
+
+```{r emmeans2}
+# Diferencias entre regiones dentro de cada tratamiento
+emm2 <- emmeans(
+  model5.2.fit,
+  ~ region.f | treat,
+  at = list(treat = c(0, 1)))
+emm2
+pairs(emm2)
+```
+
+## 13.🐁Componentes de varianza
+
+```{r varianza}
+vc <- VarCorr(model5.2.fit)
+print(vc)
+```
+
+> El Model 5.2 permite que cada rata tenga:
+>
+> - Su propio **nivel basal** de activación (intercepto aleatorio)
+> - Su propia **respuesta al tratamiento** (efecto aleatorio de treat)
+
+## 14.🐁Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos_norm <- residuals(model5.2.fit, type = "normalized")
+ajustados     <- fitted(model5.2.fit)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos_norm,
+     xlab = "Valores ajustados",
+     ylab = "Residuos normalizados",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos_norm, main = "Q-Q plot residuos")
+qqline(residuos_norm)
+```
+
+```{r eblups, echo=FALSE}
+re <- ranef(model5.2.fit)
+
+par(mfrow = c(1, 2))
+qqnorm(re[, 1], main = "Q-Q EBLUPs intercepto")
+qqline(re[, 1])
+
+qqnorm(re[, 2], main = "Q-Q EBLUPs tratamiento")
+qqline(re[, 2])
+```
+
+## 15.🐁Conclusiones
+
+- La activación cerebral varía significativamente entre regiones
+  y tratamientos
+- El efecto del carbachol **depende de la región** (interacción
+  significativa)
+- Las ratas difieren tanto en su nivel basal como en su respuesta
+  al tratamiento
+- El **Model 5.2** es el modelo final — intercepto y tratamiento
+  aleatorios por rata, varianza residual homogénea
+
+> El modelo final permite que cada rata tenga su propio nivel
+> basal de activación y su propia respuesta al tratamiento,
+> manteniendo una varianza residual homogénea y conservando
+> la interacción región × tratamiento.
+
+---
+
+## Anexo: Comparación con lmer()
+
+`lmer()` puede replicar los Model 5.1 y 5.2 pero **no el 5.3**
+porque no permite varianzas residuales heterogéneas.
+
+| Modelo | lme() | lmer() |
+|--------|-------|--------|
+| 5.1 intercepto aleatorio | ✅ | ✅ |
+| 5.2 intercepto + tratamiento aleatorio | ✅ | ✅ |
+| 5.3 varianza residual heterogénea | ✅ | ❌ |
+
+### Model 5.1 con lmer()
+
+```{r lmer51}
+library(lme4)
+library(lmerTest)
+
+model5.1.lmer <- lmer(
+  activate ~ region.f * treat + (1 | animal),
+  data = rat_brain,
+  REML = TRUE)
+
+summary(model5.1.lmer)
+```
+
+### Model 5.2 con lmer()
+
+```{r lmer52}
+model5.2.lmer <- lmer(
+  activate ~ region.f * treat + (treat | animal),
+  data = rat_brain,
+  REML = TRUE)
+
+summary(model5.2.lmer)
+```
+
+### Comparación H5.1 con lmer()
+
+```{r lmer_h51}
+# lmerTest permite usar rand() para probar efectos aleatorios
+rand(model5.2.lmer)
+```
+
+### Comparación de estimaciones lme() vs lmer()
+
+```{r comparacion}
+# Efectos fijos
+cat("=== lme() ===\n")
+round(fixef(model5.2.fit), 4)
+
+cat("\n=== lmer() ===\n")
+round(fixef(model5.2.lmer), 4)
+
+# Componentes de varianza
+cat("\n=== Varianza lme() ===\n")
+VarCorr(model5.2.fit)
+
+cat("\n=== Varianza lmer() ===\n")
+VarCorr(model5.2.lmer)
+```
+
+> Las estimaciones de efectos fijos y componentes de varianza
+> son prácticamente idénticas entre `lme()` y `lmer()`.
+> La diferencia está en que `lme()` permite el Model 5.3
+> con varianza residual heterogénea, mientras que `lmer()` no.

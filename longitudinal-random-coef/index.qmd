@@ -1,8 +1,375 @@
 ---
-title: "Longitudinal Random Coef (Autism)"
+title: "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)"
+subtitle: "The Autism Example🧠🚸 - West et al., Cap. 6 (p. 249)"
+author: "Elena Lazo"
+date: junio 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(WWGbook)
+library(nlme)
+library(dplyr)
+library(ggplot2)
+library(lmerTest)
 
-Este ejemplo está en construcción.
+data(autism)
 
+autism_updated <- autism |>
+  mutate(
+    childid = factor(childid),
+    age.2   = age - 2,
+    age.2sq = age.2 * age.2,
+    sicdegp2 = case_when(
+      sicdegp == 3 ~ 0,
+      sicdegp == 1 ~ 1,
+      sicdegp == 2 ~ 2),
+    sicdegp2.f = factor(sicdegp2, levels = c(0, 1, 2))) |>
+  filter(!is.na(vsae))
+
+autism.grouped <- groupedData(
+  vsae ~ age.2 | childid,
+  data = autism_updated,
+  order.groups = FALSE)
+```
+
+## 1.🧠Problema de investigación
+
+Se estudia el desarrollo de la socialización (`vsae`)
+en niños con autismo a lo largo del tiempo. Los niños fueron
+medidos a los 2, 3, 5, 9 y 13 años.
+
+> **Pregunta central:** ¿Cómo evoluciona el desarrollo de la socialización con la edad,
+y difiere esta trayectoria según el grupo de competencia lingüística
+inicial (`sicdegp`)?
+
+## 2.🧠Diseño longitudinal
+
+- Datos **longitudinales** — mismos niños medidos en múltiples
+  momentos del tiempo
+- Nivel 2: **niño** (`childid`)
+- Nivel 1: **medición** en el tiempo (`age`)
+- Las mediciones dentro de un mismo niño no son independientes
+- Diseño **desbalanceado** — no todos los niños tienen todas
+  las mediciones
+
+```{r verificacion}
+nrow(autism_updated)
+n_distinct(autism_updated$childid)
+
+autism_updated |>
+  count(childid, name = "n_mediciones") |>
+  count(n_mediciones, name = "n_ninos")
+
+table(autism_updated$age, autism_updated$sicdegp2.f)
+```
+
+## 3.🧠Variables
+
+| Variable | Nivel | Tipo | Rol | Codificación |
+|----------|-------|------|-----|--------------|
+| `vsae` | 1 | Continua | **Outcome** | Habilidades sociales verbales |
+| `age` | 1 | Continua | Tiempo | 2, 3, 5, 9, 13 años |
+| `age.2` | 1 | Continua | Tiempo centrado | age − 2 |
+| `age.2sq` | 1 | Continua | Curvatura | age.2² |
+| `childid` | 2 | Identificador | Sujeto | Niño |
+| `sicdegp` | 2 | Categórica | Predictor | Grupo de competencia lingüística inicial |
+| `sicdegp2.f` | 2 | Categórica | Predictor recodificado | Grupo 3 = ref (0), Grupo 1 = 1, Grupo 2 = 2 |
+
+> **¿Por qué centrar la edad en 2?** Porque los niños tienen
+> 2 años en la primera medición. Así el intercepto representa
+> el VSAE esperado **al inicio del seguimiento**, no al año 0.
+
+## 4.🧠Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(autism_updated,
+       aes(x = age, y = vsae,
+           group = childid,
+           color = sicdegp2.f)) +
+  geom_line(alpha = 0.3) +
+  geom_point(alpha = 0.5, size = 0.8) +
+  scale_color_manual(
+    values = c("#8e44ad", "#2C5F2D", "#e67e22"),
+    labels = c("Grupo 3 (ref)", "Grupo 1", "Grupo 2")) +
+  labs(title = "Trayectorias individuales de VSAE por grupo",
+       x = "Edad (años)", y = "VSAE",
+       color = "Grupo SICD") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+ggplot(autism_updated,
+       aes(x = age, y = vsae,
+           color = sicdegp2.f)) +
+  geom_smooth(method = "loess", se = TRUE) +
+  scale_color_manual(
+    values = c("#8e44ad", "#2C5F2D", "#e67e22"),
+    labels = c("Grupo 3 (ref)", "Grupo 1", "Grupo 2")) +
+  labs(title = "Trayectoria media de VSAE por grupo",
+       x = "Edad (años)", y = "VSAE",
+       color = "Grupo SICD") +
+  theme_minimal()
+```
+
+## 5.🧠Estrategia top-down
+
+```{mermaid}
+flowchart TD
+    A[Model 6.1\nIntercepto + pendiente lineal\n+ pendiente cuadrática aleatorias] --> B{Problema\nMatriz D mal condicionada}
+    B --> C[Model 6.2\nSin intercepto aleatorio]
+    C --> D{H6.1\n¿Pendiente cuadrática aleatoria?}
+    D -->|Sí p<0.001| E{H6.2\n¿Interacción grupo x edad cuadrática?}
+    E -->|No p=0.39| F[Model 6.3\nSin interacción cuadrática]
+    F --> G{H6.3\n¿Interacción grupo x edad lineal?}
+    G -->|Sí p<0.001| H[Model 6.3 — Modelo Final]
+```
+
+## 6.🧠Model 6.1 — Modelo cargado
+
+Este modelo incluye intercepto, pendiente lineal y cuadrática
+como efectos aleatorios. West lo ajusta primero pero encuentra
+problemas de convergencia — la varianza del intercepto aleatorio
+es prácticamente nula.
+
+```{r model61, error=TRUE}
+model6.1.fit <- lme(
+  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,
+  random = ~ age.2 + I(age.2^2),
+  method = "REML",
+  data = autism.grouped)
+summary(model6.1.fit)
+```
+
+> La varianza del intercepto aleatorio es prácticamente cero,
+> lo que indica que los niños no difieren significativamente
+> en su VSAE inicial a los 2 años — solo en sus trayectorias.
+
+## 7.🧠Model 6.2: Sin intercepto aleatorio
+
+Se elimina el intercepto aleatorio con `-1` en la fórmula
+de efectos aleatorios.
+
+```{r model62}
+model6.2.fit <- lme(
+  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,
+  random = ~ age.2 + I(age.2^2) - 1,
+  method = "REML",
+  data = autism.grouped)
+summary(model6.2.fit)
+```
+
+## 8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?
+
+```{r h61}
+model6.2a.fit <- update(
+  model6.2.fit,
+  random = ~ age.2 - 1)
+
+anova(model6.2a.fit, model6.2.fit)
+
+# p-value corregido por mezcla de chi-cuadrados
+lrt_h61 <- 83.9
+h6.1.pvalue <- 0.5 * (1 - pchisq(lrt_h61, 1)) +
+               0.5 * (1 - pchisq(lrt_h61, 2))
+cat("p-value corregido H6.1:", h6.1.pvalue, "\n")
+```
+
+> West calcula el p-value manualmente con una distribución
+> mezcla de chi-cuadrados porque se prueba un componente
+> de varianza en el límite del espacio paramétrico.
+> Resultado: **p < 0.001** → se retiene la pendiente
+> cuadrática aleatoria.
+
+## 9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?
+
+```{r h62}
+model6.2.ml.fit <- update(
+  model6.2.fit,
+  method = "ML")
+
+model6.3.ml.fit <- update(
+  model6.2.ml.fit,
+  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+    age.2:sicdegp2.f)
+
+anova(model6.2.ml.fit, model6.3.ml.fit)
+```
+
+> **p = 0.39** → no hay evidencia de que la curvatura difiera
+> entre grupos. Se elimina la interacción cuadrática →
+> **Model 6.3**.
+
+## 10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?
+
+```{r h63}
+model6.4.ml.fit <- update(
+  model6.3.ml.fit,
+  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f
+)
+
+anova(model6.3.ml.fit, model6.4.ml.fit)
+```
+
+> **p < 0.001** → la trayectoria lineal difiere entre grupos.
+> Se retiene la interacción lineal.
+
+## 11.🧠Resumen de comparación de modelos
+
+| Comparación | Componente evaluado | Resultado | Decisión |
+|-------------|---------------------|-----------|----------|
+| 6.1 | Intercepto aleatorio | Varianza ≈ 0 | Eliminar |
+| 6.2A vs 6.2 | Pendiente cuadrática aleatoria | p < 0.001 | Mantener |
+| 6.2 vs 6.3 (ML) | Interacción cuadrática grupo×edad | p = 0.39 | Eliminar |
+| 6.3 vs 6.4 (ML) | Interacción lineal grupo×edad | p < 0.001 | Mantener |
+| **Modelo final** | — | — | **Model 6.3** |
+
+## 12.🧠Modelo final: Model 6.3
+
+```{r modelo_final}
+model6.3.fit <- update(
+  model6.2.fit,
+  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+    age.2:sicdegp2.f,
+  method = "REML")
+summary(model6.3.fit)
+intervals(model6.3.fit, which = "fixed")
+```
+
+## 13.🧠Interpretación de efectos fijos
+
+```{r tabla_efectos, echo=FALSE}
+coefs <- intervals(model6.3.fit, which = "fixed")$fixed
+data.frame(
+  Efecto      = rownames(coefs),
+  Estimacion  = round(coefs[, "est."], 3),
+  IC_inferior = round(coefs[, "lower"], 3),
+  IC_superior = round(coefs[, "upper"], 3)) |>
+  knitr::kable(caption = "Efectos fijos - Model 6.3 (REML)")
+```
+
+> - El **intercepto** representa el VSAE esperado a los 2 años
+>   para el grupo 3 (referencia)
+> - `age.2` es el crecimiento lineal del grupo 3
+> - `I(age.2^2)` es la curvatura común para todos los grupos
+> - `sicdegp2.f1` y `sicdegp2.f2` son diferencias iniciales
+>   respecto al grupo 3
+> - `age.2:sicdegp2.f1` y `age.2:sicdegp2.f2` indican si los
+>   grupos 1 y 2 crecen más rápido o más lento que el grupo 3
+
+## 14.🧠Efectos aleatorios y matriz D
+
+```{r varianza}
+VarCorr(model6.3.fit)
+```
+
+> El modelo final tiene:
+>
+> - **Pendiente lineal aleatoria** — los niños difieren en
+>   su tasa de crecimiento lineal
+> - **Pendiente cuadrática aleatoria** — los niños difieren
+>   en la curvatura de su trayectoria
+> - **Sin intercepto aleatorio** — los niños no difieren
+>   significativamente en su VSAE inicial a los 2 años
+
+## 15.🧠Predicciones marginales
+
+```{r pred_marginal, echo=FALSE}
+autism_updated$pred_marginal <- predict(
+  model6.3.fit,
+  level = 0)
+
+pred_marginal_df <- autism_updated |>
+  distinct(age, sicdegp2.f, pred_marginal)
+
+ggplot(pred_marginal_df,
+       aes(x = age, y = pred_marginal,
+           color = sicdegp2.f,
+           group = sicdegp2.f)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  scale_color_manual(
+    values = c("#8e44ad", "#2C5F2D", "#e67e22"),
+    labels = c("Grupo 3 (ref)", "Grupo 1", "Grupo 2")) +
+  labs(title = "Trayectorias marginales predichas por grupo",
+       x = "Edad (años)", y = "VSAE predicho",
+       color = "Grupo SICD") +
+  theme_minimal()
+```
+
+## 16.🧠Predicciones condicionales
+
+```{r pred_condicional, echo=FALSE}
+autism_updated$pred_cond <- predict(
+  model6.3.fit, level = 1)
+
+ggplot(autism_updated,
+       aes(x = age, y = pred_cond,
+           group = childid,
+           color = sicdegp2.f)) +
+  geom_line(alpha = 0.4) +
+  scale_color_manual(
+    values = c("#8e44ad", "#2C5F2D", "#e67e22"),
+    labels = c("Grupo 3 (ref)", "Grupo 1", "Grupo 2")) +
+  labs(title = "Trayectorias condicionales predichas por niño",
+       x = "Edad (años)", y = "VSAE predicho",
+       color = "Grupo SICD") +
+  theme_minimal()
+```
+
+## 17.🧠Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos_norm <- residuals(model6.3.fit, type = "normalized")
+ajustados     <- fitted(model6.3.fit, level = 1)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos_norm,
+     xlab = "Valores ajustados",
+     ylab = "Residuos normalizados",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos_norm, main = "Q-Q plot residuos")
+qqline(residuos_norm)
+```
+
+```{r eblups, echo=FALSE}
+re <- ranef(model6.3.fit)
+
+par(mfrow = c(1, 2))
+qqnorm(re[, 1], main = "Q-Q EBLUPs pendiente lineal")
+qqline(re[, 1])
+
+qqnorm(re[, 2], main = "Q-Q EBLUPs pendiente cuadrática")
+qqline(re[, 2])
+```
+
+## 18.🧠Conclusiones
+
+- El VSAE crece con la edad siguiendo una **trayectoria cuadrática**
+- La **tasa de crecimiento lineal difiere entre grupos** —
+  los grupos 1 y 2 crecen a ritmos distintos que el grupo 3
+- La **curvatura es común** para todos los grupos
+- Los niños no difieren en su VSAE inicial a los 2 años,
+  pero sí en cómo evolucionan
+- El **Model 6.3** captura esta estructura con pendientes
+  lineal y cuadrática aleatorias por niño
+
+> West selecciona un modelo sin intercepto aleatorio pero con
+> pendientes lineal y cuadrática aleatorias, porque la
+> variabilidad inicial era prácticamente nula, mientras que
+> las trayectorias posteriores sí variaban entre niños.

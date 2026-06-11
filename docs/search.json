@@ -79,9 +79,9 @@
   {
     "objectID": "longitudinal-random-coef/index.html",
     "href": "longitudinal-random-coef/index.html",
-    "title": "Longitudinal Random Coef (Autism)",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
     "section": "",
-    "text": "Este ejemplo está en construcción."
+    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
   },
   {
     "objectID": "longitudinal-random-coef/index.html#próximamente",
@@ -149,9 +149,9 @@
   {
     "objectID": "repeated-measures/index.html",
     "href": "repeated-measures/index.html",
-    "title": "Repeated Measures (Rat Brain)",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
     "section": "",
-    "text": "Este ejemplo está en construcción."
+    "text": "Se mide la activación cerebral (activate) en 5 ratas en 3 regiones cerebrales bajo 2 condiciones de tratamiento (basal y carbachol).\n\nPregunta central: ¿Difiere la activación cerebral entre regiones y tratamientos, considerando que cada rata contribuye con múltiples observaciones?"
   },
   {
     "objectID": "repeated-measures/index.html#próximamente",
@@ -593,5 +593,243 @@
     "title": "Modelos para datos en clusters de 3 niveles",
     "section": "16.📚Conclusiones",
     "text": "16.📚Conclusiones\n\nExiste variabilidad significativa entre salones dentro de escuelas\nLas variables del estudiante (mathkind, sex, minority, ses) mejoran el ajuste\nLas variables del salón y escuela no retienen significancia\nEl Model 4.2 es el modelo final\nEl puntaje inicial (mathkind) es el predictor más importante del progreso en matemáticas"
+  },
+  {
+    "objectID": "repeated-measures/index.html#problema-de-investigación",
+    "href": "repeated-measures/index.html#problema-de-investigación",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "",
+    "text": "Se mide la activación cerebral (activate) en 5 ratas en 3 regiones cerebrales bajo 2 condiciones de tratamiento (basal y carbachol).\n\nPregunta central: ¿Difiere la activación cerebral entre regiones y tratamientos, considerando que cada rata contribuye con múltiples observaciones?"
+  },
+  {
+    "objectID": "repeated-measures/index.html#diseño-de-medidas-repetidas",
+    "href": "repeated-measures/index.html#diseño-de-medidas-repetidas",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "2.🐁Diseño de medidas repetidas",
+    "text": "2.🐁Diseño de medidas repetidas\n\nCada rata tiene 6 observaciones (3 regiones × 2 tratamientos)\nLas observaciones dentro de una misma rata no son independientes\nEs un diseño de medidas repetidas — las medidas se repiten en los mismos sujetos\n\n\n\nCode\nstr(rat_brain)\n\n\n'data.frame':   30 obs. of  6 variables:\n $ animal   : Factor w/ 5 levels \"R100797\",\"R100997\",..: 4 4 4 4 4 4 5 5 5 5 ...\n $ treatment: int  1 1 1 2 2 2 1 1 1 2 ...\n $ region   : int  1 2 3 1 2 3 1 2 3 1 ...\n $ activate : num  366 199 187 372 302 ...\n $ region.f : Factor w/ 3 levels \"0\",\"1\",\"2\": 2 3 1 2 3 1 2 3 1 2 ...\n $ treat    : num  0 0 0 1 1 1 0 0 0 1 ...\n\n\nCode\ntable(rat_brain$region, rat_brain$region.f)\n\n\n   \n     0  1  2\n  1  0 10  0\n  2  0  0 10\n  3 10  0  0\n\n\nCode\ntable(rat_brain$treatment, rat_brain$treat)\n\n\n   \n     0  1\n  1 15  0\n  2  0 15\n\n\nCode\nnrow(rat_brain)\n\n\n[1] 30"
+  },
+  {
+    "objectID": "repeated-measures/index.html#variables",
+    "href": "repeated-measures/index.html#variables",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "3.🐁Variables",
+    "text": "3.🐁Variables\n\n\n\n\n\n\n\n\n\nVariable\nTipo\nRol\nCodificación\n\n\n\n\nactivate\nContinua\nOutcome\nActivación cerebral\n\n\nregion.f\nCategórica\nFactor intra-sujeto\nVDB = 0 (ref), BST = 1, LS = 2\n\n\ntreat\nCategórica\nFactor intra-sujeto\nBasal = 0 (ref), Carbachol = 1\n\n\nanimal\nIdentificador\nSujeto\n5 ratas"
+  },
+  {
+    "objectID": "repeated-measures/index.html#exploración-descriptiva",
+    "href": "repeated-measures/index.html#exploración-descriptiva",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "4.🐁Exploración descriptiva",
+    "text": "4.🐁Exploración descriptiva"
+  },
+  {
+    "objectID": "repeated-measures/index.html#estrategia-top-down",
+    "href": "repeated-measures/index.html#estrategia-top-down",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "5.🐁Estrategia top-down",
+    "text": "5.🐁Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Model 5.1\\nIntercepto aleatorio por rata] --&gt; B{H5.1\\n¿Varía el efecto del tratamiento entre ratas?}\n    B --&gt;|Sí p&lt;0.001| C[Model 5.2\\nIntercepto + tratamiento aleatorio]\n    C --&gt; D{H5.2\\n¿Varianza residual heterogénea?}\n    D --&gt;|No p=0.66| E{H5.3\\n¿Interacción región x tratamiento?}\n    E --&gt;|Sí| F[Model 5.2 — Modelo Final]\n\n\n\n\n\nflowchart TD\n    A[Model 5.1\\nIntercepto aleatorio por rata] --&gt; B{H5.1\\n¿Varía el efecto del tratamiento entre ratas?}\n    B --&gt;|Sí p&lt;0.001| C[Model 5.2\\nIntercepto + tratamiento aleatorio]\n    C --&gt; D{H5.2\\n¿Varianza residual heterogénea?}\n    D --&gt;|No p=0.66| E{H5.3\\n¿Interacción región x tratamiento?}\n    E --&gt;|Sí| F[Model 5.2 — Modelo Final]"
+  },
+  {
+    "objectID": "repeated-measures/index.html#model-5.1-intercepto-aleatorio",
+    "href": "repeated-measures/index.html#model-5.1-intercepto-aleatorio",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "6.🐁Model 5.1: Intercepto aleatorio",
+    "text": "6.🐁Model 5.1: Intercepto aleatorio\n\n\nCode\nmodel5.1.fit &lt;- lme(\n  activate ~ region.f * treat,\n  random = ~ 1 | animal,\n  method = \"REML\",\n  data = rat_brain)\nsummary(model5.1.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: rat_brain \n       AIC      BIC    logLik\n  291.2822 300.7066 -137.6411\n\nRandom effects:\n Formula: ~1 | animal\n        (Intercept) Residual\nStdDev:    69.64057 49.50045\n\nFixed effects:  activate ~ region.f * treat \n                   Value Std.Error DF   t-value p-value\n(Intercept)      212.294  38.21022 20  5.555948  0.0000\nregion.f1        216.212  31.30684 20  6.906223  0.0000\nregion.f2         25.450  31.30684 20  0.812922  0.4258\ntreat            360.026  31.30684 20 11.499917  0.0000\nregion.f1:treat -261.822  44.27455 20 -5.913600  0.0000\nregion.f2:treat -162.500  44.27455 20 -3.670280  0.0015\n Correlation: \n                (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1       -0.410                            \nregion.f2       -0.410  0.500                     \ntreat           -0.410  0.500  0.500              \nregion.f1:treat  0.290 -0.707 -0.354 -0.707       \nregion.f2:treat  0.290 -0.354 -0.707 -0.707  0.500\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-1.46425392 -0.57621824  0.08020306  0.40718428  1.55091562 \n\nNumber of Observations: 30\nNumber of Groups: 5"
+  },
+  {
+    "objectID": "repeated-measures/index.html#h5.1-varía-el-efecto-del-tratamiento-entre-ratas",
+    "href": "repeated-measures/index.html#h5.1-varía-el-efecto-del-tratamiento-entre-ratas",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "7.🐁H5.1: ¿Varía el efecto del tratamiento entre ratas?",
+    "text": "7.🐁H5.1: ¿Varía el efecto del tratamiento entre ratas?\n\n\nCode\nmodel5.2.fit &lt;- update(\n  model5.1.fit,\n  random = ~ treat | animal)\n\nanova(model5.1.fit, model5.2.fit)\n\n\n             Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel5.1.fit     1  8 291.2822 300.7066 -137.6411                        \nmodel5.2.fit     2 10 269.1904 280.9710 -124.5952 1 vs 2 26.09171  &lt;.0001\n\n\n\nWest calcula el valor p con una distribución mezcla de chi-cuadrado porque se evalúan componentes de varianza en el límite del espacio paramétrico. Resultado: estadístico = 26.1, p &lt; 0.001 → se retiene el efecto aleatorio del tratamiento."
+  },
+  {
+    "objectID": "repeated-measures/index.html#h5.2-varianza-residual-heterogénea-por-tratamiento",
+    "href": "repeated-measures/index.html#h5.2-varianza-residual-heterogénea-por-tratamiento",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "8.🐁H5.2: ¿Varianza residual heterogénea por tratamiento?",
+    "text": "8.🐁H5.2: ¿Varianza residual heterogénea por tratamiento?\n\n\nCode\nmodel5.3.fit &lt;- lme(\n  activate ~ region.f * treat,\n  random = ~ treat | animal,\n  weights = varIdent(form = ~ 1 | treat),\n  method = \"REML\",\n  data = rat_brain)\n\nanova(model5.2.fit, model5.3.fit)\n\n\n             Model df      AIC      BIC    logLik   Test   L.Ratio p-value\nmodel5.2.fit     1 10 269.1904 280.9710 -124.5952                         \nmodel5.3.fit     2 11 271.0383 283.9969 -124.5192 1 vs 2 0.1521269  0.6965\n\n\n\np = 0.66 → no se necesita varianza residual heterogénea. Se prefiere el Model 5.2."
+  },
+  {
+    "objectID": "repeated-measures/index.html#h5.3-es-significativa-la-interacción-región-tratamiento",
+    "href": "repeated-measures/index.html#h5.3-es-significativa-la-interacción-región-tratamiento",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "9.🐁H5.3: ¿Es significativa la interacción región × tratamiento?",
+    "text": "9.🐁H5.3: ¿Es significativa la interacción región × tratamiento?\n\n\nCode\nanova(model5.2.fit)\n\n\n               numDF denDF   F-value p-value\n(Intercept)        1    20 313.79323  &lt;.0001\nregion.f           2    20  93.70669  &lt;.0001\ntreat              1    20  35.49469  &lt;.0001\nregion.f:treat     2    20  81.04544  &lt;.0001\n\n\n\nLa interacción region.f:treat es significativa → el efecto del tratamiento depende de la región cerebral. Se mantiene el Model 5.2 como modelo final."
+  },
+  {
+    "objectID": "repeated-measures/index.html#resumen-de-comparación-de-modelos",
+    "href": "repeated-measures/index.html#resumen-de-comparación-de-modelos",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "10.🐁Resumen de comparación de modelos",
+    "text": "10.🐁Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n5.1 vs 5.2\nEfecto aleatorio tratamiento\np &lt; 0.001\nMantener\n\n\n5.2 vs 5.3\nVarianza residual heterogénea\np = 0.66\nNo retener\n\n\nanova(5.2)\nInteracción región × tratamiento\nSignificativa\nMantener\n\n\nModelo final\n—\n—\nModel 5.2"
+  },
+  {
+    "objectID": "repeated-measures/index.html#modelo-final",
+    "href": "repeated-measures/index.html#modelo-final",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "11.🐁Modelo final",
+    "text": "11.🐁Modelo final\n\n\nCode\nsummary(model5.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: rat_brain \n       AIC     BIC    logLik\n  269.1904 280.971 -124.5952\n\nRandom effects:\n Formula: ~treat | animal\n Structure: General positive-definite, Log-Cholesky parametrization\n            StdDev   Corr  \n(Intercept) 35.83696 (Intr)\ntreat       79.82012 0.801 \nResidual    23.21432       \n\nFixed effects:  activate ~ region.f * treat \n                   Value Std.Error DF    t-value p-value\n(Intercept)      212.294  19.09551 20  11.117483  0.0000\nregion.f1        216.212  14.68203 20  14.726304  0.0000\nregion.f2         25.450  14.68203 20   1.733412  0.0984\ntreat            360.026  38.59808 20   9.327561  0.0000\nregion.f1:treat -261.822  20.76352 20 -12.609710  0.0000\nregion.f2:treat -162.500  20.76352 20  -7.826225  0.0000\n Correlation: \n                (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1       -0.384                            \nregion.f2       -0.384  0.500                     \ntreat            0.476  0.190  0.190              \nregion.f1:treat  0.272 -0.707 -0.354 -0.269       \nregion.f2:treat  0.272 -0.354 -0.707 -0.269  0.500\n\nStandardized Within-Group Residuals:\n         Min           Q1          Med           Q3          Max \n-1.561096490 -0.403922296 -0.006412947  0.464164074  1.825174931 \n\nNumber of Observations: 30\nNumber of Groups: 5 \n\n\nCode\nVarCorr(model5.2.fit)\n\n\nanimal = pdLogChol(treat) \n            Variance  StdDev   Corr  \n(Intercept) 1284.2876 35.83696 (Intr)\ntreat       6371.2509 79.82012 0.801 \nResidual     538.9048 23.21432       \n\n\nCode\nintervals(model5.2.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                      lower     est.      upper\n(Intercept)      172.461465  212.294  252.12653\nregion.f1        185.585828  216.212  246.83817\nregion.f2         -5.176172   25.450   56.07617\ntreat            279.511807  360.026  440.54019\nregion.f1:treat -305.133948 -261.822 -218.51005\nregion.f2:treat -205.811948 -162.500 -119.18805\n\n Random Effects:\n  Level: animal \n                           lower       est.       upper\nsd((Intercept))        16.242306 35.8369586  79.0705198\nsd(treat)              38.378048 79.8201157 166.0128951\ncor((Intercept),treat) -0.346301  0.8009907   0.9882125\n\n Within-group standard error:\n   lower     est.    upper \n16.41656 23.21432 32.82690"
+  },
+  {
+    "objectID": "repeated-measures/index.html#interpretación-de-la-interacción",
+    "href": "repeated-measures/index.html#interpretación-de-la-interacción",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "12.🐁Interpretación de la interacción",
+    "text": "12.🐁Interpretación de la interacción\nComo la interacción región × tratamiento es significativa, no conviene interpretar efectos principales por separado.\n\n\nCode\n# Efecto del tratamiento dentro de cada región\nemm1 &lt;- emmeans(\n  model5.2.fit,\n  ~ treat | region.f,\n  at = list(treat = c(0, 1)))\nemm1\n\n\nregion.f = 0:\n treat emmean   SE df lower.CL upper.CL\n     0    212 19.1  4      159      265\n     1    572 50.6  4      432      713\n\nregion.f = 1:\n treat emmean   SE df lower.CL upper.CL\n     0    429 19.1  4      375      482\n     1    527 50.6  4      386      667\n\nregion.f = 2:\n treat emmean   SE df lower.CL upper.CL\n     0    238 19.1  4      185      291\n     1    435 50.6  4      295      576\n\nDegrees-of-freedom method: containment \nConfidence level used: 0.95 \n\n\nCode\npairs(emm1)\n\n\nregion.f = 0:\n contrast        estimate   SE df t.ratio p.value\n treat0 - treat1   -360.0 38.6 20  -9.328 &lt;0.0001\n\nregion.f = 1:\n contrast        estimate   SE df t.ratio p.value\n treat0 - treat1    -98.2 38.6 20  -2.544  0.0193\n\nregion.f = 2:\n contrast        estimate   SE df t.ratio p.value\n treat0 - treat1   -197.5 38.6 20  -5.118 &lt;0.0001\n\nDegrees-of-freedom method: containment \n\n\n\n\nCode\n# Diferencias entre regiones dentro de cada tratamiento\nemm2 &lt;- emmeans(\n  model5.2.fit,\n  ~ region.f | treat,\n  at = list(treat = c(0, 1)))\nemm2\n\n\ntreat = 0:\n region.f emmean   SE df lower.CL upper.CL\n 0           212 19.1  4      159      265\n 1           429 19.1  4      375      482\n 2           238 19.1  4      185      291\n\ntreat = 1:\n region.f emmean   SE df lower.CL upper.CL\n 0           572 50.6  4      432      713\n 1           527 50.6  4      386      667\n 2           435 50.6  4      295      576\n\nDegrees-of-freedom method: containment \nConfidence level used: 0.95 \n\n\nCode\npairs(emm2)\n\n\ntreat = 0:\n contrast              estimate   SE df t.ratio p.value\n region.f0 - region.f1   -216.2 14.7 20 -14.726 &lt;0.0001\n region.f0 - region.f2    -25.4 14.7 20  -1.733  0.2177\n region.f1 - region.f2    190.8 14.7 20  12.993 &lt;0.0001\n\ntreat = 1:\n contrast              estimate   SE df t.ratio p.value\n region.f0 - region.f1     45.6 14.7 20   3.107  0.0147\n region.f0 - region.f2    137.1 14.7 20   9.335 &lt;0.0001\n region.f1 - region.f2     91.4 14.7 20   6.228 &lt;0.0001\n\nDegrees-of-freedom method: containment \nP value adjustment: tukey method for comparing a family of 3 estimates"
+  },
+  {
+    "objectID": "repeated-measures/index.html#componentes-de-varianza",
+    "href": "repeated-measures/index.html#componentes-de-varianza",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "13.🐁Componentes de varianza",
+    "text": "13.🐁Componentes de varianza\n\n\nCode\nvc &lt;- VarCorr(model5.2.fit)\nprint(vc)\n\n\nanimal = pdLogChol(treat) \n            Variance  StdDev   Corr  \n(Intercept) 1284.2876 35.83696 (Intr)\ntreat       6371.2509 79.82012 0.801 \nResidual     538.9048 23.21432       \n\n\n\nEl Model 5.2 permite que cada rata tenga:\n\nSu propio nivel basal de activación (intercepto aleatorio)\nSu propia respuesta al tratamiento (efecto aleatorio de treat)"
+  },
+  {
+    "objectID": "repeated-measures/index.html#diagnósticos",
+    "href": "repeated-measures/index.html#diagnósticos",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "14.🐁Diagnósticos",
+    "text": "14.🐁Diagnósticos"
+  },
+  {
+    "objectID": "repeated-measures/index.html#conclusiones",
+    "href": "repeated-measures/index.html#conclusiones",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "15.🐁Conclusiones",
+    "text": "15.🐁Conclusiones\n\nLa activación cerebral varía significativamente entre regiones y tratamientos\nEl efecto del carbachol depende de la región (interacción significativa)\nLas ratas difieren tanto en su nivel basal como en su respuesta al tratamiento\nEl Model 5.2 es el modelo final — intercepto y tratamiento aleatorios por rata, varianza residual homogénea\n\n\nEl modelo final permite que cada rata tenga su propio nivel basal de activación y su propia respuesta al tratamiento, manteniendo una varianza residual homogénea y conservando la interacción región × tratamiento."
+  },
+  {
+    "objectID": "repeated-measures/index.html#anexo-comparación-con-lmer",
+    "href": "repeated-measures/index.html#anexo-comparación-con-lmer",
+    "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
+    "section": "Anexo: Comparación con lmer()",
+    "text": "Anexo: Comparación con lmer()\nlmer() puede replicar los Model 5.1 y 5.2 pero no el 5.3 porque no permite varianzas residuales heterogéneas.\n\n\n\nModelo\nlme()\nlmer()\n\n\n\n\n5.1 intercepto aleatorio\n✅\n✅\n\n\n5.2 intercepto + tratamiento aleatorio\n✅\n✅\n\n\n5.3 varianza residual heterogénea\n✅\n❌\n\n\n\n\nModel 5.1 con lmer()\n\n\nCode\nlibrary(lme4)\nlibrary(lmerTest)\n\nmodel5.1.lmer &lt;- lmer(\n  activate ~ region.f * treat + (1 | animal),\n  data = rat_brain,\n  REML = TRUE)\n\nsummary(model5.1.lmer)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: activate ~ region.f * treat + (1 | animal)\n   Data: rat_brain\n\nREML criterion at convergence: 275.3\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-1.4643 -0.5762  0.0802  0.4072  1.5509 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n animal   (Intercept) 4850     69.64   \n Residual             2450     49.50   \nNumber of obs: 30, groups:  animal, 5\n\nFixed effects:\n                Estimate Std. Error       df t value Pr(&gt;|t|)    \n(Intercept)      212.294     38.210    7.484   5.556 0.000678 ***\nregion.f1        216.212     31.307   20.000   6.906 1.04e-06 ***\nregion.f2         25.450     31.307   20.000   0.813 0.425835    \ntreat            360.026     31.307   20.000  11.500 2.87e-10 ***\nregion.f1:treat -261.822     44.275   20.000  -5.914 8.76e-06 ***\nregion.f2:treat -162.500     44.275   20.000  -3.670 0.001519 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n            (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1   -0.410                            \nregion.f2   -0.410  0.500                     \ntreat       -0.410  0.500  0.500              \nregn.f1:trt  0.290 -0.707 -0.354 -0.707       \nregn.f2:trt  0.290 -0.354 -0.707 -0.707  0.500\n\n\n\n\nModel 5.2 con lmer()\n\n\nCode\nmodel5.2.lmer &lt;- lmer(\n  activate ~ region.f * treat + (treat | animal),\n  data = rat_brain,\n  REML = TRUE)\n\nsummary(model5.2.lmer)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: activate ~ region.f * treat + (treat | animal)\n   Data: rat_brain\n\nREML criterion at convergence: 249.2\n\nScaled residuals: \n     Min       1Q   Median       3Q      Max \n-1.56112 -0.40392 -0.00639  0.46414  1.82518 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr \n animal   (Intercept) 1284.3   35.84         \n          treat       6371.3   79.82    0.80 \n Residual              538.9   23.21         \nNumber of obs: 30, groups:  animal, 5\n\nFixed effects:\n                Estimate Std. Error       df t value Pr(&gt;|t|)    \n(Intercept)      212.294     19.096    6.112  11.117 2.78e-05 ***\nregion.f1        216.212     14.682   16.000  14.726 1.01e-10 ***\nregion.f2         25.450     14.682   16.000   1.733  0.10224    \ntreat            360.026     38.598    4.886   9.328  0.00027 ***\nregion.f1:treat -261.822     20.763   16.000 -12.610 1.00e-09 ***\nregion.f2:treat -162.500     20.763   16.000  -7.826 7.36e-07 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n            (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1   -0.384                            \nregion.f2   -0.384  0.500                     \ntreat        0.475  0.190  0.190              \nregn.f1:trt  0.272 -0.707 -0.354 -0.269       \nregn.f2:trt  0.272 -0.354 -0.707 -0.269  0.500\n\n\n\n\nComparación H5.1 con lmer()\n\n\nCode\n# lmerTest permite usar rand() para probar efectos aleatorios\nrand(model5.2.lmer)\n\n\nANOVA-like table for random-effects: Single term deletions\n\nModel:\nactivate ~ region.f * treat + (treat | animal)\n                          npar  logLik    AIC    LRT Df Pr(&gt;Chisq)    \n&lt;none&gt;                      10 -124.59 269.19                         \ntreat in (treat | animal)    8 -137.64 291.28 26.092  2  2.159e-06 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\n\nComparación de estimaciones lme() vs lmer()\n\n\nCode\n# Efectos fijos\ncat(\"=== lme() ===\\n\")\n\n\n=== lme() ===\n\n\nCode\nround(fixef(model5.2.fit), 4)\n\n\n    (Intercept)       region.f1       region.f2           treat region.f1:treat \n        212.294         216.212          25.450         360.026        -261.822 \nregion.f2:treat \n       -162.500 \n\n\nCode\ncat(\"\\n=== lmer() ===\\n\")\n\n\n\n=== lmer() ===\n\n\nCode\nround(fixef(model5.2.lmer), 4)\n\n\n    (Intercept)       region.f1       region.f2           treat region.f1:treat \n        212.294         216.212          25.450         360.026        -261.822 \nregion.f2:treat \n       -162.500 \n\n\nCode\n# Componentes de varianza\ncat(\"\\n=== Varianza lme() ===\\n\")\n\n\n\n=== Varianza lme() ===\n\n\nCode\nVarCorr(model5.2.fit)\n\n\nanimal = pdLogChol(treat) \n            Variance  StdDev   Corr  \n(Intercept) 1284.2876 35.83696 (Intr)\ntreat       6371.2509 79.82012 0.801 \nResidual     538.9048 23.21432       \n\n\nCode\ncat(\"\\n=== Varianza lmer() ===\\n\")\n\n\n\n=== Varianza lmer() ===\n\n\nCode\nVarCorr(model5.2.lmer)\n\n\n Groups   Name        Std.Dev. Corr  \n animal   (Intercept) 35.837         \n          treat       79.821   0.801 \n Residual             23.214         \n\n\n\nLas estimaciones de efectos fijos y componentes de varianza son prácticamente idénticas entre lme() y lmer(). La diferencia está en que lme() permite el Model 5.3 con varianza residual heterogénea, mientras que lmer() no."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#problema-de-investigación",
+    "href": "longitudinal-random-coef/index.html#problema-de-investigación",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "",
+    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#diseño-longitudinal",
+    "href": "longitudinal-random-coef/index.html#diseño-longitudinal",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "2.🧠Diseño longitudinal",
+    "text": "2.🧠Diseño longitudinal\n\nDatos longitudinales — mismos niños medidos en múltiples momentos del tiempo\nNivel 2: niño (childid)\nNivel 1: medición en el tiempo (age)\nLas mediciones dentro de un mismo niño no son independientes\nDiseño desbalanceado — no todos los niños tienen todas las mediciones\n\n\n\nCode\nnrow(autism_updated)\n\n\n[1] 610\n\n\nCode\nn_distinct(autism_updated$childid)\n\n\n[1] 158\n\n\nCode\nautism_updated |&gt;\n  count(childid, name = \"n_mediciones\") |&gt;\n  count(n_mediciones, name = \"n_ninos\")\n\n\n  n_mediciones n_ninos\n1            1       2\n2            2      14\n3            3      29\n4            4      72\n5            5      41\n\n\nCode\ntable(autism_updated$age, autism_updated$sicdegp2.f)\n\n\n    \n      0  1  2\n  2  40 50 66\n  3  38 47 64\n  5  26 29 36\n  9  35 36 48\n  13 26 28 41"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#variables",
+    "href": "longitudinal-random-coef/index.html#variables",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "3.🧠Variables",
+    "text": "3.🧠Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nvsae\n1\nContinua\nOutcome\nHabilidades sociales verbales\n\n\nage\n1\nContinua\nTiempo\n2, 3, 5, 9, 13 años\n\n\nage.2\n1\nContinua\nTiempo centrado\nage − 2\n\n\nage.2sq\n1\nContinua\nCurvatura\nage.2²\n\n\nchildid\n2\nIdentificador\nSujeto\nNiño\n\n\nsicdegp\n2\nCategórica\nPredictor\nGrupo de competencia lingüística inicial\n\n\nsicdegp2.f\n2\nCategórica\nPredictor recodificado\nGrupo 3 = ref (0), Grupo 1 = 1, Grupo 2 = 2\n\n\n\n\n¿Por qué centrar la edad en 2? Porque los niños tienen 2 años en la primera medición. Así el intercepto representa el VSAE esperado al inicio del seguimiento, no al año 0."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#exploración-descriptiva",
+    "href": "longitudinal-random-coef/index.html#exploración-descriptiva",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "4.🧠Exploración descriptiva",
+    "text": "4.🧠Exploración descriptiva"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#estrategia-top-down",
+    "href": "longitudinal-random-coef/index.html#estrategia-top-down",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "5.🧠Estrategia top-down",
+    "text": "5.🧠Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Model 6.1\\nIntercepto + pendiente lineal\\n+ pendiente cuadrática aleatorias] --&gt; B{Problema\\nMatriz D mal condicionada}\n    B --&gt; C[Model 6.2\\nSin intercepto aleatorio]\n    C --&gt; D{H6.1\\n¿Pendiente cuadrática aleatoria?}\n    D --&gt;|Sí p&lt;0.001| E{H6.2\\n¿Interacción grupo x edad cuadrática?}\n    E --&gt;|No p=0.39| F[Model 6.3\\nSin interacción cuadrática]\n    F --&gt; G{H6.3\\n¿Interacción grupo x edad lineal?}\n    G --&gt;|Sí p&lt;0.001| H[Model 6.3 — Modelo Final]\n\n\n\n\n\nflowchart TD\n    A[Model 6.1\\nIntercepto + pendiente lineal\\n+ pendiente cuadrática aleatorias] --&gt; B{Problema\\nMatriz D mal condicionada}\n    B --&gt; C[Model 6.2\\nSin intercepto aleatorio]\n    C --&gt; D{H6.1\\n¿Pendiente cuadrática aleatoria?}\n    D --&gt;|Sí p&lt;0.001| E{H6.2\\n¿Interacción grupo x edad cuadrática?}\n    E --&gt;|No p=0.39| F[Model 6.3\\nSin interacción cuadrática]\n    F --&gt; G{H6.3\\n¿Interacción grupo x edad lineal?}\n    G --&gt;|Sí p&lt;0.001| H[Model 6.3 — Modelo Final]"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
+    "href": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "6.🧠Model 6.1 — Modelo cargado",
+    "text": "6.🧠Model 6.1 — Modelo cargado\nEste modelo incluye intercepto, pendiente lineal y cuadrática como efectos aleatorios. West lo ajusta primero pero encuentra problemas de convergencia — la varianza del intercepto aleatorio es prácticamente nula.\n\n\nCode\nmodel6.1.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2),\n  method = \"REML\",\n  data = autism.grouped)\n\n\nError in `lme.formula()`:\n! nlminb problem, convergence error code = 1\n  message = iteration limit reached without convergence (10)\n\n\nCode\nsummary(model6.1.fit)\n\n\nError in `h()`:\n! error al evaluar el argumento 'object' al seleccionar un método para la función 'summary': objeto 'model6.1.fit' no encontrado\n\n\n\nLa varianza del intercepto aleatorio es prácticamente cero, lo que indica que los niños no difieren significativamente en su VSAE inicial a los 2 años — solo en sus trayectorias."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
+    "href": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "7.🧠Model 6.2: Sin intercepto aleatorio",
+    "text": "7.🧠Model 6.2: Sin intercepto aleatorio\nSe elimina el intercepto aleatorio con -1 en la fórmula de efectos aleatorios.\n\n\nCode\nmodel6.2.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2) - 1,\n  method = \"REML\",\n  data = autism.grouped)\nsummary(model6.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n       AIC      BIC    logLik\n  4641.276 4698.457 -2307.638\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8298024 age.2 \nI(age.2^2) 0.3625824 -0.317\nResidual   6.2047262       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f + I(age.2^2):sicdegp2.f \n                           Value Std.Error  DF   t-value p-value\n(Intercept)            13.769637 0.8093779 446 17.012618  0.0000\nage.2                   5.603481 0.7938042 446  7.059021  0.0000\nI(age.2^2)              0.203999 0.0816167 446  2.499473  0.0128\nsicdegp2.f1            -5.415784 1.0934935 155 -4.952735  0.0000\nsicdegp2.f2            -4.037378 1.0293605 155 -3.922220  0.0001\nage.2:sicdegp2.f1      -3.296437 1.0915657 446 -3.019916  0.0027\nage.2:sicdegp2.f2      -2.746559 1.0270067 446 -2.674334  0.0078\nI(age.2^2):sicdegp2.f1 -0.134615 0.1133821 446 -1.187271  0.2358\nI(age.2^2):sicdegp2.f2 -0.129699 0.1055228 446 -1.229104  0.2197\n Correlation: \n                       (Intr) age.2  I(g.2^2) scd2.1 scd2.2 a.2:2.1 a.2:2.2\nage.2                  -0.418                                              \nI(age.2^2)              0.318 -0.586                                       \nsicdegp2.f1            -0.740  0.310 -0.235                                \nsicdegp2.f2            -0.786  0.329 -0.250    0.582                       \nage.2:sicdegp2.f1       0.304 -0.727  0.426   -0.426 -0.239                \nage.2:sicdegp2.f2       0.323 -0.773  0.453   -0.239 -0.425  0.562         \nI(age.2^2):sicdegp2.f1 -0.229  0.422 -0.720    0.321  0.180 -0.592  -0.326 \nI(age.2^2):sicdegp2.f2 -0.246  0.453 -0.773    0.182  0.320 -0.329  -0.590 \n                       I(.2^2):2.1\nage.2                             \nI(age.2^2)                        \nsicdegp2.f1                       \nsicdegp2.f2                       \nage.2:sicdegp2.f1                 \nage.2:sicdegp2.f2                 \nI(age.2^2):sicdegp2.f1            \nI(age.2^2):sicdegp2.f2  0.557     \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.22352306 -0.37936451 -0.05010264  0.28909578  6.88643142 \n\nNumber of Observations: 610\nNumber of Groups: 158"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
+    "href": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?",
+    "text": "8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?\n\n\nCode\nmodel6.2a.fit &lt;- update(\n  model6.2.fit,\n  random = ~ age.2 - 1)\n\nanova(model6.2a.fit, model6.2.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2a.fit     1 11 4721.203 4769.587 -2349.601                        \nmodel6.2.fit      2 13 4641.276 4698.457 -2307.638 1 vs 2 83.92683  &lt;.0001\n\n\nCode\n# p-value corregido por mezcla de chi-cuadrados\nlrt_h61 &lt;- 83.9\nh6.1.pvalue &lt;- 0.5 * (1 - pchisq(lrt_h61, 1)) +\n               0.5 * (1 - pchisq(lrt_h61, 2))\ncat(\"p-value corregido H6.1:\", h6.1.pvalue, \"\\n\")\n\n\np-value corregido H6.1: 0 \n\n\n\nWest calcula el p-value manualmente con una distribución mezcla de chi-cuadrados porque se prueba un componente de varianza en el límite del espacio paramétrico. Resultado: p &lt; 0.001 → se retiene la pendiente cuadrática aleatoria."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
+    "href": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?",
+    "text": "9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?\n\n\nCode\nmodel6.2.ml.fit &lt;- update(\n  model6.2.fit,\n  method = \"ML\")\n\nmodel6.3.ml.fit &lt;- update(\n  model6.2.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f)\n\nanova(model6.2.ml.fit, model6.3.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2.ml.fit     1 13 4636.444 4693.819 -2305.222                        \nmodel6.3.ml.fit     2 11 4634.314 4682.862 -2306.157 1 vs 2 1.869704  0.3926\n\n\n\np = 0.39 → no hay evidencia de que la curvatura difiera entre grupos. Se elimina la interacción cuadrática → Model 6.3."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
+    "href": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?",
+    "text": "10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?\n\n\nCode\nmodel6.4.ml.fit &lt;- update(\n  model6.3.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f\n)\n\nanova(model6.3.ml.fit, model6.4.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.3.ml.fit     1 11 4634.314 4682.862 -2306.157                        \nmodel6.4.ml.fit     2  9 4653.696 4693.417 -2317.848 1 vs 2 23.38232  &lt;.0001\n\n\n\np &lt; 0.001 → la trayectoria lineal difiere entre grupos. Se retiene la interacción lineal."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
+    "href": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "11.🧠Resumen de comparación de modelos",
+    "text": "11.🧠Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n6.1\nIntercepto aleatorio\nVarianza ≈ 0\nEliminar\n\n\n6.2A vs 6.2\nPendiente cuadrática aleatoria\np &lt; 0.001\nMantener\n\n\n6.2 vs 6.3 (ML)\nInteracción cuadrática grupo×edad\np = 0.39\nEliminar\n\n\n6.3 vs 6.4 (ML)\nInteracción lineal grupo×edad\np &lt; 0.001\nMantener\n\n\nModelo final\n—\n—\nModel 6.3"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
+    "href": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "12.🧠Modelo final: Model 6.3",
+    "text": "12.🧠Modelo final: Model 6.3\n\n\nCode\nmodel6.3.fit &lt;- update(\n  model6.2.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f,\n  method = \"REML\")\nsummary(model6.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n      AIC      BIC    logLik\n  4633.57 4681.991 -2305.785\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8110274 age.2 \nI(age.2^2) 0.3556805 -0.306\nResidual   6.2281389       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f \n                      Value Std.Error  DF   t-value p-value\n(Intercept)       13.463533 0.7815177 448 17.227419  0.0000\nage.2              6.148750 0.6882638 448  8.933711  0.0000\nI(age.2^2)         0.109008 0.0427795 448  2.548125  0.0112\nsicdegp2.f1       -4.987639 1.0379064 155 -4.805480  0.0000\nsicdegp2.f2       -3.622820 0.9774516 155 -3.706394  0.0003\nage.2:sicdegp2.f1 -4.068041 0.8797676 448 -4.623995  0.0000\nage.2:sicdegp2.f2 -3.495530 0.8289509 448 -4.216812  0.0000\n Correlation: \n                  (Intr) age.2  I(.2^2 scd2.1 scd2.2 a.2:2.1\nage.2             -0.341                                    \nI(age.2^2)         0.177 -0.356                             \nsicdegp2.f1       -0.730  0.211 -0.005                      \nsicdegp2.f2       -0.775  0.224 -0.003  0.583               \nage.2:sicdegp2.f1  0.218 -0.683  0.000 -0.309 -0.174        \nage.2:sicdegp2.f2  0.230 -0.723 -0.006 -0.174 -0.309  0.567 \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.26516724 -0.39753349 -0.05448662  0.29145901  6.84667725 \n\nNumber of Observations: 610\nNumber of Groups: 158 \n\n\nCode\nintervals(model6.3.fit, which = \"fixed\")\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                        lower       est.      upper\n(Intercept)       11.92763665 13.4635325 14.9994284\nage.2              4.79612387  6.1487505  7.5013770\nI(age.2^2)         0.02493412  0.1090076  0.1930811\nsicdegp2.f1       -7.03790561 -4.9876387 -2.9373718\nsicdegp2.f2       -5.55366546 -3.6228202 -1.6919750\nage.2:sicdegp2.f1 -5.79702489 -4.0680411 -2.3390574\nage.2:sicdegp2.f2 -5.12464460 -3.4955296 -1.8664146"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
+    "href": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "13.🧠Interpretación de efectos fijos",
+    "text": "13.🧠Interpretación de efectos fijos\n\n\n\nEfectos fijos - Model 6.3 (REML)\n\n\n\n\n\n\n\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n13.464\n11.928\n14.999\n\n\nage.2\nage.2\n6.149\n4.796\n7.501\n\n\nI(age.2^2)\nI(age.2^2)\n0.109\n0.025\n0.193\n\n\nsicdegp2.f1\nsicdegp2.f1\n-4.988\n-7.038\n-2.937\n\n\nsicdegp2.f2\nsicdegp2.f2\n-3.623\n-5.554\n-1.692\n\n\nage.2:sicdegp2.f1\nage.2:sicdegp2.f1\n-4.068\n-5.797\n-2.339\n\n\nage.2:sicdegp2.f2\nage.2:sicdegp2.f2\n-3.496\n-5.125\n-1.866\n\n\n\n\n\n\n\nEl intercepto representa el VSAE esperado a los 2 años para el grupo 3 (referencia)\nage.2 es el crecimiento lineal del grupo 3\nI(age.2^2) es la curvatura común para todos los grupos\nsicdegp2.f1 y sicdegp2.f2 son diferencias iniciales respecto al grupo 3\nage.2:sicdegp2.f1 y age.2:sicdegp2.f2 indican si los grupos 1 y 2 crecen más rápido o más lento que el grupo 3"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
+    "href": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "14.🧠Efectos aleatorios y matriz D",
+    "text": "14.🧠Efectos aleatorios y matriz D\n\n\nCode\nVarCorr(model6.3.fit)\n\n\nchildid = pdLogChol(age.2 + I(age.2^2) - 1) \n           Variance   StdDev    Corr  \nage.2      14.5239297 3.8110274 age.2 \nI(age.2^2)  0.1265086 0.3556805 -0.306\nResidual   38.7897145 6.2281389       \n\n\n\nEl modelo final tiene:\n\nPendiente lineal aleatoria — los niños difieren en su tasa de crecimiento lineal\nPendiente cuadrática aleatoria — los niños difieren en la curvatura de su trayectoria\nSin intercepto aleatorio — los niños no difieren significativamente en su VSAE inicial a los 2 años"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#predicciones-marginales",
+    "href": "longitudinal-random-coef/index.html#predicciones-marginales",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "15.🧠Predicciones marginales",
+    "text": "15.🧠Predicciones marginales"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#predicciones-condicionales",
+    "href": "longitudinal-random-coef/index.html#predicciones-condicionales",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "16.🧠Predicciones condicionales",
+    "text": "16.🧠Predicciones condicionales"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#diagnósticos",
+    "href": "longitudinal-random-coef/index.html#diagnósticos",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "17.🧠Diagnósticos",
+    "text": "17.🧠Diagnósticos"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#conclusiones",
+    "href": "longitudinal-random-coef/index.html#conclusiones",
+    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "18.🧠Conclusiones",
+    "text": "18.🧠Conclusiones\n\nEl VSAE crece con la edad siguiendo una trayectoria cuadrática\nLa tasa de crecimiento lineal difiere entre grupos — los grupos 1 y 2 crecen a ritmos distintos que el grupo 3\nLa curvatura es común para todos los grupos\nLos niños no difieren en su VSAE inicial a los 2 años, pero sí en cómo evolucionan\nEl Model 6.3 captura esta estructura con pendientes lineal y cuadrática aleatorias por niño\n\n\nWest selecciona un modelo sin intercepto aleatorio pero con pendientes lineal y cuadrática aleatorias, porque la variabilidad inicial era prácticamente nula, mientras que las trayectorias posteriores sí variaban entre niños."
   }
 ]
