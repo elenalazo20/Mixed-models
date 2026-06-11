@@ -1,14 +1,13 @@
 ---
-title: "Modelos para datos en clusters de 2 niveles"
+title: "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)"
 subtitle: "Ejemplo de las crías de rata 🐁💊- West et al., capítulo 3 "
 author: "Elena Lazo"
 date: "26-junio-2026"
-
 format:
   html:
     theme:
       - cosmo
-      - styles.scss
+      - ../custom.scss
     toc: true
     toc-location: right
     toc-depth: 3
@@ -44,7 +43,7 @@ ratpup <- ratpup |>
 
 ## 🐁Problema de investigación
 
-Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos:
+30 ratas hembra fueron asignadas aleatoriamente a tres grupos:
 dosis **alta**, dosis **baja** o **control** de un compuesto químico.
 
 El tratamiento fue asignado a nivel de la **madre**, por lo que todas

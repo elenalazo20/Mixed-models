@@ -1,150 +1,129 @@
 [
   {
+    "objectID": "two-level-clusters/index.html",
+    "href": "two-level-clusters/index.html",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "",
+    "text": "30 ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#problema-de-investigación",
+    "href": "two-level-clusters/index.html#problema-de-investigación",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "",
+    "text": "30 ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
+  },
+  {
     "objectID": "two-level-clusters/index.html#diseño-del-estudio",
     "href": "two-level-clusters/index.html#diseño-del-estudio",
-    "title": "Modelos para datos en clusters de 2 niveles",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
     "section": "0.2 🐁Diseño del estudio",
     "text": "0.2 🐁Diseño del estudio\n\n\n\n\n\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías - Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\n\n\nNivel 2 - camada: unidad de asignación del tratamiento\nNivel 1 - cría: unidad de medición\nDiseño desbalanceado: tamaño de camada varía de 2 a 18 crías"
   },
   {
-    "objectID": "two-level-clusters/index.html#hipótesis-y-objetivos",
-    "href": "two-level-clusters/index.html#hipótesis-y-objetivos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Hipótesis y objetivos",
-    "text": "Hipótesis y objetivos"
+    "objectID": "two-level-clusters/index.html#variables",
+    "href": "two-level-clusters/index.html#variables",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.3 🐁Variables",
+    "text": "0.3 🐁Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nweight\n1\nContinua\nOutcome\nGramos\n\n\nsex / sex1\n1\nCategórica\nCovariable\nMale = referencia; Female = 1\n\n\npup_id\n1\nIdentificador\nIdentificación\nUna cría\n\n\nlitter\n2\nIdentificador\nAgrupación aleatoria\nUna madre/camada\n\n\ntreatment\n2\nCategórica\nPredictor principal\nControl = referencia\n\n\nlitsize\n2\nCuantitativa\nCovariable\nNúmero de crías\n\n\ntrtgrp\n2\nCategórica\nEstructura residual\nControl vs. High_Low\n\n\n\n\n\n\nResumen por grupo de tratamiento\n\n\ntreatment\nCamadas\nCrias\nPeso_medio\nDE\n\n\n\n\nControl\n10\n131\n6.32\n0.74\n\n\nLow\n10\n126\n5.93\n0.43\n\n\nHigh\n7\n65\n5.89\n0.64"
   },
   {
-    "objectID": "two-level-clusters/index.html#exploración-de-datos",
-    "href": "two-level-clusters/index.html#exploración-de-datos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Exploración de datos",
-    "text": "Exploración de datos"
+    "objectID": "two-level-clusters/index.html#exploración-descriptiva",
+    "href": "two-level-clusters/index.html#exploración-descriptiva",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.4 🐁Exploración descriptiva",
+    "text": "0.4 🐁Exploración descriptiva\n\n0.4.1 Peso según tratamiento y sexo\n\n\n\n\n\n\n\n\n\n\n\n0.4.2 Peso según tamaño de camada\n\n\n`geom_smooth()` using formula = 'y ~ x'"
   },
   {
-    "objectID": "two-level-clusters/index.html#modelos-ajustados",
-    "href": "two-level-clusters/index.html#modelos-ajustados",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Modelos ajustados",
-    "text": "Modelos ajustados"
+    "objectID": "two-level-clusters/index.html#objetivos-e-hipótesis",
+    "href": "two-level-clusters/index.html#objetivos-e-hipótesis",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.5 🐁Objetivos e hipótesis",
+    "text": "0.5 🐁Objetivos e hipótesis\nObjetivo general: Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.\nObjetivos analíticos:\n\nDeterminar si existe variabilidad relevante entre camadas\nEvaluar si la varianza residual difiere entre grupos de tratamiento\nEvaluar si el efecto del tratamiento varía según el sexo\nEstimar el efecto ajustado del tratamiento sobre el peso\nSeleccionar el modelo que mejor represente los datos"
   },
   {
-    "objectID": "two-level-clusters/index.html#comparación-de-modelos",
-    "href": "two-level-clusters/index.html#comparación-de-modelos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Comparación de modelos",
-    "text": "Comparación de modelos"
+    "objectID": "two-level-clusters/index.html#estrategia-top-down",
+    "href": "two-level-clusters/index.html#estrategia-top-down",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.6 🐁Estrategia top-down",
+    "text": "0.6 🐁Estrategia top-down\n\n\n\n\n\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]"
   },
   {
-    "objectID": "two-level-clusters/index.html#modelo-final-e-interpretación",
-    "href": "two-level-clusters/index.html#modelo-final-e-interpretación",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Modelo final e interpretación",
-    "text": "Modelo final e interpretación"
+    "objectID": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
+    "href": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.7 🐁Ajuste y comparación de modelos",
+    "text": "0.7 🐁Ajuste y comparación de modelos\n\n0.7.1 Model 3.1: Modelo inicial\n\n\nMostrar código\nmodel3.1.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\")\n\n\n\n\n0.7.2 H3.1: ¿Es necesario el intercepto aleatorio?\n\n\nMostrar código\nmodel3.1a.fit &lt;- gls(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  data = ratpup,\n  method = \"REML\")\n\nlrt_h31 &lt;- anova(model3.1a.fit, model3.1.fit)\nlrt_h31\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1a.fit     1  8 506.5099 536.5305 -245.2550                        \nmodel3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001\n\n\n\nComo se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: p &lt; 0.001 → se mantiene el intercepto aleatorio.\n\n\n\n0.7.3 H3.2: ¿Varianza residual heterogénea por tratamiento?\n\n\nMostrar código\nmodel3.2a.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | treatment))\nanova(model3.1.fit, model3.2a.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001\n\n\n\n\n0.7.4 H3.3: ¿Se pueden agrupar High y Low?\n\n\nMostrar código\nmodel3.2b.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nanova(model3.2a.fit, model3.2b.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.2a.fit     1 11 381.8847 423.1630 -179.9423                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741\n\n\n\n\n0.7.5 H3.4: ¿Model 3.2B mejor que varianza homogénea?\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001\n\n\n\n\n0.7.6 H3.5: ¿Es significativa la interacción tratamiento × sexo?\n\n\nMostrar código\nanova(model3.2b.fit)\n\n\n               numDF denDF  F-value p-value\n(Intercept)        1   292 9027.740  &lt;.0001\ntreatment          2    23    4.241  0.0271\nsex1               1   292   61.568  &lt;.0001\nlitsize            1    23   49.577  &lt;.0001\ntreatment:sex1     2   292    0.317  0.7288\n\n\n\nNo se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (p = 0.73).\n\n\n\n0.7.7 H3.6: ¿Efecto global del tratamiento?\n\n\nMostrar código\nmodel3.3.ml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nmodel3.3a.ml.fit &lt;- lme(\n  weight ~ sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nanova(model3.3a.ml.fit, model3.3.ml.fit)\n\n\n                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        \nmodel3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04\n\n\n\np &lt; 0.001 → el tratamiento tiene efecto global significativo.\n\n\n\n0.7.8 Resumen de comparación de modelos\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n3.1 vs 3.1A\nIntercepto aleatorio\np &lt; 0.001\nMantener\n\n\n3.1 vs 3.2A\nVarianza heterogénea\np &lt; 0.001\nHeterogénea\n\n\n3.2A vs 3.2B\nAgrupar High/Low\np = 0.27\nElegir 3.2B\n\n\n3.1 vs 3.2B\nConfirmar 3.2B\np &lt; 0.001\nElegir 3.2B\n\n\nanova(3.2B)\nInteracción trat×sexo\np = 0.73\nEliminar\n\n\n3.3A vs 3.3 (ML)\nEfecto tratamiento\np &lt; 0.001\nMantener"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#modelo-final",
+    "href": "two-level-clusters/index.html#modelo-final",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.8 🐁Modelo final",
+    "text": "0.8 🐁Modelo final\n\n\nMostrar código\nmodel3.3.reml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nsummary(model3.3.reml.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: ratpup \n       AIC      BIC    logLik\n  372.2784 402.3497 -178.1392\n\nRandom effects:\n Formula: ~1 | litter\n        (Intercept)  Residual\nStdDev:   0.3146374 0.5144324\n\nVariance function:\n Structure: Different standard deviations per stratum\n Formula: ~1 | trtgrp \n Parameter estimates:\n  Control  High_Low \n1.0000000 0.5889108 \nFixed effects:  weight ~ treatment + sex1 + litsize \n                  Value  Std.Error  DF   t-value p-value\n(Intercept)    8.327633 0.27406956 294 30.385107  0.0000\ntreatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091\ntreatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001\nsex1          -0.343431 0.04204323 294 -8.168531  0.0000\nlitsize       -0.130681 0.01855194  23 -7.044036  0.0000\n Correlation: \n              (Intr) trtmnL trtmnH sex1  \ntreatmentLow  -0.348                     \ntreatmentHigh -0.610  0.464              \nsex1          -0.103 -0.035 -0.006       \nlitsize       -0.913  0.064  0.403  0.043\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 \n\nNumber of Observations: 322\nNumber of Groups: 27 \n\n\nMostrar código\nintervals(model3.3.reml.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                   lower       est.       upper\n(Intercept)    7.7882461  8.3276330  8.86701987\ntreatmentLow  -0.7486398 -0.4336625 -0.11868526\ntreatmentHigh -1.2406946 -0.8622677 -0.48384070\nsex1          -0.4261753 -0.3434314 -0.26068758\nlitsize       -0.1690581 -0.1306805 -0.09230291\n\n Random Effects:\n  Level: litter \n                    lower      est.     upper\nsd((Intercept)) 0.2272184 0.3146374 0.4356896\n\n Variance function:\n             lower      est.     upper\nHigh_Low 0.4998565 0.5889108 0.6938309\n\n Within-group standard error:\n    lower      est.     upper \n0.4536291 0.5144324 0.5833856"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
+    "href": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.9 🐁Interpretación de efectos fijos",
+    "text": "0.9 🐁Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 3.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n8.328\n7.788\n8.867\n\n\ntreatmentLow\ntreatmentLow\n-0.434\n-0.749\n-0.119\n\n\ntreatmentHigh\ntreatmentHigh\n-0.862\n-1.241\n-0.484\n\n\nsex1\nsex1\n-0.343\n-0.426\n-0.261\n\n\nlitsize\nlitsize\n-0.131\n-0.169\n-0.092"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "href": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.10 🐁Componentes de varianza e ICC",
+    "text": "0.10 🐁Componentes de varianza e ICC\n\n\nMostrar código\nvc &lt;- VarCorr(model3.3.reml.fit)\n\nvar_litter &lt;- as.numeric(vc[\"(Intercept)\", \"Variance\"])\nvar_res_control &lt;- as.numeric(vc[\"Residual\", \"Variance\"])\n\nsd_ratio &lt;- coef(\n  model3.3.reml.fit$modelStruct$varStruct,\n  unconstrained = FALSE)\n\nvar_res_high_low &lt;- var_res_control * unname(sd_ratio)^2\n\nicc_control  &lt;- var_litter / (var_litter + var_res_control)\nicc_high_low &lt;- var_litter / (var_litter + var_res_high_low)\n\ncat(\"Varianza entre camadas:     \", round(var_litter, 4), \"\\n\")\n\n\nVarianza entre camadas:      0.099 \n\n\nMostrar código\ncat(\"Varianza residual Control:  \", round(var_res_control, 4), \"\\n\")\n\n\nVarianza residual Control:   0.2646 \n\n\nMostrar código\ncat(\"Varianza residual High/Low: \", round(var_res_high_low, 4), \"\\n\")\n\n\nVarianza residual High/Low:  0.0918 \n\n\nMostrar código\ncat(\"ICC Control:                \", round(icc_control, 4), \"\\n\")\n\n\nICC Control:                 0.2722 \n\n\nMostrar código\ncat(\"ICC High/Low:               \", round(icc_high_low, 4), \"\\n\")\n\n\nICC High/Low:                0.5189"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#predicciones",
+    "href": "two-level-clusters/index.html#predicciones",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.11 🐁Predicciones",
+    "text": "0.11 🐁Predicciones"
+  },
+  {
+    "objectID": "two-level-clusters/index.html#diagnósticos",
+    "href": "two-level-clusters/index.html#diagnósticos",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "0.12 🐁Diagnósticos",
+    "text": "0.12 🐁Diagnósticos"
   },
   {
     "objectID": "two-level-clusters/index.html#conclusiones",
     "href": "two-level-clusters/index.html#conclusiones",
-    "title": "Modelos para datos en clusters de 2 niveles",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
     "section": "0.13 🐁Conclusiones",
     "text": "0.13 🐁Conclusiones\n\nEl tratamiento se asocia con una reducción del peso al nacer\nLa dosis alta presenta mayor reducción que la dosis baja\nEl peso también se relaciona con el sexo y el tamaño de camada\nExiste variabilidad relevante entre camadas\nLa varianza residual es heterogénea entre grupos de tratamiento\nEl Model 3.3 representa mejor la estructura jerárquica de los datos\n\n\nIgnorar la agrupación habría ocultado una parte importante de la estructura de los datos. El modelo mixto permitió estimar simultáneamente los efectos promedio del tratamiento y la variabilidad entre y dentro de las camadas."
   },
   {
-    "objectID": "three-level-clusters/index.html",
-    "href": "three-level-clusters/index.html",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "",
-    "text": "Este ejemplo analiza el progreso en matemáticas de estudiantes de primer grado. Los estudiantes están agrupados dentro de salones y los salones dentro de escuelas — estructura de tres niveles.\n\nPregunta central: ¿Qué factores a nivel de estudiante, salón y escuela se asocian con el progreso en matemáticas, considerando la estructura jerárquica de tres niveles?"
+    "objectID": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
+    "href": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "1.1 Por qué lme() y no lmer()",
+    "text": "1.1 Por qué lme() y no lmer()\n\nlmer() no permite varianzas residuales heterogéneas\nPara Model 3.2B y 3.3 es obligatorio usar lme() de nlme\nlmer() solo llega hasta Model 3.1 en este ejemplo"
   },
   {
-    "objectID": "three-level-clusters/index.html#próximamente",
-    "href": "three-level-clusters/index.html#próximamente",
-    "title": "Three-Level Clusters (Classroom)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
+    "objectID": "two-level-clusters/index.html#ml-vs-reml",
+    "href": "two-level-clusters/index.html#ml-vs-reml",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "1.2 ML vs REML",
+    "text": "1.2 ML vs REML\n\n\n\nSituación\nMétodo\n\n\n\n\nComparar modelos con distintos efectos fijos\nML\n\n\nEstimar modelo final e interpretar parámetros\nREML\n\n\nComparar modelos con mismos efectos fijos\nREML"
   },
   {
-    "objectID": "pre-post-clusters/index.html",
-    "href": "pre-post-clusters/index.html",
-    "title": "Pre-Post Clusters (PRT)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
+    "objectID": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
+    "href": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "1.3 Por qué dividir el p-value en H3.1",
+    "text": "1.3 Por qué dividir el p-value en H3.1\nCuando se prueba si una varianza es cero, el parámetro está en el límite del espacio parametral. El LRT estándar no aplica directamente y el p-value se divide por 2."
   },
   {
-    "objectID": "pre-post-clusters/index.html#próximamente",
-    "href": "pre-post-clusters/index.html#próximamente",
-    "title": "Pre-Post Clusters (PRT)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html",
-    "href": "longitudinal-random-coef/index.html",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "",
-    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#próximamente",
-    "href": "longitudinal-random-coef/index.html#próximamente",
-    "title": "Longitudinal Random Coef (Autism)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "longitudinal-clusters/index.html",
-    "href": "longitudinal-clusters/index.html",
-    "title": "Longitudinal Data in Clusters",
-    "section": "",
-    "text": "Se estudia el efecto de una restauración dental (veneer) sobre el índice de fluido crevicular gingival (gcf) medido a los 3 y 6 meses. Los dientes están anidados dentro de pacientes.\n\nPregunta central: ¿Cambia el GCF a lo largo del tiempo y difiere este cambio según las características basales del paciente y el diente, considerando la estructura jerárquica de tres niveles?"
-  },
-  {
-    "objectID": "longitudinal-clusters/index.html#próximamente",
-    "href": "longitudinal-clusters/index.html#próximamente",
-    "title": "Longitudinal Clusters (Dental Veener)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "crossed-random-effects/index.html",
-    "href": "crossed-random-effects/index.html",
-    "title": "Crossed Random Effects (SAT Score)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "crossed-random-effects/index.html#próximamente",
-    "href": "crossed-random-effects/index.html#próximamente",
-    "title": "Crossed Random Effects (SAT Score)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "longitudinal-grouped/index.html",
-    "href": "longitudinal-grouped/index.html",
-    "title": "Longitudinal Grouped (ARMD)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "longitudinal-grouped/index.html#próximamente",
-    "href": "longitudinal-grouped/index.html#próximamente",
-    "title": "Longitudinal Grouped (ARMD)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "multilevel-glm/index.html",
-    "href": "multilevel-glm/index.html",
-    "title": "Multilevel GLM (Mathematics)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "multilevel-glm/index.html#próximamente",
-    "href": "multilevel-glm/index.html#próximamente",
-    "title": "Multilevel GLM (Mathematics)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
+    "objectID": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
+    "href": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
+    "title": "Modelo para datos en clusters de 2 niveles (Two-level clustered linear mixed model)",
+    "section": "1.4 Estrategia top-down con decisiones",
+    "text": "1.4 Estrategia top-down con decisiones\n\n\n\n\n\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]"
   },
   {
     "objectID": "repeated-measures/index.html",
@@ -152,447 +131,6 @@
     "title": "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)",
     "section": "",
     "text": "Se mide la activación cerebral (activate) en 5 ratas en 3 regiones cerebrales bajo 2 condiciones de tratamiento (basal y carbachol).\n\nPregunta central: ¿Difiere la activación cerebral entre regiones y tratamientos, considerando que cada rata contribuye con múltiples observaciones?"
-  },
-  {
-    "objectID": "repeated-measures/index.html#próximamente",
-    "href": "repeated-measures/index.html#próximamente",
-    "title": "Repeated Measures (Rat Brain)",
-    "section": "",
-    "text": "Este ejemplo está en construcción."
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#descripción-del-problema",
-    "href": "two-level-clusters/slides.html#descripción-del-problema",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Descripción del problema",
-    "text": "Descripción del problema"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#diseño-del-estudio",
-    "href": "two-level-clusters/slides.html#diseño-del-estudio",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "2. Diseño del estudio",
-    "text": "2. Diseño del estudio\n\n\nCode\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías — Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\nflowchart TD\n    A[30 ratas hembra] --&gt; B[Tratamiento asignado a nivel de madre]\n    B --&gt; C[Control\\n10 camadas]\n    B --&gt; D[Dosis Baja\\n10 camadas]\n    B --&gt; E[Dosis Alta\\n7 camadas]\n    C --&gt; F[322 crías — Level 1]\n    D --&gt; F\n    E --&gt; F\n\n\n\n\n\n\n\nNivel 2 — camada: unidad de asignación del tratamiento\nNivel 1 — cría: unidad de medición\nDiseño desbalanceado: tamaño de camada varía de 2 a 18 crías"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#hipótesis-y-objetivos",
-    "href": "two-level-clusters/slides.html#hipótesis-y-objetivos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Hipótesis y objetivos",
-    "text": "Hipótesis y objetivos"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#exploración-de-datos",
-    "href": "two-level-clusters/slides.html#exploración-de-datos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Exploración de datos",
-    "text": "Exploración de datos"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#modelos-ajustados",
-    "href": "two-level-clusters/slides.html#modelos-ajustados",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Modelos ajustados",
-    "text": "Modelos ajustados"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#comparación-de-modelos",
-    "href": "two-level-clusters/slides.html#comparación-de-modelos",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Comparación de modelos",
-    "text": "Comparación de modelos"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#modelo-final-e-interpretación",
-    "href": "two-level-clusters/slides.html#modelo-final-e-interpretación",
-    "title": "Two-Level Clustered Data: The Rat Pup Example",
-    "section": "Modelo final e interpretación",
-    "text": "Modelo final e interpretación"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#conclusiones",
-    "href": "two-level-clusters/slides.html#conclusiones",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "13. Conclusiones",
-    "text": "13. Conclusiones\n\nEl tratamiento se asocia con una reducción del peso al nacer\nLa dosis alta presenta mayor reducción que la dosis baja\nEl peso también se relaciona con el sexo y el tamaño de camada\nExiste variabilidad relevante entre camadas\nLa varianza residual es heterogénea entre grupos de tratamiento\nEl Model 3.3 representa mejor la estructura jerárquica de los datos\n\n\nIgnorar la agrupación habría ocultado una parte importante de la estructura de los datos. El modelo mixto permitió estimar simultáneamente los efectos promedio del tratamiento y la variabilidad entre y dentro de las camadas."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Modelos Mixtos - West, Finch & Galecki",
-    "section": "",
-    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
-  },
-  {
-    "objectID": "index.html#acerca-de-este-sitio",
-    "href": "index.html#acerca-de-este-sitio",
-    "title": "Modelos Mixtos - West, Finch & Galecki",
-    "section": "",
-    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
-  },
-  {
-    "objectID": "index.html#ejemplos",
-    "href": "index.html#ejemplos",
-    "title": "Modelos Mixtos - West, Finch & Galecki",
-    "section": "Ejemplos",
-    "text": "Ejemplos\n\n\n\nEjemplo\nLibro\nCapítulo\nModelo\n\n\n\n\n🎯 Two-Level Clusters (Rat Pup)\nWest et al.\nCap. 3 (p.59)\nModelos para datos en clusters de 2 niveles\n\n\nThree-Level Clusters (Classroom)\nWest et al.\nCap. 4 (p.135)\nModelos para datos en clusters de 3 niveles\n\n\nRepeated Measures (Rat Brain)\nWest et al.\nCap. 5 (p.199)\nModelo para datos de medidas repetidas\n\n\nLongitudinal Random Coef (Autism)\nWest et al.\nCap. 6 (p.249)\nModelos longitudinales con coeficientes aleatorios\n\n\nLongitudinal Clusters (Dental Veener)\nWest et al.\nCap. 7 (p.307)\nModelo longitudinal en clusters\n\n\nCrossed Random Effects (SAT Score)\nWest et al.\nCap. 8 (p.369)\nModelos con factores aleatorios cruzados\n\n\nMultilevel GLM (Mathematics)\nFinch et al.\nCap. 8 (p.133)\nModelo lineal generalizado multinivel\n\n\nLongitudinal Grouped (ARMD)\nGalecki et al.\nCap. 2 (p.11-22)\nModelo longitudinal con obs. agrupadas\n\n\nPre-Post Clusters (PRT)\nGalecki et al.\nCap. 2 (p.20)\nModelo pre-post con datos en clusters"
-  },
-  {
-    "objectID": "two-level-clusters/index.html",
-    "href": "two-level-clusters/index.html",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "",
-    "text": "Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#problema-de-investigación",
-    "href": "two-level-clusters/index.html#problema-de-investigación",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "",
-    "text": "Treinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#variables",
-    "href": "two-level-clusters/index.html#variables",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.3 🐁Variables",
-    "text": "0.3 🐁Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nweight\n1\nContinua\nOutcome\nGramos\n\n\nsex / sex1\n1\nCategórica\nCovariable\nMale = referencia; Female = 1\n\n\npup_id\n1\nIdentificador\nIdentificación\nUna cría\n\n\nlitter\n2\nIdentificador\nAgrupación aleatoria\nUna madre/camada\n\n\ntreatment\n2\nCategórica\nPredictor principal\nControl = referencia\n\n\nlitsize\n2\nCuantitativa\nCovariable\nNúmero de crías\n\n\ntrtgrp\n2\nCategórica\nEstructura residual\nControl vs. High_Low\n\n\n\n\n\n\nResumen por grupo de tratamiento\n\n\ntreatment\nCamadas\nCrias\nPeso_medio\nDE\n\n\n\n\nControl\n10\n131\n6.32\n0.74\n\n\nLow\n10\n126\n5.93\n0.43\n\n\nHigh\n7\n65\n5.89\n0.64"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#exploración-descriptiva",
-    "href": "two-level-clusters/index.html#exploración-descriptiva",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.4 🐁Exploración descriptiva",
-    "text": "0.4 🐁Exploración descriptiva\n\n0.4.1 Peso según tratamiento y sexo\n\n\n\n\n\n\n\n\n\n\n\n0.4.2 Peso según tamaño de camada\n\n\n`geom_smooth()` using formula = 'y ~ x'"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#objetivos-e-hipótesis",
-    "href": "two-level-clusters/index.html#objetivos-e-hipótesis",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.5 🐁Objetivos e hipótesis",
-    "text": "0.5 🐁Objetivos e hipótesis\nObjetivo general: Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.\nObjetivos analíticos:\n\nDeterminar si existe variabilidad relevante entre camadas\nEvaluar si la varianza residual difiere entre grupos de tratamiento\nEvaluar si el efecto del tratamiento varía según el sexo\nEstimar el efecto ajustado del tratamiento sobre el peso\nSeleccionar el modelo que mejor represente los datos"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#estrategia-top-down",
-    "href": "two-level-clusters/index.html#estrategia-top-down",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.6 🐁Estrategia top-down",
-    "text": "0.6 🐁Estrategia top-down\n\n\n\n\n\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
-    "href": "two-level-clusters/index.html#ajuste-y-comparación-de-modelos",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.7 🐁Ajuste y comparación de modelos",
-    "text": "0.7 🐁Ajuste y comparación de modelos\n\n0.7.1 Model 3.1: Modelo inicial\n\n\nMostrar código\nmodel3.1.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\")\n\n\n\n\n0.7.2 H3.1: ¿Es necesario el intercepto aleatorio?\n\n\nMostrar código\nmodel3.1a.fit &lt;- gls(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  data = ratpup,\n  method = \"REML\")\n\nlrt_h31 &lt;- anova(model3.1a.fit, model3.1.fit)\nlrt_h31\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1a.fit     1  8 506.5099 536.5305 -245.2550                        \nmodel3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001\n\n\n\nComo se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: p &lt; 0.001 → se mantiene el intercepto aleatorio.\n\n\n\n0.7.3 H3.2: ¿Varianza residual heterogénea por tratamiento?\n\n\nMostrar código\nmodel3.2a.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | treatment))\nanova(model3.1.fit, model3.2a.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001\n\n\n\n\n0.7.4 H3.3: ¿Se pueden agrupar High y Low?\n\n\nMostrar código\nmodel3.2b.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nanova(model3.2a.fit, model3.2b.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.2a.fit     1 11 381.8847 423.1630 -179.9423                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741\n\n\n\n\n0.7.5 H3.4: ¿Model 3.2B mejor que varianza homogénea?\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001\n\n\n\n\n0.7.6 H3.5: ¿Es significativa la interacción tratamiento × sexo?\n\n\nMostrar código\nanova(model3.2b.fit)\n\n\n               numDF denDF  F-value p-value\n(Intercept)        1   292 9027.740  &lt;.0001\ntreatment          2    23    4.241  0.0271\nsex1               1   292   61.568  &lt;.0001\nlitsize            1    23   49.577  &lt;.0001\ntreatment:sex1     2   292    0.317  0.7288\n\n\n\nNo se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (p = 0.73).\n\n\n\n0.7.7 H3.6: ¿Efecto global del tratamiento?\n\n\nMostrar código\nmodel3.3.ml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nmodel3.3a.ml.fit &lt;- lme(\n  weight ~ sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp))\n\nanova(model3.3a.ml.fit, model3.3.ml.fit)\n\n\n                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        \nmodel3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04\n\n\n\np &lt; 0.001 → el tratamiento tiene efecto global significativo.\n\n\n\n0.7.8 Resumen de comparación de modelos\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n3.1 vs 3.1A\nIntercepto aleatorio\np &lt; 0.001\nMantener\n\n\n3.1 vs 3.2A\nVarianza heterogénea\np &lt; 0.001\nHeterogénea\n\n\n3.2A vs 3.2B\nAgrupar High/Low\np = 0.27\nElegir 3.2B\n\n\n3.1 vs 3.2B\nConfirmar 3.2B\np &lt; 0.001\nElegir 3.2B\n\n\nanova(3.2B)\nInteracción trat×sexo\np = 0.73\nEliminar\n\n\n3.3A vs 3.3 (ML)\nEfecto tratamiento\np &lt; 0.001\nMantener"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#modelo-final",
-    "href": "two-level-clusters/index.html#modelo-final",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.8 🐁Modelo final",
-    "text": "0.8 🐁Modelo final\n\n\nMostrar código\nmodel3.3.reml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp))\nsummary(model3.3.reml.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: ratpup \n       AIC      BIC    logLik\n  372.2784 402.3497 -178.1392\n\nRandom effects:\n Formula: ~1 | litter\n        (Intercept)  Residual\nStdDev:   0.3146374 0.5144324\n\nVariance function:\n Structure: Different standard deviations per stratum\n Formula: ~1 | trtgrp \n Parameter estimates:\n  Control  High_Low \n1.0000000 0.5889108 \nFixed effects:  weight ~ treatment + sex1 + litsize \n                  Value  Std.Error  DF   t-value p-value\n(Intercept)    8.327633 0.27406956 294 30.385107  0.0000\ntreatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091\ntreatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001\nsex1          -0.343431 0.04204323 294 -8.168531  0.0000\nlitsize       -0.130681 0.01855194  23 -7.044036  0.0000\n Correlation: \n              (Intr) trtmnL trtmnH sex1  \ntreatmentLow  -0.348                     \ntreatmentHigh -0.610  0.464              \nsex1          -0.103 -0.035 -0.006       \nlitsize       -0.913  0.064  0.403  0.043\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 \n\nNumber of Observations: 322\nNumber of Groups: 27 \n\n\nMostrar código\nintervals(model3.3.reml.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                   lower       est.       upper\n(Intercept)    7.7882461  8.3276330  8.86701987\ntreatmentLow  -0.7486398 -0.4336625 -0.11868526\ntreatmentHigh -1.2406946 -0.8622677 -0.48384070\nsex1          -0.4261753 -0.3434314 -0.26068758\nlitsize       -0.1690581 -0.1306805 -0.09230291\n\n Random Effects:\n  Level: litter \n                    lower      est.     upper\nsd((Intercept)) 0.2272184 0.3146374 0.4356896\n\n Variance function:\n             lower      est.     upper\nHigh_Low 0.4998565 0.5889108 0.6938309\n\n Within-group standard error:\n    lower      est.     upper \n0.4536291 0.5144324 0.5833856"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
-    "href": "two-level-clusters/index.html#componentes-de-varianza-e-icc",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.10 🐁Componentes de varianza e ICC",
-    "text": "0.10 🐁Componentes de varianza e ICC\n\n\nMostrar código\nvc &lt;- VarCorr(model3.3.reml.fit)\n\nvar_litter &lt;- as.numeric(vc[\"(Intercept)\", \"Variance\"])\nvar_res_control &lt;- as.numeric(vc[\"Residual\", \"Variance\"])\n\nsd_ratio &lt;- coef(\n  model3.3.reml.fit$modelStruct$varStruct,\n  unconstrained = FALSE)\n\nvar_res_high_low &lt;- var_res_control * unname(sd_ratio)^2\n\nicc_control  &lt;- var_litter / (var_litter + var_res_control)\nicc_high_low &lt;- var_litter / (var_litter + var_res_high_low)\n\ncat(\"Varianza entre camadas:     \", round(var_litter, 4), \"\\n\")\n\n\nVarianza entre camadas:      0.099 \n\n\nMostrar código\ncat(\"Varianza residual Control:  \", round(var_res_control, 4), \"\\n\")\n\n\nVarianza residual Control:   0.2646 \n\n\nMostrar código\ncat(\"Varianza residual High/Low: \", round(var_res_high_low, 4), \"\\n\")\n\n\nVarianza residual High/Low:  0.0918 \n\n\nMostrar código\ncat(\"ICC Control:                \", round(icc_control, 4), \"\\n\")\n\n\nICC Control:                 0.2722 \n\n\nMostrar código\ncat(\"ICC High/Low:               \", round(icc_high_low, 4), \"\\n\")\n\n\nICC High/Low:                0.5189"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#diagnósticos",
-    "href": "two-level-clusters/index.html#diagnósticos",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.12 🐁Diagnósticos",
-    "text": "0.12 🐁Diagnósticos"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
-    "href": "two-level-clusters/index.html#por-qué-lme-y-no-lmer",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "1.1 Por qué lme() y no lmer()",
-    "text": "1.1 Por qué lme() y no lmer()\n\nlmer() no permite varianzas residuales heterogéneas\nPara Model 3.2B y 3.3 es obligatorio usar lme() de nlme\nlmer() solo llega hasta Model 3.1 en este ejemplo"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#ml-vs-reml",
-    "href": "two-level-clusters/index.html#ml-vs-reml",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "1.2 ML vs REML",
-    "text": "1.2 ML vs REML\n\n\n\nSituación\nMétodo\n\n\n\n\nComparar modelos con distintos efectos fijos\nML\n\n\nEstimar modelo final e interpretar parámetros\nREML\n\n\nComparar modelos con mismos efectos fijos\nREML"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
-    "href": "two-level-clusters/index.html#por-qué-dividir-el-p-value-en-h3.1",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "1.3 Por qué dividir el p-value en H3.1",
-    "text": "1.3 Por qué dividir el p-value en H3.1\nCuando se prueba si una varianza es cero, el parámetro está en el límite del espacio parametral. El LRT estándar no aplica directamente y el p-value se divide por 2."
-  },
-  {
-    "objectID": "two-level-clusters/index.html#código-completo-h3.6",
-    "href": "two-level-clusters/index.html#código-completo-h3.6",
-    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
-    "section": "Código completo H3.6",
-    "text": "Código completo H3.6\n\n\nCode\nmodel3.3a.ml.fit &lt;- lme(weight ~ sex1 + litsize,\n                        random = ~1 | litter,\n                        data = ratpup,\n                        method = \"ML\",\n                        weights = varIdent(form = ~1 | trtgrp))\nanova(model3.3.ml.fit, model3.3a.ml.fit)"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#todos-los-gráficos-diagnósticos",
-    "href": "two-level-clusters/index.html#todos-los-gráficos-diagnósticos",
-    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
-    "section": "Todos los gráficos diagnósticos",
-    "text": "Todos los gráficos diagnósticos\n\n\nCode\nplot(model3.3.reml.fit)\nqqnorm(model3.3.reml.fit)\nplot(model3.3.reml.fit, resid(., type = \"p\") ~ fitted(.),\n     abline = 0)"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#problema-de-investigación",
-    "href": "two-level-clusters/slides.html#problema-de-investigación",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "1. Problema de investigación",
-    "text": "1. Problema de investigación\nTreinta ratas hembra fueron asignadas aleatoriamente a tres grupos: dosis alta, dosis baja o control de un compuesto químico.\nEl tratamiento fue asignado a nivel de la madre, por lo que todas las crías de una misma camada comparten el mismo tratamiento.\n\nPregunta central: ¿Existen diferencias en el peso al nacer de las crías entre los grupos de tratamiento, considerando la dependencia entre crías de una misma camada y ajustando por sexo y tamaño de camada?"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#variables",
-    "href": "two-level-clusters/slides.html#variables",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "3. Variables",
-    "text": "3. Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nweight\n1\nContinua\nOutcome\nGramos\n\n\nsex / sex1\n1\nCategórica\nCovariable\nMale = referencia; Female = 1\n\n\npup_id\n1\nIdentificador\nIdentificación\nUna cría\n\n\nlitter\n2\nIdentificador\nAgrupación aleatoria\nUna madre/camada\n\n\ntreatment\n2\nCategórica\nPredictor principal\nControl = referencia\n\n\nlitsize\n2\nCuantitativa\nCovariable\nNúmero de crías\n\n\ntrtgrp\n2\nCategórica\nEstructura residual\nControl vs. High_Low\n\n\n\n\n\n\nResumen por grupo de tratamiento\n\n\ntreatment\nCamadas\nCrias\nPeso_medio\nDE\n\n\n\n\nControl\n10\n131\n6.32\n0.74\n\n\nLow\n10\n126\n5.93\n0.43\n\n\nHigh\n7\n65\n5.89\n0.64"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#exploración-descriptiva",
-    "href": "two-level-clusters/slides.html#exploración-descriptiva",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "4. Exploración descriptiva",
-    "text": "4. Exploración descriptiva\nPeso según tratamiento y sexo\n\n\n\n\n\n\n\n\n\nPeso según tamaño de camada"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#objetivos-e-hipótesis",
-    "href": "two-level-clusters/slides.html#objetivos-e-hipótesis",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "5. Objetivos e hipótesis",
-    "text": "5. Objetivos e hipótesis\nObjetivo general: Evaluar la asociación entre el tratamiento materno y el peso al nacer, considerando la agrupación dentro de camadas.\nObjetivos analíticos:\n\nDeterminar si existe variabilidad relevante entre camadas\nEvaluar si la varianza residual difiere entre grupos de tratamiento\nEvaluar si el efecto del tratamiento varía según el sexo\nEstimar el efecto ajustado del tratamiento sobre el peso\nSeleccionar el modelo que mejor represente los datos"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#estrategia-top-down",
-    "href": "two-level-clusters/slides.html#estrategia-top-down",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "6. Estrategia top-down",
-    "text": "6. Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]\n\n\n\n\n\nflowchart TD\n    A[Modelo cargado] --&gt; B{¿Se necesita el efecto aleatorio?}\n    B --&gt; C{¿Qué estructura residual es adecuada?}\n    C --&gt; D{¿Se conserva la interacción?}\n    D --&gt; E{¿Hay efecto global del tratamiento?}\n    E --&gt; F[Modelo final]"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#ajuste-y-comparación-de-modelos",
-    "href": "two-level-clusters/slides.html#ajuste-y-comparación-de-modelos",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "7. Ajuste y comparación de modelos",
-    "text": "7. Ajuste y comparación de modelos\nModel 3.1 — Modelo inicial\n\n\nCode\nmodel3.1.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\"\n)\n\n\nH3.1 — ¿Es necesario el intercepto aleatorio?\n\n\nCode\nmodel3.1a.fit &lt;- gls(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  data = ratpup,\n  method = \"REML\"\n)\n\nlrt_h31 &lt;- anova(model3.1a.fit, model3.1.fit)\nlrt_h31\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1a.fit     1  8 506.5099 536.5305 -245.2550                        \nmodel3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  &lt;.0001\n\n\n\nComo se contrasta un único componente de varianza contra cero, West divide por dos el valor p del LRT. Resultado: p &lt; 0.001 → se mantiene el intercepto aleatorio.\n\nH3.2 — ¿Varianza residual heterogénea por tratamiento?\n\n\nCode\nmodel3.2a.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | treatment)\n)\nanova(model3.1.fit, model3.2a.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2a.fit     2 11 381.8847 423.1630 -179.9423 1 vs 2 41.21964  &lt;.0001\n\n\nH3.3 — ¿Se pueden agrupar High y Low?\n\n\nCode\nmodel3.2b.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize + treatment:sex1,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\nanova(model3.2a.fit, model3.2b.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.2a.fit     1 11 381.8847 423.1630 -179.9423                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 1.196053  0.2741\n\n\nH3.4 — ¿Model 3.2B mejor que varianza homogénea?\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.1.fit      1  9 419.1043 452.8775 -200.5522                        \nmodel3.2b.fit     2 10 381.0807 418.6065 -180.5404 1 vs 2 40.02358  &lt;.0001\n\n\nH3.5 — ¿Es significativa la interacción tratamiento × sexo?\n\n\nCode\nanova(model3.2b.fit)\n\n\n               numDF denDF  F-value p-value\n(Intercept)        1   292 9027.740  &lt;.0001\ntreatment          2    23    4.241  0.0271\nsex1               1   292   61.568  &lt;.0001\nlitsize            1    23   49.577  &lt;.0001\ntreatment:sex1     2   292    0.317  0.7288\n\n\n\nNo se encontró evidencia de que la diferencia de peso entre los tratamientos cambie según el sexo de la cría (p = 0.73).\n\nH3.6 — ¿Efecto global del tratamiento?\n\n\nCode\nmodel3.3.ml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\n\nmodel3.3a.ml.fit &lt;- lme(\n  weight ~ sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"ML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\n\nanova(model3.3a.ml.fit, model3.3.ml.fit)\n\n\n                 Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel3.3a.ml.fit     1  6 368.3706 391.0179 -178.1853                        \nmodel3.3.ml.fit      2  8 353.7734 383.9698 -168.8867 1 vs 2 18.59723   1e-04\n\n\n\np &lt; 0.001 → el tratamiento tiene efecto global significativo.\n\nResumen de comparación de modelos\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n3.1 vs 3.1A\nIntercepto aleatorio\np &lt; 0.001\nMantener\n\n\n3.1 vs 3.2A\nVarianza heterogénea\np &lt; 0.001\nHeterogénea\n\n\n3.2A vs 3.2B\nAgrupar High/Low\np = 0.27\nElegir 3.2B\n\n\n3.1 vs 3.2B\nConfirmar 3.2B\np &lt; 0.001\nElegir 3.2B\n\n\nanova(3.2B)\nInteracción trat×sexo\np = 0.73\nEliminar\n\n\n3.3A vs 3.3 (ML)\nEfecto tratamiento\np &lt; 0.001\nMantener"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#modelo-final",
-    "href": "two-level-clusters/slides.html#modelo-final",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "8. Modelo final",
-    "text": "8. Modelo final\n\n\nCode\nmodel3.3.reml.fit &lt;- lme(\n  weight ~ treatment + sex1 + litsize,\n  random = ~1 | litter,\n  data = ratpup,\n  method = \"REML\",\n  weights = varIdent(form = ~1 | trtgrp)\n)\nsummary(model3.3.reml.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: ratpup \n       AIC      BIC    logLik\n  372.2784 402.3497 -178.1392\n\nRandom effects:\n Formula: ~1 | litter\n        (Intercept)  Residual\nStdDev:   0.3146374 0.5144324\n\nVariance function:\n Structure: Different standard deviations per stratum\n Formula: ~1 | trtgrp \n Parameter estimates:\n  Control  High_Low \n1.0000000 0.5889108 \nFixed effects:  weight ~ treatment + sex1 + litsize \n                  Value  Std.Error  DF   t-value p-value\n(Intercept)    8.327633 0.27406956 294 30.385107  0.0000\ntreatmentLow  -0.433663 0.15226167  23 -2.848140  0.0091\ntreatmentHigh -0.862268 0.18293359  23 -4.713556  0.0001\nsex1          -0.343431 0.04204323 294 -8.168531  0.0000\nlitsize       -0.130681 0.01855194  23 -7.044036  0.0000\n Correlation: \n              (Intr) trtmnL trtmnH sex1  \ntreatmentLow  -0.348                     \ntreatmentHigh -0.610  0.464              \nsex1          -0.103 -0.035 -0.006       \nlitsize       -0.913  0.064  0.403  0.043\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-5.97351495 -0.53695365  0.01508652  0.54234475  2.58286992 \n\nNumber of Observations: 322\nNumber of Groups: 27 \n\n\nCode\nintervals(model3.3.reml.fit)\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                   lower       est.       upper\n(Intercept)    7.7882461  8.3276330  8.86701987\ntreatmentLow  -0.7486398 -0.4336625 -0.11868526\ntreatmentHigh -1.2406946 -0.8622677 -0.48384070\nsex1          -0.4261753 -0.3434314 -0.26068758\nlitsize       -0.1690581 -0.1306805 -0.09230291\n\n Random Effects:\n  Level: litter \n                    lower      est.     upper\nsd((Intercept)) 0.2272184 0.3146374 0.4356896\n\n Variance function:\n             lower      est.     upper\nHigh_Low 0.4998565 0.5889108 0.6938309\n\n Within-group standard error:\n    lower      est.     upper \n0.4536291 0.5144324 0.5833856"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#componentes-de-varianza-e-icc",
-    "href": "two-level-clusters/slides.html#componentes-de-varianza-e-icc",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "10. Componentes de varianza e ICC",
-    "text": "10. Componentes de varianza e ICC\n\n\nCode\nvc &lt;- VarCorr(model3.3.reml.fit)\n\nvar_litter &lt;- as.numeric(vc[\"(Intercept)\", \"Variance\"])\nvar_res_control &lt;- as.numeric(vc[\"Residual\", \"Variance\"])\n\nsd_ratio &lt;- coef(\n  model3.3.reml.fit$modelStruct$varStruct,\n  unconstrained = FALSE\n)\n\nvar_res_high_low &lt;- var_res_control * unname(sd_ratio)^2\n\nicc_control  &lt;- var_litter / (var_litter + var_res_control)\nicc_high_low &lt;- var_litter / (var_litter + var_res_high_low)\n\ncat(\"Varianza entre camadas:     \", round(var_litter, 4), \"\\n\")\n\n\nVarianza entre camadas:      0.099 \n\n\nCode\ncat(\"Varianza residual Control:  \", round(var_res_control, 4), \"\\n\")\n\n\nVarianza residual Control:   0.2646 \n\n\nCode\ncat(\"Varianza residual High/Low: \", round(var_res_high_low, 4), \"\\n\")\n\n\nVarianza residual High/Low:  0.0918 \n\n\nCode\ncat(\"ICC Control:                \", round(icc_control, 4), \"\\n\")\n\n\nICC Control:                 0.2722 \n\n\nCode\ncat(\"ICC High/Low:               \", round(icc_high_low, 4), \"\\n\")\n\n\nICC High/Low:                0.5189"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#diagnósticos",
-    "href": "two-level-clusters/slides.html#diagnósticos",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "12. Diagnósticos",
-    "text": "12. Diagnósticos"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#por-qué-lme-y-no-lmer",
-    "href": "two-level-clusters/slides.html#por-qué-lme-y-no-lmer",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "Por qué lme() y no lmer()",
-    "text": "Por qué lme() y no lmer()\n\nlmer() no permite varianzas residuales heterogéneas\nPara Model 3.2B y 3.3 es obligatorio usar lme() de nlme\nlmer() solo llega hasta Model 3.1 en este ejemplo"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#ml-vs-reml",
-    "href": "two-level-clusters/slides.html#ml-vs-reml",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "ML vs REML",
-    "text": "ML vs REML\n\n\n\nSituación\nMétodo\n\n\n\n\nComparar modelos con distintos efectos fijos\nML\n\n\nEstimar modelo final e interpretar parámetros\nREML\n\n\nComparar modelos con mismos efectos fijos\nREML"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#por-qué-dividir-el-p-value-en-h3.1",
-    "href": "two-level-clusters/slides.html#por-qué-dividir-el-p-value-en-h3.1",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "Por qué dividir el p-value en H3.1",
-    "text": "Por qué dividir el p-value en H3.1\nCuando se prueba si una varianza es cero, el parámetro está en el límite del espacio parametral. El LRT estándar no aplica directamente y el p-value se divide por 2."
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#código-completo-h3.6",
-    "href": "two-level-clusters/slides.html#código-completo-h3.6",
-    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
-    "section": "Código completo H3.6",
-    "text": "Código completo H3.6"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#todos-los-gráficos-diagnósticos",
-    "href": "two-level-clusters/slides.html#todos-los-gráficos-diagnósticos",
-    "title": "Modelos para datos en clusters de 2 niveles: Ejemplo de la cría de ratas",
-    "section": "Todos los gráficos diagnósticos",
-    "text": "Todos los gráficos diagnósticos"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
-    "href": "two-level-clusters/index.html#interpretación-de-efectos-fijos",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.9 🐁Interpretación de efectos fijos",
-    "text": "0.9 🐁Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 3.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n8.328\n7.788\n8.867\n\n\ntreatmentLow\ntreatmentLow\n-0.434\n-0.749\n-0.119\n\n\ntreatmentHigh\ntreatmentHigh\n-0.862\n-1.241\n-0.484\n\n\nsex1\nsex1\n-0.343\n-0.426\n-0.261\n\n\nlitsize\nlitsize\n-0.131\n-0.169\n-0.092"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#predicciones",
-    "href": "two-level-clusters/index.html#predicciones",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "0.11 🐁Predicciones",
-    "text": "0.11 🐁Predicciones"
-  },
-  {
-    "objectID": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
-    "href": "two-level-clusters/index.html#estrategia-top-down-con-decisiones",
-    "title": "Modelos para datos en clusters de 2 niveles",
-    "section": "1.4 Estrategia top-down con decisiones",
-    "text": "1.4 Estrategia top-down con decisiones\n\n\n\n\n\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#interpretación-de-efectos-fijos",
-    "href": "two-level-clusters/slides.html#interpretación-de-efectos-fijos",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "9. Interpretación de efectos fijos",
-    "text": "9. Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 3.3 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n8.328\n7.788\n8.867\n\n\ntreatmentLow\ntreatmentLow\n-0.434\n-0.749\n-0.119\n\n\ntreatmentHigh\ntreatmentHigh\n-0.862\n-1.241\n-0.484\n\n\nsex1\nsex1\n-0.343\n-0.426\n-0.261\n\n\nlitsize\nlitsize\n-0.131\n-0.169\n-0.092"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#predicciones",
-    "href": "two-level-clusters/slides.html#predicciones",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "11. Predicciones",
-    "text": "11. Predicciones"
-  },
-  {
-    "objectID": "two-level-clusters/slides.html#estrategia-top-down-con-decisiones",
-    "href": "two-level-clusters/slides.html#estrategia-top-down-con-decisiones",
-    "title": "Modelos para datos agrupados en dos niveles",
-    "section": "Estrategia top-down con decisiones",
-    "text": "Estrategia top-down con decisiones\n\n\nCode\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]\n\n\n\n\n\nflowchart TD\n    A[Model 3.1] --&gt; B{H3.1: ¿Intercepto aleatorio?}\n    B --&gt;|Sí p&lt;0.001| C{H3.2-3.4: ¿Varianza heterogénea?}\n    C --&gt;|Sí elegir 3.2B| D{H3.5: ¿Interacción?}\n    D --&gt;|No p=0.73| E{H3.6: ¿Efecto tratamiento?}\n    E --&gt;|Sí p&lt;0.001| F[Model 3.3 Final]"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#problema-de-investigación",
-    "href": "three-level-clusters/index.html#problema-de-investigación",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "",
-    "text": "Este ejemplo analiza el progreso en matemáticas de estudiantes de primer grado. Los estudiantes están agrupados dentro de salones y los salones dentro de escuelas — estructura de tres niveles.\n\nPregunta central: ¿Qué factores a nivel de estudiante, salón y escuela se asocian con el progreso en matemáticas, considerando la estructura jerárquica de tres niveles?"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#estructura-jerárquica",
-    "href": "three-level-clusters/index.html#estructura-jerárquica",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "2.📚Estructura jerárquica",
-    "text": "2.📚Estructura jerárquica\n\n\nCode\n# Tamaño total\nnrow(classroom_analysis)\n\n\n[1] 1081\n\n\nCode\n# Niveles — contando salones como combinación escuela-salón\nn_salones &lt;- classroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  nrow()\n\nclassroom_analysis |&gt;\n  summarise(\n    escuelas    = n_distinct(schoolid),\n    salones     = n_salones,\n    estudiantes = n_distinct(childid))\n\n\n  escuelas salones estudiantes\n1      105     285        1081\n\n\nCode\n# Salones por escuela\nclassroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  count(schoolid, name = \"salones_por_escuela\") |&gt;\n  summarise(\n    min   = min(salones_por_escuela),\n    max   = max(salones_por_escuela),\n    media = round(mean(salones_por_escuela), 1))\n\n\n  min max media\n1   1   9   2.7\n\n\nCode\n# Estudiantes por salón\nclassroom_analysis |&gt;\n  count(schoolid, classid, name = \"est_por_salon\") |&gt;\n  summarise(\n    min   = min(est_por_salon),\n    max   = max(est_por_salon),\n    media = round(mean(est_por_salon), 1))\n\n\n  min max media\n1   1  10   3.8\n\n\nCode\n# Verificar si classid se repite entre escuelas\nclassroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  count(classid) |&gt;\n  filter(n &gt; 1)\n\n\n[1] classid n      \n&lt;0 rows&gt; (o 0- extensión row.names)"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#variables",
-    "href": "three-level-clusters/index.html#variables",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "3.📚Variables",
-    "text": "3.📚Variables\n\n\n\nVariable\nNivel\nTipo\nRol\n\n\n\n\nmathgain\n1\nContinua\nOutcome\n\n\nmathkind\n1\nContinua\nCovariable — puntaje inicial\n\n\nsex\n1\nCategórica\nCovariable\n\n\nminority\n1\nCategórica\nCovariable\n\n\nses\n1\nContinua\nCovariable\n\n\nchildid\n1\nIdentificador\nEstudiante\n\n\nyearstea\n2\nContinua\nCovariable — años enseñando\n\n\nmathprep\n2\nContinua\nCovariable — preparación matemática\n\n\nmathknow\n2\nContinua\nCovariable — conocimiento matemático\n\n\nclassid\n2\nIdentificador\nSalón\n\n\nhousepov\n3\nContinua\nCovariable — pobreza escuela\n\n\nschoolid\n3\nIdentificador\nEscuela"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#exploración-descriptiva",
-    "href": "three-level-clusters/index.html#exploración-descriptiva",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "4.📚Exploración descriptiva",
-    "text": "4.📚Exploración descriptiva"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#estrategia-step-up",
-    "href": "three-level-clusters/index.html#estrategia-step-up",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "5.📚Estrategia step-up",
-    "text": "5.📚Estrategia step-up\nA diferencia del capítulo 3 que usaba top-down, aquí West usa una estrategia step-up: parte del modelo más simple y va agregando complejidad.\n\n\nCode\nflowchart TD\n    A[Model 4.1\\nModelo incondicional] --&gt; B{H4.1\\n¿Variación entre salones?}\n    B --&gt; C[Model 4.2\\nCovariables nivel 1]\n    C --&gt; D{H4.2\\n¿Aportan variables del estudiante?}\n    D --&gt; E[Model 4.3\\nCovariables nivel 2]\n    E --&gt; F[Model 4.4\\nCovariable nivel 3]\n    F --&gt; G[Modelo final: Model 4.2]\n\n\n\n\n\nflowchart TD\n    A[Model 4.1\\nModelo incondicional] --&gt; B{H4.1\\n¿Variación entre salones?}\n    B --&gt; C[Model 4.2\\nCovariables nivel 1]\n    C --&gt; D{H4.2\\n¿Aportan variables del estudiante?}\n    D --&gt; E[Model 4.3\\nCovariables nivel 2]\n    E --&gt; F[Model 4.4\\nCovariable nivel 3]\n    F --&gt; G[Modelo final: Model 4.2]"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#model-4.1-modelo-incondicional",
-    "href": "three-level-clusters/index.html#model-4.1-modelo-incondicional",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "6.📚Model 4.1: Modelo incondicional",
-    "text": "6.📚Model 4.1: Modelo incondicional\n\n\nCode\nmodel4.1.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"REML\")\nsummary(model4.1.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10701.23 10721.17 -5346.616\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.567492\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    10.81313 31.95277\n\nFixed effects:  mathgain ~ 1 \n               Value Std.Error  DF  t-value p-value\n(Intercept) 57.76131  1.498602 796 38.54346       0\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.30557391 -0.61148664 -0.03961529  0.55084920  5.62083279 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#h4.1-hay-variabilidad-entre-salones",
-    "href": "three-level-clusters/index.html#h4.1-hay-variabilidad-entre-salones",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "7.📚H4.1: ¿Hay variabilidad entre salones?",
-    "text": "7.📚H4.1: ¿Hay variabilidad entre salones?\n\n\nCode\nmodel4.1A.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid,\n  data = classroom_analysis,\n  method = \"REML\")\n\nanova(model4.1A.fit, model4.1.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel4.1A.fit     1  3 10708.30 10723.26 -5351.152                        \nmodel4.1.fit      2  4 10701.23 10721.17 -5346.616 1 vs 2 9.072633  0.0026\n\n\n\nSi el LRT es significativo, se conserva el intercepto aleatorio de salón dentro de escuela."
-  },
-  {
-    "objectID": "three-level-clusters/index.html#model-4.2-covariables-del-estudiante-nivel-1",
-    "href": "three-level-clusters/index.html#model-4.2-covariables-del-estudiante-nivel-1",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "8.📚Model 4.2: Covariables del estudiante (Nivel 1)",
-    "text": "8.📚Model 4.2: Covariables del estudiante (Nivel 1)\n\n\nCode\nmodel4.2.fit &lt;- lme(\n  mathgain ~ mathkind + sex + minority + ses,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"REML\")\nsummary(model4.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10334.53 10374.38 -5159.267\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.137653\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.589501 26.73725\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses \n                Value Std.Error  DF    t-value p-value\n(Intercept) 286.66229 11.080434 792  25.871034  0.0000\nmathkind     -0.47687  0.022699 792 -21.008488  0.0000\nsex          -1.36021  1.719783 792  -0.790922  0.4292\nminority     -8.50743  2.374568 792  -3.582728  0.0004\nses           5.39986  1.274105 792   4.238157  0.0000\n Correlation: \n         (Intr) mthknd sex    minrty\nmathkind -0.979                     \nsex      -0.070 -0.005              \nminority -0.304  0.164 -0.018       \nses       0.137 -0.166  0.021  0.166\n\nStandardized Within-Group Residuals:\n       Min         Q1        Med         Q3        Max \n-3.4565766 -0.6218058 -0.0375118  0.5607274  4.3174874 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#h4.2-aportan-las-variables-del-estudiante",
-    "href": "three-level-clusters/index.html#h4.2-aportan-las-variables-del-estudiante",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "9.📚H4.2: ¿Aportan las variables del estudiante?",
-    "text": "9.📚H4.2: ¿Aportan las variables del estudiante?\n\n\nCode\nmodel4.1.ml.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"ML\")\n\nmodel4.2.ml.fit &lt;- lme(\n  mathgain ~ mathkind + sex + minority + ses,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"ML\")\n\nanova(model4.1.ml.fit, model4.2.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel4.1.ml.fit     1  4 10703.87 10723.82 -5347.936                        \nmodel4.2.ml.fit     2  8 10339.90 10379.79 -5161.952 1 vs 2 371.9688  &lt;.0001"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#model-4.3-covariables-del-salón-nivel-2",
-    "href": "three-level-clusters/index.html#model-4.3-covariables-del-salón-nivel-2",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "10.📚Model 4.3: Covariables del salón (Nivel 2)",
-    "text": "10.📚Model 4.3: Covariables del salón (Nivel 2)\n\n\nCode\nmodel4.3.fit &lt;- update(\n  model4.2.fit,\n  fixed = mathgain ~ mathkind + sex + minority + ses +\n    yearstea + mathprep + mathknow)\nsummary(model4.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n    AIC      BIC    logLik\n  10335 10389.76 -5156.499\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.671285\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.310153 26.71766\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses + yearstea + mathprep +      mathknow \n                Value Std.Error  DF    t-value p-value\n(Intercept) 282.02452 11.701687 792  24.101185  0.0000\nmathkind     -0.47501  0.022747 792 -20.882471  0.0000\nsex          -1.33950  1.718580 792  -0.779423  0.4360\nminority     -7.86886  2.418081 792  -3.254177  0.0012\nses           5.41925  1.275995 792   4.247078  0.0000\nyearstea      0.03974  0.117070 177   0.339435  0.7347\nmathprep      1.09485  1.148493 177   0.953296  0.3417\nmathknow      1.91448  1.147015 177   1.669094  0.0969\n Correlation: \n         (Intr) mthknd sex    minrty ses    yearst mthprp\nmathkind -0.943                                          \nsex      -0.069 -0.005                                   \nminority -0.302  0.166 -0.015                            \nses       0.121 -0.163  0.020  0.159                     \nyearstea -0.092  0.005  0.015  0.040 -0.033              \nmathprep -0.283  0.052 -0.002  0.017  0.043 -0.168       \nmathknow -0.049  0.029  0.007  0.146 -0.015  0.015  0.004\n\nStandardized Within-Group Residuals:\n       Min         Q1        Med         Q3        Max \n-3.3989531 -0.6289628 -0.0413954  0.5564112  4.3029072 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#model-4.4-covariable-de-escuela-nivel-3",
-    "href": "three-level-clusters/index.html#model-4.4-covariable-de-escuela-nivel-3",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "11.📚Model 4.4: Covariable de escuela (Nivel 3)",
-    "text": "11.📚Model 4.4: Covariable de escuela (Nivel 3)\n\n\nCode\nmodel4.4.fit &lt;- update(\n  model4.2.fit,\n  fixed = mathgain ~ mathkind + sex + minority + ses +\n    housepov\n)\nsummary(model4.4.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10329.17 10373.99 -5155.585\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.256866\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.504459 26.74128\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses + housepov \n                Value Std.Error  DF    t-value p-value\n(Intercept) 288.54331 11.241920 792  25.666727  0.0000\nmathkind     -0.47768  0.022715 792 -21.029574  0.0000\nsex          -1.34763  1.719861 792  -0.783568  0.4335\nminority     -8.05608  2.424007 792  -3.323455  0.0009\nses           5.29868  1.278906 792   4.143138  0.0000\nhousepov     -9.63456  9.920088 103  -0.971217  0.3337\n Correlation: \n         (Intr) mthknd sex    minrty ses   \nmathkind -0.970                            \nsex      -0.068 -0.005                     \nminority -0.262  0.155 -0.015              \nses       0.120 -0.162  0.020  0.145       \nhousepov -0.167  0.032 -0.009 -0.194  0.085\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-3.45213250 -0.62383379 -0.03940704  0.56577574  4.32114273 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#resumen-de-comparación-de-modelos",
-    "href": "three-level-clusters/index.html#resumen-de-comparación-de-modelos",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "12.📚Resumen de comparación de modelos",
-    "text": "12.📚Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\n\nModelo\nEfectos fijos\nEfectos aleatorios\nPropósito\nDecisión\n\n\n\n\n4.1\nIntercepto\nEscuela + salón\nPartición inicial de varianza\nBase\n\n\n4.1A\nIntercepto\nEscuela\nProbar salón\nSe rechaza\n\n\n4.2\nNivel 1\nEscuela + salón\nAgregar estudiante\nModelo final\n\n\n4.3\nNivel 1 + Nivel 2\nEscuela + salón\nProbar maestro/salón\nNo se retiene\n\n\n4.4\nNivel 1 + Nivel 3\nEscuela + salón\nProbar escuela\nNo se retiene\n\n\n\n\n\n\n\n\n\n\n\n\nPregunta\nComparación\nResultado\nDecisión\n\n\n\n\n¿Hay variación entre salones?\n4.1A vs 4.1\np &lt; 0.01\nMantener salón\n\n\n¿Aportan variables del estudiante?\n4.1 vs 4.2\np &lt; 0.001\nMantener nivel 1\n\n\n¿Aportan variables del salón?\nModel 4.3\np &gt; 0.10\nNo retener\n\n\n¿Aporta housepov?\nModel 4.4\np = 0.25\nNo retener\n\n\nModelo final\n—\n—\nModel 4.2"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#modelo-final-interpretación-de-efectos-fijos",
-    "href": "three-level-clusters/index.html#modelo-final-interpretación-de-efectos-fijos",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "13.📚Modelo final — Interpretación de efectos fijos",
-    "text": "13.📚Modelo final — Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 4.2 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n286.662\n264.912\n308.413\n\n\nmathkind\nmathkind\n-0.477\n-0.521\n-0.432\n\n\nsex\nsex\n-1.360\n-4.736\n2.016\n\n\nminority\nminority\n-8.507\n-13.169\n-3.846\n\n\nses\nses\n5.400\n2.899\n7.901"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#componentes-de-varianza-e-icc",
-    "href": "three-level-clusters/index.html#componentes-de-varianza-e-icc",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "14.📚Componentes de varianza e ICC",
-    "text": "14.📚Componentes de varianza e ICC\n\n\nCode\nvc &lt;- VarCorr(model4.2.reml.fit)\nprint(vc)\n\n\n            Variance     StdDev   \nschoolid =  pdLogChol(1)          \n(Intercept)  66.22139     8.137653\nclassid =   pdLogChol(1)          \n(Intercept)  91.95853     9.589501\nResidual    714.88075    26.737254\n\n\nCode\nvars &lt;- as.numeric(vc[, \"Variance\"])\nvars &lt;- vars[!is.na(vars)]\n\nvar_escuela &lt;- vars[1]\nvar_salon   &lt;- vars[2]\nvar_res     &lt;- vars[3]\nvar_total   &lt;- var_escuela + var_salon + var_res\n\nicc_escuela     &lt;- var_escuela / var_total\nicc_mismo_salon &lt;- (var_escuela + var_salon) / var_total\nprop_salon      &lt;- var_salon / var_total\n\ncat(\"Varianza escuela:          \", round(var_escuela, 4), \"\\n\")\n\n\nVarianza escuela:           66.2214 \n\n\nCode\ncat(\"Varianza salón:            \", round(var_salon, 4), \"\\n\")\n\n\nVarianza salón:             91.9585 \n\n\nCode\ncat(\"Varianza residual:         \", round(var_res, 4), \"\\n\")\n\n\nVarianza residual:          714.8808 \n\n\nCode\ncat(\"ICC misma escuela:         \", round(icc_escuela, 4), \"\\n\")\n\n\nICC misma escuela:          0.0758 \n\n\nCode\ncat(\"ICC mismo salón:           \", round(icc_mismo_salon, 4), \"\\n\")\n\n\nICC mismo salón:            0.1812 \n\n\nCode\ncat(\"Proporción salón adicional:\", round(prop_salon, 4), \"\\n\")\n\n\nProporción salón adicional: 0.1053"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#diagnósticos",
-    "href": "three-level-clusters/index.html#diagnósticos",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "15.📚Diagnósticos",
-    "text": "15.📚Diagnósticos"
-  },
-  {
-    "objectID": "three-level-clusters/index.html#conclusiones",
-    "href": "three-level-clusters/index.html#conclusiones",
-    "title": "Modelos para datos en clusters de 3 niveles",
-    "section": "16.📚Conclusiones",
-    "text": "16.📚Conclusiones\n\nExiste variabilidad significativa entre salones dentro de escuelas\nLas variables del estudiante (mathkind, sex, minority, ses) mejoran el ajuste\nLas variables del salón y escuela no retienen significancia\nEl Model 4.2 es el modelo final\nEl puntaje inicial (mathkind) es el predictor más importante del progreso en matemáticas"
   },
   {
     "objectID": "repeated-measures/index.html#problema-de-investigación",
@@ -707,130 +245,74 @@
     "text": "Anexo: Comparación con lmer()\nlmer() puede replicar los Model 5.1 y 5.2 pero no el 5.3 porque no permite varianzas residuales heterogéneas.\n\n\n\nModelo\nlme()\nlmer()\n\n\n\n\n5.1 intercepto aleatorio\n✅\n✅\n\n\n5.2 intercepto + tratamiento aleatorio\n✅\n✅\n\n\n5.3 varianza residual heterogénea\n✅\n❌\n\n\n\n\nModel 5.1 con lmer()\n\n\nCode\nlibrary(lme4)\nlibrary(lmerTest)\n\nmodel5.1.lmer &lt;- lmer(\n  activate ~ region.f * treat + (1 | animal),\n  data = rat_brain,\n  REML = TRUE)\n\nsummary(model5.1.lmer)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: activate ~ region.f * treat + (1 | animal)\n   Data: rat_brain\n\nREML criterion at convergence: 275.3\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-1.4643 -0.5762  0.0802  0.4072  1.5509 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n animal   (Intercept) 4850     69.64   \n Residual             2450     49.50   \nNumber of obs: 30, groups:  animal, 5\n\nFixed effects:\n                Estimate Std. Error       df t value Pr(&gt;|t|)    \n(Intercept)      212.294     38.210    7.484   5.556 0.000678 ***\nregion.f1        216.212     31.307   20.000   6.906 1.04e-06 ***\nregion.f2         25.450     31.307   20.000   0.813 0.425835    \ntreat            360.026     31.307   20.000  11.500 2.87e-10 ***\nregion.f1:treat -261.822     44.275   20.000  -5.914 8.76e-06 ***\nregion.f2:treat -162.500     44.275   20.000  -3.670 0.001519 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n            (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1   -0.410                            \nregion.f2   -0.410  0.500                     \ntreat       -0.410  0.500  0.500              \nregn.f1:trt  0.290 -0.707 -0.354 -0.707       \nregn.f2:trt  0.290 -0.354 -0.707 -0.707  0.500\n\n\n\n\nModel 5.2 con lmer()\n\n\nCode\nmodel5.2.lmer &lt;- lmer(\n  activate ~ region.f * treat + (treat | animal),\n  data = rat_brain,\n  REML = TRUE)\n\nsummary(model5.2.lmer)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: activate ~ region.f * treat + (treat | animal)\n   Data: rat_brain\n\nREML criterion at convergence: 249.2\n\nScaled residuals: \n     Min       1Q   Median       3Q      Max \n-1.56112 -0.40392 -0.00639  0.46414  1.82518 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr \n animal   (Intercept) 1284.3   35.84         \n          treat       6371.3   79.82    0.80 \n Residual              538.9   23.21         \nNumber of obs: 30, groups:  animal, 5\n\nFixed effects:\n                Estimate Std. Error       df t value Pr(&gt;|t|)    \n(Intercept)      212.294     19.096    6.112  11.117 2.78e-05 ***\nregion.f1        216.212     14.682   16.000  14.726 1.01e-10 ***\nregion.f2         25.450     14.682   16.000   1.733  0.10224    \ntreat            360.026     38.598    4.886   9.328  0.00027 ***\nregion.f1:treat -261.822     20.763   16.000 -12.610 1.00e-09 ***\nregion.f2:treat -162.500     20.763   16.000  -7.826 7.36e-07 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n            (Intr) rgn.f1 rgn.f2 treat  rgn.1:\nregion.f1   -0.384                            \nregion.f2   -0.384  0.500                     \ntreat        0.475  0.190  0.190              \nregn.f1:trt  0.272 -0.707 -0.354 -0.269       \nregn.f2:trt  0.272 -0.354 -0.707 -0.269  0.500\n\n\n\n\nComparación H5.1 con lmer()\n\n\nCode\n# lmerTest permite usar rand() para probar efectos aleatorios\nrand(model5.2.lmer)\n\n\nANOVA-like table for random-effects: Single term deletions\n\nModel:\nactivate ~ region.f * treat + (treat | animal)\n                          npar  logLik    AIC    LRT Df Pr(&gt;Chisq)    \n&lt;none&gt;                      10 -124.59 269.19                         \ntreat in (treat | animal)    8 -137.64 291.28 26.092  2  2.159e-06 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\n\nComparación de estimaciones lme() vs lmer()\n\n\nCode\n# Efectos fijos\ncat(\"=== lme() ===\\n\")\n\n\n=== lme() ===\n\n\nCode\nround(fixef(model5.2.fit), 4)\n\n\n    (Intercept)       region.f1       region.f2           treat region.f1:treat \n        212.294         216.212          25.450         360.026        -261.822 \nregion.f2:treat \n       -162.500 \n\n\nCode\ncat(\"\\n=== lmer() ===\\n\")\n\n\n\n=== lmer() ===\n\n\nCode\nround(fixef(model5.2.lmer), 4)\n\n\n    (Intercept)       region.f1       region.f2           treat region.f1:treat \n        212.294         216.212          25.450         360.026        -261.822 \nregion.f2:treat \n       -162.500 \n\n\nCode\n# Componentes de varianza\ncat(\"\\n=== Varianza lme() ===\\n\")\n\n\n\n=== Varianza lme() ===\n\n\nCode\nVarCorr(model5.2.fit)\n\n\nanimal = pdLogChol(treat) \n            Variance  StdDev   Corr  \n(Intercept) 1284.2876 35.83696 (Intr)\ntreat       6371.2509 79.82012 0.801 \nResidual     538.9048 23.21432       \n\n\nCode\ncat(\"\\n=== Varianza lmer() ===\\n\")\n\n\n\n=== Varianza lmer() ===\n\n\nCode\nVarCorr(model5.2.lmer)\n\n\n Groups   Name        Std.Dev. Corr  \n animal   (Intercept) 35.837         \n          treat       79.821   0.801 \n Residual             23.214         \n\n\n\nLas estimaciones de efectos fijos y componentes de varianza son prácticamente idénticas entre lme() y lmer(). La diferencia está en que lme() permite el Model 5.3 con varianza residual heterogénea, mientras que lmer() no."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#problema-de-investigación",
-    "href": "longitudinal-random-coef/index.html#problema-de-investigación",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "objectID": "multilevel-glm/index.html",
+    "href": "multilevel-glm/index.html",
+    "title": "Multilevel GLM (Mathematics)",
     "section": "",
-    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#diseño-longitudinal",
-    "href": "longitudinal-random-coef/index.html#diseño-longitudinal",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "2.🧠Diseño longitudinal",
-    "text": "2.🧠Diseño longitudinal\n\nDatos longitudinales — mismos niños medidos en múltiples momentos del tiempo\nNivel 2: niño (childid)\nNivel 1: medición en el tiempo (age)\nLas mediciones dentro de un mismo niño no son independientes\nDiseño desbalanceado — no todos los niños tienen todas las mediciones\n\n\n\nCode\nnrow(autism_updated)\n\n\n[1] 610\n\n\nCode\nn_distinct(autism_updated$childid)\n\n\n[1] 158\n\n\nCode\nautism_updated |&gt;\n  count(childid, name = \"n_mediciones\") |&gt;\n  count(n_mediciones, name = \"n_ninos\")\n\n\n  n_mediciones n_ninos\n1            1       2\n2            2      14\n3            3      29\n4            4      72\n5            5      41\n\n\nCode\ntable(autism_updated$age, autism_updated$sicdegp2.f)\n\n\n    \n      0  1  2\n  2  40 50 66\n  3  38 47 64\n  5  26 29 36\n  9  35 36 48\n  13 26 28 41"
+    "objectID": "multilevel-glm/index.html#próximamente",
+    "href": "multilevel-glm/index.html#próximamente",
+    "title": "Multilevel GLM (Mathematics)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#variables",
-    "href": "longitudinal-random-coef/index.html#variables",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "3.🧠Variables",
-    "text": "3.🧠Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nvsae\n1\nContinua\nOutcome\nHabilidades sociales verbales\n\n\nage\n1\nContinua\nTiempo\n2, 3, 5, 9, 13 años\n\n\nage.2\n1\nContinua\nTiempo centrado\nage − 2\n\n\nage.2sq\n1\nContinua\nCurvatura\nage.2²\n\n\nchildid\n2\nIdentificador\nSujeto\nNiño\n\n\nsicdegp\n2\nCategórica\nPredictor\nGrupo de competencia lingüística inicial\n\n\nsicdegp2.f\n2\nCategórica\nPredictor recodificado\nGrupo 3 = ref (0), Grupo 1 = 1, Grupo 2 = 2\n\n\n\n\n¿Por qué centrar la edad en 2? Porque los niños tienen 2 años en la primera medición. Así el intercepto representa el VSAE esperado al inicio del seguimiento, no al año 0."
+    "objectID": "longitudinal-grouped/index.html",
+    "href": "longitudinal-grouped/index.html",
+    "title": "Longitudinal Grouped (ARMD)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#exploración-descriptiva",
-    "href": "longitudinal-random-coef/index.html#exploración-descriptiva",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "4.🧠Exploración descriptiva",
-    "text": "4.🧠Exploración descriptiva"
+    "objectID": "longitudinal-grouped/index.html#próximamente",
+    "href": "longitudinal-grouped/index.html#próximamente",
+    "title": "Longitudinal Grouped (ARMD)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#estrategia-top-down",
-    "href": "longitudinal-random-coef/index.html#estrategia-top-down",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "5.🧠Estrategia top-down",
-    "text": "5.🧠Estrategia top-down\n\n\nCode\nflowchart TD\n    A[Model 6.1\\nIntercepto + pendiente lineal\\n+ pendiente cuadrática aleatorias] --&gt; B{Problema\\nMatriz D mal condicionada}\n    B --&gt; C[Model 6.2\\nSin intercepto aleatorio]\n    C --&gt; D{H6.1\\n¿Pendiente cuadrática aleatoria?}\n    D --&gt;|Sí p&lt;0.001| E{H6.2\\n¿Interacción grupo x edad cuadrática?}\n    E --&gt;|No p=0.39| F[Model 6.3\\nSin interacción cuadrática]\n    F --&gt; G{H6.3\\n¿Interacción grupo x edad lineal?}\n    G --&gt;|Sí p&lt;0.001| H[Model 6.3 — Modelo Final]\n\n\n\n\n\nflowchart TD\n    A[Model 6.1\\nIntercepto + pendiente lineal\\n+ pendiente cuadrática aleatorias] --&gt; B{Problema\\nMatriz D mal condicionada}\n    B --&gt; C[Model 6.2\\nSin intercepto aleatorio]\n    C --&gt; D{H6.1\\n¿Pendiente cuadrática aleatoria?}\n    D --&gt;|Sí p&lt;0.001| E{H6.2\\n¿Interacción grupo x edad cuadrática?}\n    E --&gt;|No p=0.39| F[Model 6.3\\nSin interacción cuadrática]\n    F --&gt; G{H6.3\\n¿Interacción grupo x edad lineal?}\n    G --&gt;|Sí p&lt;0.001| H[Model 6.3 — Modelo Final]"
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "",
+    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
-    "href": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "6.🧠Model 6.1 — Modelo cargado",
-    "text": "6.🧠Model 6.1 — Modelo cargado\nEste modelo incluye intercepto, pendiente lineal y cuadrática como efectos aleatorios. West lo ajusta primero pero encuentra problemas de convergencia — la varianza del intercepto aleatorio es prácticamente nula.\n\n\nCode\nmodel6.1.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2),\n  method = \"REML\",\n  data = autism.grouped)\n\n\nError in `lme.formula()`:\n! nlminb problem, convergence error code = 1\n  message = iteration limit reached without convergence (10)\n\n\nCode\nsummary(model6.1.fit)\n\n\nError in `h()`:\n! error al evaluar el argumento 'object' al seleccionar un método para la función 'summary': objeto 'model6.1.fit' no encontrado\n\n\n\nLa varianza del intercepto aleatorio es prácticamente cero, lo que indica que los niños no difieren significativamente en su VSAE inicial a los 2 años — solo en sus trayectorias."
+    "objectID": "index.html#acerca-de-este-sitio",
+    "href": "index.html#acerca-de-este-sitio",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "",
+    "text": "Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:\n\nWest, Brady T., Kathleen B. Welch, and Andrzej T. Galecki - Linear Mixed Models: A Practical Guide Using Statistical Software\nFinch, W. Holmes, Jocelyn E. Bolin, and Ken Kelley - Multilevel Modeling Using R\nGalecki, Andrzej T., and Tomasz Burzykowski - Linear Mixed-Effects Models Using R"
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
-    "href": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "7.🧠Model 6.2: Sin intercepto aleatorio",
-    "text": "7.🧠Model 6.2: Sin intercepto aleatorio\nSe elimina el intercepto aleatorio con -1 en la fórmula de efectos aleatorios.\n\n\nCode\nmodel6.2.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2) - 1,\n  method = \"REML\",\n  data = autism.grouped)\nsummary(model6.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n       AIC      BIC    logLik\n  4641.276 4698.457 -2307.638\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8298024 age.2 \nI(age.2^2) 0.3625824 -0.317\nResidual   6.2047262       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f + I(age.2^2):sicdegp2.f \n                           Value Std.Error  DF   t-value p-value\n(Intercept)            13.769637 0.8093779 446 17.012618  0.0000\nage.2                   5.603481 0.7938042 446  7.059021  0.0000\nI(age.2^2)              0.203999 0.0816167 446  2.499473  0.0128\nsicdegp2.f1            -5.415784 1.0934935 155 -4.952735  0.0000\nsicdegp2.f2            -4.037378 1.0293605 155 -3.922220  0.0001\nage.2:sicdegp2.f1      -3.296437 1.0915657 446 -3.019916  0.0027\nage.2:sicdegp2.f2      -2.746559 1.0270067 446 -2.674334  0.0078\nI(age.2^2):sicdegp2.f1 -0.134615 0.1133821 446 -1.187271  0.2358\nI(age.2^2):sicdegp2.f2 -0.129699 0.1055228 446 -1.229104  0.2197\n Correlation: \n                       (Intr) age.2  I(g.2^2) scd2.1 scd2.2 a.2:2.1 a.2:2.2\nage.2                  -0.418                                              \nI(age.2^2)              0.318 -0.586                                       \nsicdegp2.f1            -0.740  0.310 -0.235                                \nsicdegp2.f2            -0.786  0.329 -0.250    0.582                       \nage.2:sicdegp2.f1       0.304 -0.727  0.426   -0.426 -0.239                \nage.2:sicdegp2.f2       0.323 -0.773  0.453   -0.239 -0.425  0.562         \nI(age.2^2):sicdegp2.f1 -0.229  0.422 -0.720    0.321  0.180 -0.592  -0.326 \nI(age.2^2):sicdegp2.f2 -0.246  0.453 -0.773    0.182  0.320 -0.329  -0.590 \n                       I(.2^2):2.1\nage.2                             \nI(age.2^2)                        \nsicdegp2.f1                       \nsicdegp2.f2                       \nage.2:sicdegp2.f1                 \nage.2:sicdegp2.f2                 \nI(age.2^2):sicdegp2.f1            \nI(age.2^2):sicdegp2.f2  0.557     \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.22352306 -0.37936451 -0.05010264  0.28909578  6.88643142 \n\nNumber of Observations: 610\nNumber of Groups: 158"
+    "objectID": "index.html#ejemplos",
+    "href": "index.html#ejemplos",
+    "title": "Modelos Mixtos - West, Finch & Galecki",
+    "section": "Ejemplos",
+    "text": "Ejemplos\n\n\n\nEjemplo\nLibro\nCapítulo\nModelo\n\n\n\n\n🎯 Two-Level Clusters (Rat Pup)\nWest et al.\nCap. 3 (p.59)\nModelos para datos en clusters de 2 niveles\n\n\nThree-Level Clusters (Classroom)\nWest et al.\nCap. 4 (p.135)\nModelos para datos en clusters de 3 niveles\n\n\nRepeated Measures (Rat Brain)\nWest et al.\nCap. 5 (p.199)\nModelo para datos de medidas repetidas\n\n\nLongitudinal Random Coef (Autism)\nWest et al.\nCap. 6 (p.249)\nModelos longitudinales con coeficientes aleatorios\n\n\nLongitudinal Clusters (Dental Veener)\nWest et al.\nCap. 7 (p.307)\nModelo longitudinal en clusters\n\n\nCrossed Random Effects (SAT Score)\nWest et al.\nCap. 8 (p.369)\nModelos con factores aleatorios cruzados\n\n\nMultilevel GLM (Mathematics)\nFinch et al.\nCap. 8 (p.133)\nModelo lineal generalizado multinivel\n\n\nLongitudinal Grouped (ARMD)\nGalecki et al.\nCap. 2 (p.11-22)\nModelo longitudinal con obs. agrupadas\n\n\nPre-Post Clusters (PRT)\nGalecki et al.\nCap. 2 (p.20)\nModelo pre-post con datos en clusters"
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
-    "href": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?",
-    "text": "8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?\n\n\nCode\nmodel6.2a.fit &lt;- update(\n  model6.2.fit,\n  random = ~ age.2 - 1)\n\nanova(model6.2a.fit, model6.2.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2a.fit     1 11 4721.203 4769.587 -2349.601                        \nmodel6.2.fit      2 13 4641.276 4698.457 -2307.638 1 vs 2 83.92683  &lt;.0001\n\n\nCode\n# p-value corregido por mezcla de chi-cuadrados\nlrt_h61 &lt;- 83.9\nh6.1.pvalue &lt;- 0.5 * (1 - pchisq(lrt_h61, 1)) +\n               0.5 * (1 - pchisq(lrt_h61, 2))\ncat(\"p-value corregido H6.1:\", h6.1.pvalue, \"\\n\")\n\n\np-value corregido H6.1: 0 \n\n\n\nWest calcula el p-value manualmente con una distribución mezcla de chi-cuadrados porque se prueba un componente de varianza en el límite del espacio paramétrico. Resultado: p &lt; 0.001 → se retiene la pendiente cuadrática aleatoria."
+    "objectID": "crossed-random-effects/index.html",
+    "href": "crossed-random-effects/index.html",
+    "title": "Crossed Random Effects (SAT Score)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
-    "href": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?",
-    "text": "9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?\n\n\nCode\nmodel6.2.ml.fit &lt;- update(\n  model6.2.fit,\n  method = \"ML\")\n\nmodel6.3.ml.fit &lt;- update(\n  model6.2.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f)\n\nanova(model6.2.ml.fit, model6.3.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2.ml.fit     1 13 4636.444 4693.819 -2305.222                        \nmodel6.3.ml.fit     2 11 4634.314 4682.862 -2306.157 1 vs 2 1.869704  0.3926\n\n\n\np = 0.39 → no hay evidencia de que la curvatura difiera entre grupos. Se elimina la interacción cuadrática → Model 6.3."
+    "objectID": "crossed-random-effects/index.html#próximamente",
+    "href": "crossed-random-effects/index.html#próximamente",
+    "title": "Crossed Random Effects (SAT Score)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
   },
   {
-    "objectID": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
-    "href": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?",
-    "text": "10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?\n\n\nCode\nmodel6.4.ml.fit &lt;- update(\n  model6.3.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f\n)\n\nanova(model6.3.ml.fit, model6.4.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.3.ml.fit     1 11 4634.314 4682.862 -2306.157                        \nmodel6.4.ml.fit     2  9 4653.696 4693.417 -2317.848 1 vs 2 23.38232  &lt;.0001\n\n\n\np &lt; 0.001 → la trayectoria lineal difiere entre grupos. Se retiene la interacción lineal."
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
-    "href": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "11.🧠Resumen de comparación de modelos",
-    "text": "11.🧠Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n6.1\nIntercepto aleatorio\nVarianza ≈ 0\nEliminar\n\n\n6.2A vs 6.2\nPendiente cuadrática aleatoria\np &lt; 0.001\nMantener\n\n\n6.2 vs 6.3 (ML)\nInteracción cuadrática grupo×edad\np = 0.39\nEliminar\n\n\n6.3 vs 6.4 (ML)\nInteracción lineal grupo×edad\np &lt; 0.001\nMantener\n\n\nModelo final\n—\n—\nModel 6.3"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
-    "href": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "12.🧠Modelo final: Model 6.3",
-    "text": "12.🧠Modelo final: Model 6.3\n\n\nCode\nmodel6.3.fit &lt;- update(\n  model6.2.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f,\n  method = \"REML\")\nsummary(model6.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n      AIC      BIC    logLik\n  4633.57 4681.991 -2305.785\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8110274 age.2 \nI(age.2^2) 0.3556805 -0.306\nResidual   6.2281389       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f \n                      Value Std.Error  DF   t-value p-value\n(Intercept)       13.463533 0.7815177 448 17.227419  0.0000\nage.2              6.148750 0.6882638 448  8.933711  0.0000\nI(age.2^2)         0.109008 0.0427795 448  2.548125  0.0112\nsicdegp2.f1       -4.987639 1.0379064 155 -4.805480  0.0000\nsicdegp2.f2       -3.622820 0.9774516 155 -3.706394  0.0003\nage.2:sicdegp2.f1 -4.068041 0.8797676 448 -4.623995  0.0000\nage.2:sicdegp2.f2 -3.495530 0.8289509 448 -4.216812  0.0000\n Correlation: \n                  (Intr) age.2  I(.2^2 scd2.1 scd2.2 a.2:2.1\nage.2             -0.341                                    \nI(age.2^2)         0.177 -0.356                             \nsicdegp2.f1       -0.730  0.211 -0.005                      \nsicdegp2.f2       -0.775  0.224 -0.003  0.583               \nage.2:sicdegp2.f1  0.218 -0.683  0.000 -0.309 -0.174        \nage.2:sicdegp2.f2  0.230 -0.723 -0.006 -0.174 -0.309  0.567 \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.26516724 -0.39753349 -0.05448662  0.29145901  6.84667725 \n\nNumber of Observations: 610\nNumber of Groups: 158 \n\n\nCode\nintervals(model6.3.fit, which = \"fixed\")\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                        lower       est.      upper\n(Intercept)       11.92763665 13.4635325 14.9994284\nage.2              4.79612387  6.1487505  7.5013770\nI(age.2^2)         0.02493412  0.1090076  0.1930811\nsicdegp2.f1       -7.03790561 -4.9876387 -2.9373718\nsicdegp2.f2       -5.55366546 -3.6228202 -1.6919750\nage.2:sicdegp2.f1 -5.79702489 -4.0680411 -2.3390574\nage.2:sicdegp2.f2 -5.12464460 -3.4955296 -1.8664146"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
-    "href": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "13.🧠Interpretación de efectos fijos",
-    "text": "13.🧠Interpretación de efectos fijos\n\n\n\nEfectos fijos - Model 6.3 (REML)\n\n\n\n\n\n\n\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n13.464\n11.928\n14.999\n\n\nage.2\nage.2\n6.149\n4.796\n7.501\n\n\nI(age.2^2)\nI(age.2^2)\n0.109\n0.025\n0.193\n\n\nsicdegp2.f1\nsicdegp2.f1\n-4.988\n-7.038\n-2.937\n\n\nsicdegp2.f2\nsicdegp2.f2\n-3.623\n-5.554\n-1.692\n\n\nage.2:sicdegp2.f1\nage.2:sicdegp2.f1\n-4.068\n-5.797\n-2.339\n\n\nage.2:sicdegp2.f2\nage.2:sicdegp2.f2\n-3.496\n-5.125\n-1.866\n\n\n\n\n\n\n\nEl intercepto representa el VSAE esperado a los 2 años para el grupo 3 (referencia)\nage.2 es el crecimiento lineal del grupo 3\nI(age.2^2) es la curvatura común para todos los grupos\nsicdegp2.f1 y sicdegp2.f2 son diferencias iniciales respecto al grupo 3\nage.2:sicdegp2.f1 y age.2:sicdegp2.f2 indican si los grupos 1 y 2 crecen más rápido o más lento que el grupo 3"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
-    "href": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "14.🧠Efectos aleatorios y matriz D",
-    "text": "14.🧠Efectos aleatorios y matriz D\n\n\nCode\nVarCorr(model6.3.fit)\n\n\nchildid = pdLogChol(age.2 + I(age.2^2) - 1) \n           Variance   StdDev    Corr  \nage.2      14.5239297 3.8110274 age.2 \nI(age.2^2)  0.1265086 0.3556805 -0.306\nResidual   38.7897145 6.2281389       \n\n\n\nEl modelo final tiene:\n\nPendiente lineal aleatoria — los niños difieren en su tasa de crecimiento lineal\nPendiente cuadrática aleatoria — los niños difieren en la curvatura de su trayectoria\nSin intercepto aleatorio — los niños no difieren significativamente en su VSAE inicial a los 2 años"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#predicciones-marginales",
-    "href": "longitudinal-random-coef/index.html#predicciones-marginales",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "15.🧠Predicciones marginales",
-    "text": "15.🧠Predicciones marginales"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#predicciones-condicionales",
-    "href": "longitudinal-random-coef/index.html#predicciones-condicionales",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "16.🧠Predicciones condicionales",
-    "text": "16.🧠Predicciones condicionales"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#diagnósticos",
-    "href": "longitudinal-random-coef/index.html#diagnósticos",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "17.🧠Diagnósticos",
-    "text": "17.🧠Diagnósticos"
-  },
-  {
-    "objectID": "longitudinal-random-coef/index.html#conclusiones",
-    "href": "longitudinal-random-coef/index.html#conclusiones",
-    "title": "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
-    "section": "18.🧠Conclusiones",
-    "text": "18.🧠Conclusiones\n\nEl VSAE crece con la edad siguiendo una trayectoria cuadrática\nLa tasa de crecimiento lineal difiere entre grupos — los grupos 1 y 2 crecen a ritmos distintos que el grupo 3\nLa curvatura es común para todos los grupos\nLos niños no difieren en su VSAE inicial a los 2 años, pero sí en cómo evolucionan\nEl Model 6.3 captura esta estructura con pendientes lineal y cuadrática aleatorias por niño\n\n\nWest selecciona un modelo sin intercepto aleatorio pero con pendientes lineal y cuadrática aleatorias, porque la variabilidad inicial era prácticamente nula, mientras que las trayectorias posteriores sí variaban entre niños."
+    "objectID": "longitudinal-clusters/index.html",
+    "href": "longitudinal-clusters/index.html",
+    "title": "Longitudinal Data in Clusters",
+    "section": "",
+    "text": "Se estudia el efecto de una restauración dental (veneer) sobre el índice de fluido crevicular gingival (gcf) medido a los 3 y 6 meses. Los dientes están anidados dentro de pacientes.\n\nPregunta central: ¿Cambia el GCF a lo largo del tiempo y difiere este cambio según las características basales del paciente y el diente, considerando la estructura jerárquica de tres niveles?"
   },
   {
     "objectID": "longitudinal-clusters/index.html#problema-de-investigación",
@@ -957,5 +439,271 @@
     "title": "Longitudinal Data in Clusters",
     "section": "Anexo técnico — Comparación con lmer()",
     "text": "Anexo técnico — Comparación con lmer()\n\n\n\nCapacidad\nlme()\nlmer()\n\n\n\n\nEfectos aleatorios anidados\n✅\n✅\n\n\nVarianza residual heterogénea\n✅\n❌\n\n\nEstructuras de correlación residual\n✅\n❌\n\n\n\n\n\nCode\nlibrary(lme4)\n\nmodel7.3.lmer &lt;- lmer(\n  gcf ~ time + base.gcf + cda + age +\n    (time | patient) + (1 | patient:tooth),\n  data = veneer_data,\n  REML = TRUE\n)\n\nsummary(model7.3.lmer)\n\n# Comparación de efectos fijos\ncat(\"=== lme() ===\\n\")\nround(fixef(model7.3.fit), 4)\n\ncat(\"\\n=== lmer() ===\\n\")\nround(fixef(model7.3.lmer), 4)"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html",
+    "href": "longitudinal-random-coef/index.html",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "",
+    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#problema-de-investigación",
+    "href": "longitudinal-random-coef/index.html#problema-de-investigación",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "",
+    "text": "Se estudia el desarrollo de la socialización (vsae) en niños con autismo a lo largo del tiempo. Los niños fueron medidos a los 2, 3, 5, 9 y 13 años.\n\nPregunta central: ¿Cómo evoluciona el desarrollo de la socialización con la edad, y difiere esta trayectoria según el grupo de competencia lingüística inicial (sicdegp)?"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#diseño-longitudinal",
+    "href": "longitudinal-random-coef/index.html#diseño-longitudinal",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "2 2.🧠Diseño longitudinal",
+    "text": "2 2.🧠Diseño longitudinal\n\nDatos longitudinales — mismos niños medidos en múltiples momentos del tiempo\nNivel 2: niño (childid)\nNivel 1: medición en el tiempo (age)\nLas mediciones dentro de un mismo niño no son independientes\nDiseño desbalanceado — no todos los niños tienen todas las mediciones\n\n\n\nMostrar código\nnrow(autism_updated)\n\n\n[1] 610\n\n\nMostrar código\nn_distinct(autism_updated$childid)\n\n\n[1] 158\n\n\nMostrar código\nautism_updated |&gt;\n  count(childid, name = \"n_mediciones\") |&gt;\n  count(n_mediciones, name = \"n_ninos\")\n\n\n  n_mediciones n_ninos\n1            1       2\n2            2      14\n3            3      29\n4            4      72\n5            5      41\n\n\nMostrar código\ntable(autism_updated$age, autism_updated$sicdegp2.f)\n\n\n    \n      0  1  2\n  2  40 50 66\n  3  38 47 64\n  5  26 29 36\n  9  35 36 48\n  13 26 28 41"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#variables",
+    "href": "longitudinal-random-coef/index.html#variables",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "3 3.🧠Variables",
+    "text": "3 3.🧠Variables\n\n\n\n\n\n\n\n\n\n\nVariable\nNivel\nTipo\nRol\nCodificación\n\n\n\n\nvsae\n1\nContinua\nOutcome\nHabilidades sociales verbales\n\n\nage\n1\nContinua\nTiempo\n2, 3, 5, 9, 13 años\n\n\nage.2\n1\nContinua\nTiempo centrado\nage − 2\n\n\nage.2sq\n1\nContinua\nCurvatura\nage.2²\n\n\nchildid\n2\nIdentificador\nSujeto\nNiño\n\n\nsicdegp\n2\nCategórica\nPredictor\nGrupo de competencia lingüística inicial\n\n\nsicdegp2.f\n2\nCategórica\nPredictor recodificado\nGrupo 3 = ref (0), Grupo 1 = 1, Grupo 2 = 2\n\n\n\n\n¿Por qué centrar la edad en 2? Porque los niños tienen 2 años en la primera medición. Así el intercepto representa el VSAE esperado al inicio del seguimiento, no al año 0."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#exploración-descriptiva",
+    "href": "longitudinal-random-coef/index.html#exploración-descriptiva",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "4 4.🧠Exploración descriptiva",
+    "text": "4 4.🧠Exploración descriptiva\n\n\n\n\n\n\n\n\n\n\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#estrategia-top-down",
+    "href": "longitudinal-random-coef/index.html#estrategia-top-down",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "5 5.🧠Estrategia top-down",
+    "text": "5 5.🧠Estrategia top-down\n\n\n\n\n\nflowchart TD\n    A[Model 6.1\\nIntercepto + pendiente lineal\\n+ pendiente cuadrática aleatorias] --&gt; B{Problema\\nMatriz D mal condicionada}\n    B --&gt; C[Model 6.2\\nSin intercepto aleatorio]\n    C --&gt; D{H6.1\\n¿Pendiente cuadrática aleatoria?}\n    D --&gt;|Sí p&lt;0.001| E{H6.2\\n¿Interacción grupo x edad cuadrática?}\n    E --&gt;|No p=0.39| F[Model 6.3\\nSin interacción cuadrática]\n    F --&gt; G{H6.3\\n¿Interacción grupo x edad lineal?}\n    G --&gt;|Sí p&lt;0.001| H[Model 6.3 — Modelo Final]"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
+    "href": "longitudinal-random-coef/index.html#model-6.1-modelo-cargado",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "6 6.🧠Model 6.1 — Modelo cargado",
+    "text": "6 6.🧠Model 6.1 — Modelo cargado\nEste modelo incluye intercepto, pendiente lineal y cuadrática como efectos aleatorios. West lo ajusta primero pero encuentra problemas de convergencia — la varianza del intercepto aleatorio es prácticamente nula.\n\n\nMostrar código\nmodel6.1.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2),\n  method = \"REML\",\n  data = autism.grouped)\n\n\nError in `lme.formula()`:\n! nlminb problem, convergence error code = 1\n  message = iteration limit reached without convergence (10)\n\n\nMostrar código\nsummary(model6.1.fit)\n\n\nError in `h()`:\n! error al evaluar el argumento 'object' al seleccionar un método para la función 'summary': objeto 'model6.1.fit' no encontrado\n\n\n\nLa varianza del intercepto aleatorio es prácticamente cero, lo que indica que los niños no difieren significativamente en su VSAE inicial a los 2 años — solo en sus trayectorias."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
+    "href": "longitudinal-random-coef/index.html#model-6.2-sin-intercepto-aleatorio",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "7 7.🧠Model 6.2: Sin intercepto aleatorio",
+    "text": "7 7.🧠Model 6.2: Sin intercepto aleatorio\nSe elimina el intercepto aleatorio con -1 en la fórmula de efectos aleatorios.\n\n\nMostrar código\nmodel6.2.fit &lt;- lme(\n  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,\n  random = ~ age.2 + I(age.2^2) - 1,\n  method = \"REML\",\n  data = autism.grouped)\nsummary(model6.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n       AIC      BIC    logLik\n  4641.276 4698.457 -2307.638\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8298024 age.2 \nI(age.2^2) 0.3625824 -0.317\nResidual   6.2047262       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f + I(age.2^2):sicdegp2.f \n                           Value Std.Error  DF   t-value p-value\n(Intercept)            13.769637 0.8093779 446 17.012618  0.0000\nage.2                   5.603481 0.7938042 446  7.059021  0.0000\nI(age.2^2)              0.203999 0.0816167 446  2.499473  0.0128\nsicdegp2.f1            -5.415784 1.0934935 155 -4.952735  0.0000\nsicdegp2.f2            -4.037378 1.0293605 155 -3.922220  0.0001\nage.2:sicdegp2.f1      -3.296437 1.0915657 446 -3.019916  0.0027\nage.2:sicdegp2.f2      -2.746559 1.0270067 446 -2.674334  0.0078\nI(age.2^2):sicdegp2.f1 -0.134615 0.1133821 446 -1.187271  0.2358\nI(age.2^2):sicdegp2.f2 -0.129699 0.1055228 446 -1.229104  0.2197\n Correlation: \n                       (Intr) age.2  I(g.2^2) scd2.1 scd2.2 a.2:2.1 a.2:2.2\nage.2                  -0.418                                              \nI(age.2^2)              0.318 -0.586                                       \nsicdegp2.f1            -0.740  0.310 -0.235                                \nsicdegp2.f2            -0.786  0.329 -0.250    0.582                       \nage.2:sicdegp2.f1       0.304 -0.727  0.426   -0.426 -0.239                \nage.2:sicdegp2.f2       0.323 -0.773  0.453   -0.239 -0.425  0.562         \nI(age.2^2):sicdegp2.f1 -0.229  0.422 -0.720    0.321  0.180 -0.592  -0.326 \nI(age.2^2):sicdegp2.f2 -0.246  0.453 -0.773    0.182  0.320 -0.329  -0.590 \n                       I(.2^2):2.1\nage.2                             \nI(age.2^2)                        \nsicdegp2.f1                       \nsicdegp2.f2                       \nage.2:sicdegp2.f1                 \nage.2:sicdegp2.f2                 \nI(age.2^2):sicdegp2.f1            \nI(age.2^2):sicdegp2.f2  0.557     \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.22352306 -0.37936451 -0.05010264  0.28909578  6.88643142 \n\nNumber of Observations: 610\nNumber of Groups: 158"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
+    "href": "longitudinal-random-coef/index.html#h6.1-es-necesaria-la-pendiente-cuadrática-aleatoria",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "8 8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?",
+    "text": "8 8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?\n\n\nMostrar código\nmodel6.2a.fit &lt;- update(\n  model6.2.fit,\n  random = ~ age.2 - 1)\n\nanova(model6.2a.fit, model6.2.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2a.fit     1 11 4721.203 4769.587 -2349.601                        \nmodel6.2.fit      2 13 4641.276 4698.457 -2307.638 1 vs 2 83.92683  &lt;.0001\n\n\nMostrar código\n# p-value corregido por mezcla de chi-cuadrados\nlrt_h61 &lt;- 83.9\nh6.1.pvalue &lt;- 0.5 * (1 - pchisq(lrt_h61, 1)) +\n               0.5 * (1 - pchisq(lrt_h61, 2))\ncat(\"p-value corregido H6.1:\", h6.1.pvalue, \"\\n\")\n\n\np-value corregido H6.1: 0 \n\n\n\nWest calcula el p-value manualmente con una distribución mezcla de chi-cuadrados porque se prueba un componente de varianza en el límite del espacio paramétrico. Resultado: p &lt; 0.001 → se retiene la pendiente cuadrática aleatoria."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
+    "href": "longitudinal-random-coef/index.html#h6.2-es-necesaria-la-interacción-grupo-edad-cuadrática",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "9 9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?",
+    "text": "9 9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?\n\n\nMostrar código\nmodel6.2.ml.fit &lt;- update(\n  model6.2.fit,\n  method = \"ML\")\n\nmodel6.3.ml.fit &lt;- update(\n  model6.2.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f)\n\nanova(model6.2.ml.fit, model6.3.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.2.ml.fit     1 13 4636.444 4693.819 -2305.222                        \nmodel6.3.ml.fit     2 11 4634.314 4682.862 -2306.157 1 vs 2 1.869704  0.3926\n\n\n\np = 0.39 → no hay evidencia de que la curvatura difiera entre grupos. Se elimina la interacción cuadrática → Model 6.3."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
+    "href": "longitudinal-random-coef/index.html#h6.3-es-necesaria-la-interacción-grupo-edad-lineal",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "10 10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?",
+    "text": "10 10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?\n\n\nMostrar código\nmodel6.4.ml.fit &lt;- update(\n  model6.3.ml.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f\n)\n\nanova(model6.3.ml.fit, model6.4.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel6.3.ml.fit     1 11 4634.314 4682.862 -2306.157                        \nmodel6.4.ml.fit     2  9 4653.696 4693.417 -2317.848 1 vs 2 23.38232  &lt;.0001\n\n\n\np &lt; 0.001 → la trayectoria lineal difiere entre grupos. Se retiene la interacción lineal."
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
+    "href": "longitudinal-random-coef/index.html#resumen-de-comparación-de-modelos",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "11 11.🧠Resumen de comparación de modelos",
+    "text": "11 11.🧠Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\nComparación\nComponente evaluado\nResultado\nDecisión\n\n\n\n\n6.1\nIntercepto aleatorio\nVarianza ≈ 0\nEliminar\n\n\n6.2A vs 6.2\nPendiente cuadrática aleatoria\np &lt; 0.001\nMantener\n\n\n6.2 vs 6.3 (ML)\nInteracción cuadrática grupo×edad\np = 0.39\nEliminar\n\n\n6.3 vs 6.4 (ML)\nInteracción lineal grupo×edad\np &lt; 0.001\nMantener\n\n\nModelo final\n—\n—\nModel 6.3"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
+    "href": "longitudinal-random-coef/index.html#modelo-final-model-6.3",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "12 12.🧠Modelo final: Model 6.3",
+    "text": "12 12.🧠Modelo final: Model 6.3\n\n\nMostrar código\nmodel6.3.fit &lt;- update(\n  model6.2.fit,\n  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f +\n    age.2:sicdegp2.f,\n  method = \"REML\")\nsummary(model6.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: autism.grouped \n      AIC      BIC    logLik\n  4633.57 4681.991 -2305.785\n\nRandom effects:\n Formula: ~age.2 + I(age.2^2) - 1 | childid\n Structure: General positive-definite, Log-Cholesky parametrization\n           StdDev    Corr  \nage.2      3.8110274 age.2 \nI(age.2^2) 0.3556805 -0.306\nResidual   6.2281389       \n\nFixed effects:  vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f \n                      Value Std.Error  DF   t-value p-value\n(Intercept)       13.463533 0.7815177 448 17.227419  0.0000\nage.2              6.148750 0.6882638 448  8.933711  0.0000\nI(age.2^2)         0.109008 0.0427795 448  2.548125  0.0112\nsicdegp2.f1       -4.987639 1.0379064 155 -4.805480  0.0000\nsicdegp2.f2       -3.622820 0.9774516 155 -3.706394  0.0003\nage.2:sicdegp2.f1 -4.068041 0.8797676 448 -4.623995  0.0000\nage.2:sicdegp2.f2 -3.495530 0.8289509 448 -4.216812  0.0000\n Correlation: \n                  (Intr) age.2  I(.2^2 scd2.1 scd2.2 a.2:2.1\nage.2             -0.341                                    \nI(age.2^2)         0.177 -0.356                             \nsicdegp2.f1       -0.730  0.211 -0.005                      \nsicdegp2.f2       -0.775  0.224 -0.003  0.583               \nage.2:sicdegp2.f1  0.218 -0.683  0.000 -0.309 -0.174        \nage.2:sicdegp2.f2  0.230 -0.723 -0.006 -0.174 -0.309  0.567 \n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.26516724 -0.39753349 -0.05448662  0.29145901  6.84667725 \n\nNumber of Observations: 610\nNumber of Groups: 158 \n\n\nMostrar código\nintervals(model6.3.fit, which = \"fixed\")\n\n\nApproximate 95% confidence intervals\n\n Fixed effects:\n                        lower       est.      upper\n(Intercept)       11.92763665 13.4635325 14.9994284\nage.2              4.79612387  6.1487505  7.5013770\nI(age.2^2)         0.02493412  0.1090076  0.1930811\nsicdegp2.f1       -7.03790561 -4.9876387 -2.9373718\nsicdegp2.f2       -5.55366546 -3.6228202 -1.6919750\nage.2:sicdegp2.f1 -5.79702489 -4.0680411 -2.3390574\nage.2:sicdegp2.f2 -5.12464460 -3.4955296 -1.8664146"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
+    "href": "longitudinal-random-coef/index.html#interpretación-de-efectos-fijos",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "13 13.🧠Interpretación de efectos fijos",
+    "text": "13 13.🧠Interpretación de efectos fijos\n\n\n\nEfectos fijos - Model 6.3 (REML)\n\n\n\n\n\n\n\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n13.464\n11.928\n14.999\n\n\nage.2\nage.2\n6.149\n4.796\n7.501\n\n\nI(age.2^2)\nI(age.2^2)\n0.109\n0.025\n0.193\n\n\nsicdegp2.f1\nsicdegp2.f1\n-4.988\n-7.038\n-2.937\n\n\nsicdegp2.f2\nsicdegp2.f2\n-3.623\n-5.554\n-1.692\n\n\nage.2:sicdegp2.f1\nage.2:sicdegp2.f1\n-4.068\n-5.797\n-2.339\n\n\nage.2:sicdegp2.f2\nage.2:sicdegp2.f2\n-3.496\n-5.125\n-1.866\n\n\n\n\n\n\n\nEl intercepto representa el VSAE esperado a los 2 años para el grupo 3 (referencia)\nage.2 es el crecimiento lineal del grupo 3\nI(age.2^2) es la curvatura común para todos los grupos\nsicdegp2.f1 y sicdegp2.f2 son diferencias iniciales respecto al grupo 3\nage.2:sicdegp2.f1 y age.2:sicdegp2.f2 indican si los grupos 1 y 2 crecen más rápido o más lento que el grupo 3"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
+    "href": "longitudinal-random-coef/index.html#efectos-aleatorios-y-matriz-d",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "14 14.🧠Efectos aleatorios y matriz D",
+    "text": "14 14.🧠Efectos aleatorios y matriz D\n\n\nMostrar código\nVarCorr(model6.3.fit)\n\n\nchildid = pdLogChol(age.2 + I(age.2^2) - 1) \n           Variance   StdDev    Corr  \nage.2      14.5239297 3.8110274 age.2 \nI(age.2^2)  0.1265086 0.3556805 -0.306\nResidual   38.7897145 6.2281389       \n\n\n\nEl modelo final tiene:\n\nPendiente lineal aleatoria — los niños difieren en su tasa de crecimiento lineal\nPendiente cuadrática aleatoria — los niños difieren en la curvatura de su trayectoria\nSin intercepto aleatorio — los niños no difieren significativamente en su VSAE inicial a los 2 años"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#predicciones-marginales",
+    "href": "longitudinal-random-coef/index.html#predicciones-marginales",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "15 15.🧠Predicciones marginales",
+    "text": "15 15.🧠Predicciones marginales"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#predicciones-condicionales",
+    "href": "longitudinal-random-coef/index.html#predicciones-condicionales",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "16 16.🧠Predicciones condicionales",
+    "text": "16 16.🧠Predicciones condicionales"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#diagnósticos",
+    "href": "longitudinal-random-coef/index.html#diagnósticos",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "17 17.🧠Diagnósticos",
+    "text": "17 17.🧠Diagnósticos"
+  },
+  {
+    "objectID": "longitudinal-random-coef/index.html#conclusiones",
+    "href": "longitudinal-random-coef/index.html#conclusiones",
+    "title": "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)",
+    "section": "18 18.🧠Conclusiones",
+    "text": "18 18.🧠Conclusiones\n\nEl VSAE crece con la edad siguiendo una trayectoria cuadrática\nLa tasa de crecimiento lineal difiere entre grupos — los grupos 1 y 2 crecen a ritmos distintos que el grupo 3\nLa curvatura es común para todos los grupos\nLos niños no difieren en su VSAE inicial a los 2 años, pero sí en cómo evolucionan\nEl Model 6.3 captura esta estructura con pendientes lineal y cuadrática aleatorias por niño\n\n\nWest selecciona un modelo sin intercepto aleatorio pero con pendientes lineal y cuadrática aleatorias, porque la variabilidad inicial era prácticamente nula, mientras que las trayectorias posteriores sí variaban entre niños."
+  },
+  {
+    "objectID": "pre-post-clusters/index.html",
+    "href": "pre-post-clusters/index.html",
+    "title": "Pre-Post Clusters (PRT)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "pre-post-clusters/index.html#próximamente",
+    "href": "pre-post-clusters/index.html#próximamente",
+    "title": "Pre-Post Clusters (PRT)",
+    "section": "",
+    "text": "Este ejemplo está en construcción."
+  },
+  {
+    "objectID": "three-level-clusters/index.html",
+    "href": "three-level-clusters/index.html",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "",
+    "text": "Este ejemplo analiza el progreso en matemáticas de estudiantes de primer grado. Los estudiantes están agrupados dentro de salones y los salones dentro de escuelas — estructura de tres niveles.\n\nPregunta central: ¿Qué factores a nivel de estudiante, salón y escuela se asocian con el progreso en matemáticas, considerando la estructura jerárquica de tres niveles?"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#problema-de-investigación",
+    "href": "three-level-clusters/index.html#problema-de-investigación",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "",
+    "text": "Este ejemplo analiza el progreso en matemáticas de estudiantes de primer grado. Los estudiantes están agrupados dentro de salones y los salones dentro de escuelas — estructura de tres niveles.\n\nPregunta central: ¿Qué factores a nivel de estudiante, salón y escuela se asocian con el progreso en matemáticas, considerando la estructura jerárquica de tres niveles?"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#estructura-jerárquica",
+    "href": "three-level-clusters/index.html#estructura-jerárquica",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "2 2.📚Estructura jerárquica",
+    "text": "2 2.📚Estructura jerárquica\n\n\nMostrar código\n# Tamaño total\nnrow(classroom_analysis)\n\n\n[1] 1081\n\n\nMostrar código\n# Niveles — contando salones como combinación escuela-salón\nn_salones &lt;- classroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  nrow()\n\nclassroom_analysis |&gt;\n  summarise(\n    escuelas    = n_distinct(schoolid),\n    salones     = n_salones,\n    estudiantes = n_distinct(childid))\n\n\n  escuelas salones estudiantes\n1      105     285        1081\n\n\nMostrar código\n# Salones por escuela\nclassroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  count(schoolid, name = \"salones_por_escuela\") |&gt;\n  summarise(\n    min   = min(salones_por_escuela),\n    max   = max(salones_por_escuela),\n    media = round(mean(salones_por_escuela), 1))\n\n\n  min max media\n1   1   9   2.7\n\n\nMostrar código\n# Estudiantes por salón\nclassroom_analysis |&gt;\n  count(schoolid, classid, name = \"est_por_salon\") |&gt;\n  summarise(\n    min   = min(est_por_salon),\n    max   = max(est_por_salon),\n    media = round(mean(est_por_salon), 1))\n\n\n  min max media\n1   1  10   3.8\n\n\nMostrar código\n# Verificar si classid se repite entre escuelas\nclassroom_analysis |&gt;\n  distinct(schoolid, classid) |&gt;\n  count(classid) |&gt;\n  filter(n &gt; 1)\n\n\n[1] classid n      \n&lt;0 rows&gt; (o 0- extensión row.names)"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#variables",
+    "href": "three-level-clusters/index.html#variables",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "3 3.📚Variables",
+    "text": "3 3.📚Variables\n\n\n\nVariable\nNivel\nTipo\nRol\n\n\n\n\nmathgain\n1\nContinua\nOutcome\n\n\nmathkind\n1\nContinua\nCovariable — puntaje inicial\n\n\nsex\n1\nCategórica\nCovariable\n\n\nminority\n1\nCategórica\nCovariable\n\n\nses\n1\nContinua\nCovariable\n\n\nchildid\n1\nIdentificador\nEstudiante\n\n\nyearstea\n2\nContinua\nCovariable — años enseñando\n\n\nmathprep\n2\nContinua\nCovariable — preparación matemática\n\n\nmathknow\n2\nContinua\nCovariable — conocimiento matemático\n\n\nclassid\n2\nIdentificador\nSalón\n\n\nhousepov\n3\nContinua\nCovariable — pobreza escuela\n\n\nschoolid\n3\nIdentificador\nEscuela"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#exploración-descriptiva",
+    "href": "three-level-clusters/index.html#exploración-descriptiva",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "4 4.📚Exploración descriptiva",
+    "text": "4 4.📚Exploración descriptiva\n\n\n\n\n\n\n\n\n\n\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#estrategia-step-up",
+    "href": "three-level-clusters/index.html#estrategia-step-up",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "5 5.📚Estrategia step-up",
+    "text": "5 5.📚Estrategia step-up\nA diferencia del capítulo 3 que usaba top-down, aquí West usa una estrategia step-up: parte del modelo más simple y va agregando complejidad.\n\n\n\n\n\nflowchart TD\n    A[Model 4.1\\nModelo incondicional] --&gt; B{H4.1\\n¿Variación entre salones?}\n    B --&gt; C[Model 4.2\\nCovariables nivel 1]\n    C --&gt; D{H4.2\\n¿Aportan variables del estudiante?}\n    D --&gt; E[Model 4.3\\nCovariables nivel 2]\n    E --&gt; F[Model 4.4\\nCovariable nivel 3]\n    F --&gt; G[Modelo final: Model 4.2]"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#model-4.1-modelo-incondicional",
+    "href": "three-level-clusters/index.html#model-4.1-modelo-incondicional",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "6 6.📚Model 4.1: Modelo incondicional",
+    "text": "6 6.📚Model 4.1: Modelo incondicional\n\n\nMostrar código\nmodel4.1.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"REML\")\nsummary(model4.1.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10701.23 10721.17 -5346.616\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.567492\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    10.81313 31.95277\n\nFixed effects:  mathgain ~ 1 \n               Value Std.Error  DF  t-value p-value\n(Intercept) 57.76131  1.498602 796 38.54346       0\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-4.30557391 -0.61148664 -0.03961529  0.55084920  5.62083279 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#h4.1-hay-variabilidad-entre-salones",
+    "href": "three-level-clusters/index.html#h4.1-hay-variabilidad-entre-salones",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "7 7.📚H4.1: ¿Hay variabilidad entre salones?",
+    "text": "7 7.📚H4.1: ¿Hay variabilidad entre salones?\n\n\nMostrar código\nmodel4.1A.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid,\n  data = classroom_analysis,\n  method = \"REML\")\n\nanova(model4.1A.fit, model4.1.fit)\n\n\n              Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel4.1A.fit     1  3 10708.30 10723.26 -5351.152                        \nmodel4.1.fit      2  4 10701.23 10721.17 -5346.616 1 vs 2 9.072633  0.0026\n\n\n\nSi el LRT es significativo, se conserva el intercepto aleatorio de salón dentro de escuela."
+  },
+  {
+    "objectID": "three-level-clusters/index.html#model-4.2-covariables-del-estudiante-nivel-1",
+    "href": "three-level-clusters/index.html#model-4.2-covariables-del-estudiante-nivel-1",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "8 8.📚Model 4.2: Covariables del estudiante (Nivel 1)",
+    "text": "8 8.📚Model 4.2: Covariables del estudiante (Nivel 1)\n\n\nMostrar código\nmodel4.2.fit &lt;- lme(\n  mathgain ~ mathkind + sex + minority + ses,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"REML\")\nsummary(model4.2.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10334.53 10374.38 -5159.267\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.137653\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.589501 26.73725\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses \n                Value Std.Error  DF    t-value p-value\n(Intercept) 286.66229 11.080434 792  25.871034  0.0000\nmathkind     -0.47687  0.022699 792 -21.008488  0.0000\nsex          -1.36021  1.719783 792  -0.790922  0.4292\nminority     -8.50743  2.374568 792  -3.582728  0.0004\nses           5.39986  1.274105 792   4.238157  0.0000\n Correlation: \n         (Intr) mthknd sex    minrty\nmathkind -0.979                     \nsex      -0.070 -0.005              \nminority -0.304  0.164 -0.018       \nses       0.137 -0.166  0.021  0.166\n\nStandardized Within-Group Residuals:\n       Min         Q1        Med         Q3        Max \n-3.4565766 -0.6218058 -0.0375118  0.5607274  4.3174874 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#h4.2-aportan-las-variables-del-estudiante",
+    "href": "three-level-clusters/index.html#h4.2-aportan-las-variables-del-estudiante",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "9 9.📚H4.2: ¿Aportan las variables del estudiante?",
+    "text": "9 9.📚H4.2: ¿Aportan las variables del estudiante?\n\n\nMostrar código\nmodel4.1.ml.fit &lt;- lme(\n  mathgain ~ 1,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"ML\")\n\nmodel4.2.ml.fit &lt;- lme(\n  mathgain ~ mathkind + sex + minority + ses,\n  random = ~ 1 | schoolid/classid,\n  data = classroom_analysis,\n  method = \"ML\")\n\nanova(model4.1.ml.fit, model4.2.ml.fit)\n\n\n                Model df      AIC      BIC    logLik   Test  L.Ratio p-value\nmodel4.1.ml.fit     1  4 10703.87 10723.82 -5347.936                        \nmodel4.2.ml.fit     2  8 10339.90 10379.79 -5161.952 1 vs 2 371.9688  &lt;.0001"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#model-4.3-covariables-del-salón-nivel-2",
+    "href": "three-level-clusters/index.html#model-4.3-covariables-del-salón-nivel-2",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "10 10.📚Model 4.3: Covariables del salón (Nivel 2)",
+    "text": "10 10.📚Model 4.3: Covariables del salón (Nivel 2)\n\n\nMostrar código\nmodel4.3.fit &lt;- update(\n  model4.2.fit,\n  fixed = mathgain ~ mathkind + sex + minority + ses +\n    yearstea + mathprep + mathknow)\nsummary(model4.3.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n    AIC      BIC    logLik\n  10335 10389.76 -5156.499\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.671285\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.310153 26.71766\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses + yearstea + mathprep +      mathknow \n                Value Std.Error  DF    t-value p-value\n(Intercept) 282.02452 11.701687 792  24.101185  0.0000\nmathkind     -0.47501  0.022747 792 -20.882471  0.0000\nsex          -1.33950  1.718580 792  -0.779423  0.4360\nminority     -7.86886  2.418081 792  -3.254177  0.0012\nses           5.41925  1.275995 792   4.247078  0.0000\nyearstea      0.03974  0.117070 177   0.339435  0.7347\nmathprep      1.09485  1.148493 177   0.953296  0.3417\nmathknow      1.91448  1.147015 177   1.669094  0.0969\n Correlation: \n         (Intr) mthknd sex    minrty ses    yearst mthprp\nmathkind -0.943                                          \nsex      -0.069 -0.005                                   \nminority -0.302  0.166 -0.015                            \nses       0.121 -0.163  0.020  0.159                     \nyearstea -0.092  0.005  0.015  0.040 -0.033              \nmathprep -0.283  0.052 -0.002  0.017  0.043 -0.168       \nmathknow -0.049  0.029  0.007  0.146 -0.015  0.015  0.004\n\nStandardized Within-Group Residuals:\n       Min         Q1        Med         Q3        Max \n-3.3989531 -0.6289628 -0.0413954  0.5564112  4.3029072 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#model-4.4-covariable-de-escuela-nivel-3",
+    "href": "three-level-clusters/index.html#model-4.4-covariable-de-escuela-nivel-3",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "11 11.📚Model 4.4: Covariable de escuela (Nivel 3)",
+    "text": "11 11.📚Model 4.4: Covariable de escuela (Nivel 3)\n\n\nMostrar código\nmodel4.4.fit &lt;- update(\n  model4.2.fit,\n  fixed = mathgain ~ mathkind + sex + minority + ses +\n    housepov\n)\nsummary(model4.4.fit)\n\n\nLinear mixed-effects model fit by REML\n  Data: classroom_analysis \n       AIC      BIC    logLik\n  10329.17 10373.99 -5155.585\n\nRandom effects:\n Formula: ~1 | schoolid\n        (Intercept)\nStdDev:    8.256866\n\n Formula: ~1 | classid %in% schoolid\n        (Intercept) Residual\nStdDev:    9.504459 26.74128\n\nFixed effects:  mathgain ~ mathkind + sex + minority + ses + housepov \n                Value Std.Error  DF    t-value p-value\n(Intercept) 288.54331 11.241920 792  25.666727  0.0000\nmathkind     -0.47768  0.022715 792 -21.029574  0.0000\nsex          -1.34763  1.719861 792  -0.783568  0.4335\nminority     -8.05608  2.424007 792  -3.323455  0.0009\nses           5.29868  1.278906 792   4.143138  0.0000\nhousepov     -9.63456  9.920088 103  -0.971217  0.3337\n Correlation: \n         (Intr) mthknd sex    minrty ses   \nmathkind -0.970                            \nsex      -0.068 -0.005                     \nminority -0.262  0.155 -0.015              \nses       0.120 -0.162  0.020  0.145       \nhousepov -0.167  0.032 -0.009 -0.194  0.085\n\nStandardized Within-Group Residuals:\n        Min          Q1         Med          Q3         Max \n-3.45213250 -0.62383379 -0.03940704  0.56577574  4.32114273 \n\nNumber of Observations: 1081\nNumber of Groups: \n             schoolid classid %in% schoolid \n                  105                   285"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#resumen-de-comparación-de-modelos",
+    "href": "three-level-clusters/index.html#resumen-de-comparación-de-modelos",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "12 12.📚Resumen de comparación de modelos",
+    "text": "12 12.📚Resumen de comparación de modelos\n\n\n\n\n\n\n\n\n\n\nModelo\nEfectos fijos\nEfectos aleatorios\nPropósito\nDecisión\n\n\n\n\n4.1\nIntercepto\nEscuela + salón\nPartición inicial de varianza\nBase\n\n\n4.1A\nIntercepto\nEscuela\nProbar salón\nSe rechaza\n\n\n4.2\nNivel 1\nEscuela + salón\nAgregar estudiante\nModelo final\n\n\n4.3\nNivel 1 + Nivel 2\nEscuela + salón\nProbar maestro/salón\nNo se retiene\n\n\n4.4\nNivel 1 + Nivel 3\nEscuela + salón\nProbar escuela\nNo se retiene\n\n\n\n\n\n\n\n\n\n\n\n\nPregunta\nComparación\nResultado\nDecisión\n\n\n\n\n¿Hay variación entre salones?\n4.1A vs 4.1\np &lt; 0.01\nMantener salón\n\n\n¿Aportan variables del estudiante?\n4.1 vs 4.2\np &lt; 0.001\nMantener nivel 1\n\n\n¿Aportan variables del salón?\nModel 4.3\np &gt; 0.10\nNo retener\n\n\n¿Aporta housepov?\nModel 4.4\np = 0.25\nNo retener\n\n\nModelo final\n—\n—\nModel 4.2"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#modelo-final-interpretación-de-efectos-fijos",
+    "href": "three-level-clusters/index.html#modelo-final-interpretación-de-efectos-fijos",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "13 13.📚Modelo final — Interpretación de efectos fijos",
+    "text": "13 13.📚Modelo final — Interpretación de efectos fijos\n\n\n\nEfectos fijos — Model 4.2 (REML)\n\n\n\nEfecto\nEstimacion\nIC_inferior\nIC_superior\n\n\n\n\n(Intercept)\n(Intercept)\n286.662\n264.912\n308.413\n\n\nmathkind\nmathkind\n-0.477\n-0.521\n-0.432\n\n\nsex\nsex\n-1.360\n-4.736\n2.016\n\n\nminority\nminority\n-8.507\n-13.169\n-3.846\n\n\nses\nses\n5.400\n2.899\n7.901"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "href": "three-level-clusters/index.html#componentes-de-varianza-e-icc",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "14 14.📚Componentes de varianza e ICC",
+    "text": "14 14.📚Componentes de varianza e ICC\n\n\nMostrar código\nvc &lt;- VarCorr(model4.2.reml.fit)\nprint(vc)\n\n\n            Variance     StdDev   \nschoolid =  pdLogChol(1)          \n(Intercept)  66.22139     8.137653\nclassid =   pdLogChol(1)          \n(Intercept)  91.95853     9.589501\nResidual    714.88075    26.737254\n\n\nMostrar código\nvars &lt;- as.numeric(vc[, \"Variance\"])\n\n\nWarning: NAs introducidos por coerción\n\n\nMostrar código\nvars &lt;- vars[!is.na(vars)]\n\nvar_escuela &lt;- vars[1]\nvar_salon   &lt;- vars[2]\nvar_res     &lt;- vars[3]\nvar_total   &lt;- var_escuela + var_salon + var_res\n\nicc_escuela     &lt;- var_escuela / var_total\nicc_mismo_salon &lt;- (var_escuela + var_salon) / var_total\nprop_salon      &lt;- var_salon / var_total\n\ncat(\"Varianza escuela:          \", round(var_escuela, 4), \"\\n\")\n\n\nVarianza escuela:           66.2214 \n\n\nMostrar código\ncat(\"Varianza salón:            \", round(var_salon, 4), \"\\n\")\n\n\nVarianza salón:             91.9585 \n\n\nMostrar código\ncat(\"Varianza residual:         \", round(var_res, 4), \"\\n\")\n\n\nVarianza residual:          714.8808 \n\n\nMostrar código\ncat(\"ICC misma escuela:         \", round(icc_escuela, 4), \"\\n\")\n\n\nICC misma escuela:          0.0758 \n\n\nMostrar código\ncat(\"ICC mismo salón:           \", round(icc_mismo_salon, 4), \"\\n\")\n\n\nICC mismo salón:            0.1812 \n\n\nMostrar código\ncat(\"Proporción salón adicional:\", round(prop_salon, 4), \"\\n\")\n\n\nProporción salón adicional: 0.1053"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#diagnósticos",
+    "href": "three-level-clusters/index.html#diagnósticos",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "15 15.📚Diagnósticos",
+    "text": "15 15.📚Diagnósticos"
+  },
+  {
+    "objectID": "three-level-clusters/index.html#conclusiones",
+    "href": "three-level-clusters/index.html#conclusiones",
+    "title": "Modelos para datos en clusters de 3 niveles (Three-level multilevel model)",
+    "section": "16 16.📚Conclusiones",
+    "text": "16 16.📚Conclusiones\n\nExiste variabilidad significativa entre salones dentro de escuelas\nLas variables del estudiante (mathkind, sex, minority, ses) mejoran el ajuste\nLas variables del salón y escuela no retienen significancia\nEl Model 4.2 es el modelo final\nEl puntaje inicial (mathkind) es el predictor más importante del progreso en matemáticas"
   }
 ]

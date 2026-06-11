@@ -1,19 +1,25 @@
 ---
-title: "Modelos para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)"
+title: "Modelo para datos longitudinales con coeficientes aleatorios (Longitudinal Data with Random Coefficients)"
 subtitle: "The Autism Example🧠🚸 - West et al., Cap. 6 (p. 249)"
 author: "Elena Lazo"
 date: junio 2026
 format:
   html:
+    theme:
+      - cosmo
+      - ../custom.scss
     toc: true
+    toc-location: right
     toc-depth: 3
+    toc-title: "Contenido"
+    number-sections: true
+    smooth-scroll: true
     code-fold: true
+    code-summary: "Mostrar código"
     code-tools: true
-    theme: cosmo
-execute:
-  echo: true
-  warning: false
-  message: false
+    embed-resources: true
+    title-block-banner: "#f3e8ff"
+    title-block-banner-color: "#3b2552"
 ---
 
 ```{r setup, include=FALSE}
