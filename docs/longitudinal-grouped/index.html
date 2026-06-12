@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Elena Lazo">
+<meta name="dcterms.date" content="2026-06-11">
 
-<title>Longitudinal Grouped (ARMD) – Mixed Models - West, Finch &amp; Galecki</title>
+<title>Modelo longitudinal con observaciones agrupadas (Longitudinal Grouped Data) – Mixed Models - West, Finch &amp; Galecki</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ffa9a6279353761231ec249df0a7fdd3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +105,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -184,10 +190,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contenido</h2>
    
   <ul>
-  <li><a href="#próximamente" id="toc-próximamente" class="nav-link active" data-scroll-target="#próximamente">Próximamente</a></li>
+  <li><a href="#objetivo-del-armd-trial" id="toc-objetivo-del-armd-trial" class="nav-link active" data-scroll-target="#objetivo-del-armd-trial"><span class="header-section-number">1</span> 👁Objetivo del ARMD Trial</a></li>
+  <li><a href="#diseño-longitudinal" id="toc-diseño-longitudinal" class="nav-link" data-scroll-target="#diseño-longitudinal"><span class="header-section-number">2</span> 👁Diseño longitudinal</a></li>
+  <li><a href="#formato-wide-procesado-armd.wide" id="toc-formato-wide-procesado-armd.wide" class="nav-link" data-scroll-target="#formato-wide-procesado-armd.wide"><span class="header-section-number">3</span> 👁Formato wide procesado: armd.wide</a></li>
+  <li><a href="#estructura-del-formato-wide" id="toc-estructura-del-formato-wide" class="nav-link" data-scroll-target="#estructura-del-formato-wide"><span class="header-section-number">4</span> 👁Estructura del formato wide</a></li>
+  <li><a href="#patrones-de-datos-faltantes" id="toc-patrones-de-datos-faltantes" class="nav-link" data-scroll-target="#patrones-de-datos-faltantes"><span class="header-section-number">5</span> 👁Patrones de datos faltantes</a></li>
+  <li><a href="#formato-long-completo-armd0" id="toc-formato-long-completo-armd0" class="nav-link" data-scroll-target="#formato-long-completo-armd0"><span class="header-section-number">6</span> 👁Formato long completo: armd0</a></li>
+  <li><a href="#formato-long-para-análisis-armd" id="toc-formato-long-para-análisis-armd" class="nav-link" data-scroll-target="#formato-long-para-análisis-armd"><span class="header-section-number">7</span> 👁Formato long para análisis: armd</a></li>
+  <li><a href="#tabla-de-objetos" id="toc-tabla-de-objetos" class="nav-link" data-scroll-target="#tabla-de-objetos"><span class="header-section-number">8</span> 👁Tabla de objetos</a></li>
+  <li><a href="#variables-time-fixed-y-time-varying" id="toc-variables-time-fixed-y-time-varying" class="nav-link" data-scroll-target="#variables-time-fixed-y-time-varying"><span class="header-section-number">9</span> 👁Variables time-fixed y time-varying</a></li>
+  <li><a href="#tiempo-time-time.f-y-tp" id="toc-tiempo-time-time.f-y-tp" class="nav-link" data-scroll-target="#tiempo-time-time.f-y-tp"><span class="header-section-number">10</span> 👁Tiempo: time, time.f y tp</a></li>
+  <li><a href="#contrastes-polinómicos-para-time.f" id="toc-contrastes-polinómicos-para-time.f" class="nav-link" data-scroll-target="#contrastes-polinómicos-para-time.f"><span class="header-section-number">11</span> 👁Contrastes polinómicos para time.f</a></li>
+  <li><a href="#exploración-descriptiva" id="toc-exploración-descriptiva" class="nav-link" data-scroll-target="#exploración-descriptiva"><span class="header-section-number">12</span> 👁Exploración descriptiva</a></li>
+  <li><a href="#base-lista-para-modelos-mixtos" id="toc-base-lista-para-modelos-mixtos" class="nav-link" data-scroll-target="#base-lista-para-modelos-mixtos"><span class="header-section-number">13</span> 👁Base lista para modelos mixtos</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">14</span> 👁Conclusiones</a></li>
   </ul>
 </nav>
     </div>
@@ -196,14 +215,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Longitudinal Grouped (ARMD)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Modelo longitudinal con observaciones agrupadas (Longitudinal Grouped Data)</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">The ARMD Trial👁️ - Galecki &amp; Burzykowski, Cap. 2 (p.&nbsp;11-22)</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elena Lazo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -213,9 +245,566 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="próximamente" class="level2">
-<h2 class="anchored" data-anchor-id="próximamente">Próximamente</h2>
-<p>Este ejemplo está en construcción.</p>
+<section id="objetivo-del-armd-trial" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="objetivo-del-armd-trial"><span class="header-section-number">1</span> 👁Objetivo del ARMD Trial</h2>
+<p>El <strong>Age-Related Macular Degeneration (ARMD) Trial</strong> es un ensayo clínico aleatorizado que evalúa el efecto de un tratamiento sobre la <strong>agudeza visual</strong> en pacientes con degeneración macular relacionada con la edad.</p>
+<blockquote class="blockquote">
+<p><strong>Objetivo de este capítulo:</strong> Galecki usa el ARMD Trial para mostrar cómo preparar correctamente datos longitudinales para modelos mixtos — pasando de formato ancho a formato largo y conservando la medición basal como covariable.</p>
+</blockquote>
+</section>
+<section id="diseño-longitudinal" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="diseño-longitudinal"><span class="header-section-number">2</span> 👁Diseño longitudinal</h2>
+<ul>
+<li><strong>240 pacientes</strong> asignados aleatoriamente a tratamiento activo o placebo</li>
+<li>Agudeza visual medida al <strong>baseline (semana 0)</strong> y a las semanas <strong>4, 12, 24 y 52</strong></li>
+<li>El outcome longitudinal es la agudeza visual <strong>post-baseline</strong></li>
+<li>La medición basal (<code>visual0</code>) se conserva como <strong>covariable fija en el tiempo</strong></li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[Semana 0\nBaseline] --&gt; B[Semana 4]
+    B --&gt; C[Semana 12]
+    C --&gt; D[Semana 24]
+    D --&gt; E[Semana 52]
+    A --&gt;|visual0 como covariable| F[Modelo mixto]
+    B --&gt; F
+    C --&gt; F
+    D --&gt; F
+    E --&gt; F
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="formato-wide-procesado-armd.wide" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="formato-wide-procesado-armd.wide"><span class="header-section-number">3</span> 👁Formato wide procesado: armd.wide</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd.wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 240  10</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(armd.wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "subject"  "lesion"   "line0"    "visual0"  "visual4"  "visual12"
+ [7] "visual24" "visual52" "treat.f"  "miss.pat"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd.wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  subject lesion line0 visual0 visual4 visual12 visual24 visual52 treat.f
+1       1      3    12      59      55       45       NA       NA  Active
+2       2      1    13      65      70       65       65       55  Active
+3       3      4     8      40      40       37       17       NA Placebo
+4       4      2    13      67      64       64       64       68 Placebo
+5       5      1    14      70      NA       NA       NA       NA  Active
+6       6      3    12      59      53       52       53       42  Active
+  miss.pat
+1     --XX
+2     ----
+3     ---X
+4     ----
+5     XXXX
+6     ----</code></pre>
+</div>
+</div>
+</section>
+<section id="estructura-del-formato-wide" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="estructura-del-formato-wide"><span class="header-section-number">4</span> 👁Estructura del formato wide</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd.wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   240 obs. of  10 variables:
+ $ subject : Factor w/ 240 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ lesion  : int  3 1 4 2 1 3 1 3 2 1 ...
+ $ line0   : int  12 13 8 13 14 12 13 8 12 10 ...
+ $ visual0 : int  59 65 40 67 70 59 64 39 59 49 ...
+ $ visual4 : int  55 70 40 64 NA 53 68 37 58 51 ...
+ $ visual12: int  45 65 37 64 NA 52 74 43 49 71 ...
+ $ visual24: int  NA 65 17 64 NA 53 72 37 54 71 ...
+ $ visual52: int  NA 55 NA 68 NA 42 65 37 58 NA ...
+ $ treat.f : Factor w/ 2 levels "Placebo","Active": 2 2 1 1 2 2 1 1 2 1 ...
+ $ miss.pat: Factor w/ 9 levels "----","---X",..: 4 1 2 1 9 1 1 1 1 2 ...</code></pre>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>subject</code></td>
+<td>Identificador</td>
+<td>Paciente</td>
+</tr>
+<tr class="even">
+<td><code>treat.f</code></td>
+<td>Factor</td>
+<td>Tratamiento (Active/Placebo)</td>
+</tr>
+<tr class="odd">
+<td><code>visual0</code></td>
+<td>Continua</td>
+<td>Agudeza visual baseline</td>
+</tr>
+<tr class="even">
+<td><code>visual4</code></td>
+<td>Continua</td>
+<td>Agudeza visual semana 4</td>
+</tr>
+<tr class="odd">
+<td><code>visual12</code></td>
+<td>Continua</td>
+<td>Agudeza visual semana 12</td>
+</tr>
+<tr class="even">
+<td><code>visual24</code></td>
+<td>Continua</td>
+<td>Agudeza visual semana 24</td>
+</tr>
+<tr class="odd">
+<td><code>visual52</code></td>
+<td>Continua</td>
+<td>Agudeza visual semana 52</td>
+</tr>
+<tr class="even">
+<td><code>miss.pat</code></td>
+<td>Factor</td>
+<td>Patrón de datos faltantes</td>
+</tr>
+<tr class="odd">
+<td><code>lesion</code></td>
+<td>Continua</td>
+<td>Tamaño de lesión baseline</td>
+</tr>
+<tr class="even">
+<td><code>line0</code></td>
+<td>Continua</td>
+<td>Líneas de visión baseline</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="patrones-de-datos-faltantes" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="patrones-de-datos-faltantes"><span class="header-section-number">5</span> 👁Patrones de datos faltantes</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd.wide<span class="sc">$</span>miss.pat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+---- ---X --X- --XX -XX- -XXX X--- X-XX XXXX 
+ 188   24    4    8    1    6    2    1    6 </code></pre>
+</div>
+</div>
+</section>
+<section id="formato-long-completo-armd0" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="formato-long-completo-armd0"><span class="header-section-number">6</span> 👁Formato long completo: armd0</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1107    8</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   1107 obs. of  8 variables:
+ $ subject : Factor w/ 240 levels "1","2","3","4",..: 1 1 1 2 2 2 2 2 3 3 ...
+ $ treat.f : Factor w/ 2 levels "Placebo","Active": 2 2 2 2 2 2 2 2 1 1 ...
+ $ visual0 : int  59 59 59 65 65 65 65 65 40 40 ...
+ $ miss.pat: Factor w/ 9 levels "----","---X",..: 4 4 4 1 1 1 1 1 2 2 ...
+ $ time.f  : Ord.factor w/ 5 levels "Baseline"&lt;"4wks"&lt;..: 1 2 3 1 2 3 4 5 1 2 ...
+ $ time    : num  0 4 12 0 4 12 24 52 0 4 ...
+ $ visual  : int  59 55 45 65 70 65 65 55 40 40 ...
+ $ tp      : num  0 1 2 0 1 2 3 4 0 1 ...</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd0, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   subject treat.f visual0 miss.pat   time.f time visual tp
+1        1  Active      59     --XX Baseline    0     59  0
+2        1  Active      59     --XX     4wks    4     55  1
+3        1  Active      59     --XX    12wks   12     45  2
+4        2  Active      65     ---- Baseline    0     65  0
+5        2  Active      65     ----     4wks    4     70  1
+6        2  Active      65     ----    12wks   12     65  2
+7        2  Active      65     ----    24wks   24     65  3
+8        2  Active      65     ----    52wks   52     55  4
+9        3 Placebo      40     ---X Baseline    0     40  0
+10       3 Placebo      40     ---X     4wks    4     40  1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><code>armd0</code> incluye la fila de baseline como observación longitudinal — útil para exploración.</p>
+</blockquote>
+</section>
+<section id="formato-long-para-análisis-armd" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="formato-long-para-análisis-armd"><span class="header-section-number">7</span> 👁Formato long para análisis: armd</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 867   8</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   867 obs. of  8 variables:
+ $ subject : Factor w/ 234 levels "1","2","3","4",..: 1 1 2 2 2 2 3 3 3 4 ...
+ $ treat.f : Factor w/ 2 levels "Placebo","Active": 2 2 2 2 2 2 1 1 1 1 ...
+ $ visual0 : int  59 59 65 65 65 65 40 40 40 67 ...
+ $ miss.pat: Factor w/ 8 levels "----","---X",..: 4 4 1 1 1 1 2 2 2 1 ...
+ $ time.f  : Ord.factor w/ 4 levels "4wks"&lt;"12wks"&lt;..: 1 2 1 2 3 4 1 2 3 1 ...
+  ..- attr(*, "contrasts")= num [1:4, 1:3] -0.5222 -0.3023 0.0275 0.797 0.565 ...
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:4] "4wks" "12wks" "24wks" "52wks"
+  .. .. ..$ : chr [1:3] ".L" ".Q" ".C"
+ $ time    : num  4 12 4 12 24 52 4 12 24 4 ...
+ $ visual  : int  55 45 70 65 65 55 40 37 17 64 ...
+ $ tp      : num  1 2 1 2 3 4 1 2 3 1 ...</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   subject treat.f visual0 miss.pat time.f time visual tp
+2        1  Active      59     --XX   4wks    4     55  1
+3        1  Active      59     --XX  12wks   12     45  2
+5        2  Active      65     ----   4wks    4     70  1
+6        2  Active      65     ----  12wks   12     65  2
+7        2  Active      65     ----  24wks   24     65  3
+8        2  Active      65     ----  52wks   52     55  4
+10       3 Placebo      40     ---X   4wks    4     40  1
+11       3 Placebo      40     ---X  12wks   12     37  2
+12       3 Placebo      40     ---X  24wks   24     17  3
+14       4 Placebo      67     ----   4wks    4     64  1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><code>armd</code> <strong>excluye las filas de baseline</strong> como respuesta longitudinal, pero conserva <code>visual0</code> como covariable fija en el tiempo. Este es el data frame principal para ajustar modelos mixtos.</p>
+</blockquote>
+</section>
+<section id="tabla-de-objetos" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="tabla-de-objetos"><span class="header-section-number">8</span> 👁Tabla de objetos</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Objeto</th>
+<th>Formato</th>
+<th>Filas</th>
+<th>Baseline como fila</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>armd.wide</code></td>
+<td>Wide</td>
+<td>240</td>
+<td>Sí</td>
+<td>Datos procesados en formato ancho</td>
+</tr>
+<tr class="even">
+<td><code>armd0</code></td>
+<td>Long</td>
+<td>1107</td>
+<td>Sí</td>
+<td>Exploración longitudinal completa</td>
+</tr>
+<tr class="odd">
+<td><code>armd</code></td>
+<td>Long</td>
+<td>867</td>
+<td>No</td>
+<td><strong>Data frame principal para análisis</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="variables-time-fixed-y-time-varying" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="variables-time-fixed-y-time-varying"><span class="header-section-number">9</span> 👁Variables time-fixed y time-varying</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables fijas en el tiempo (nivel paciente)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, treat.f, visual0, miss.pat) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  subject treat.f visual0 miss.pat
+1       1  Active      59     --XX
+2       2  Active      65     ----
+3       3 Placebo      40     ---X
+4       4 Placebo      67     ----
+5       6  Active      59     ----
+6       7 Placebo      64     ----</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables que cambian en el tiempo (nivel medición)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, time, time.f, tp, visual) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   subject time time.f tp visual
+2        1    4   4wks  1     55
+3        1   12  12wks  2     45
+5        2    4   4wks  1     70
+6        2   12  12wks  2     65
+7        2   24  24wks  3     65
+8        2   52  52wks  4     55
+10       3    4   4wks  1     40
+11       3   12  12wks  2     37
+12       3   24  24wks  3     17
+14       4    4   4wks  1     64</code></pre>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nivel</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>visual</code></td>
+<td>1</td>
+<td>Continua</td>
+<td><strong>Outcome</strong> — agudeza visual post-baseline</td>
+</tr>
+<tr class="even">
+<td><code>time</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Semana (4, 12, 24, 52)</td>
+</tr>
+<tr class="odd">
+<td><code>time.f</code></td>
+<td>1</td>
+<td>Factor</td>
+<td>Semana como factor ordenado</td>
+</tr>
+<tr class="even">
+<td><code>tp</code></td>
+<td>1</td>
+<td>Continua</td>
+<td>Posición de la visita</td>
+</tr>
+<tr class="odd">
+<td><code>visual0</code></td>
+<td>2</td>
+<td>Continua</td>
+<td>Agudeza visual baseline</td>
+</tr>
+<tr class="even">
+<td><code>treat.f</code></td>
+<td>2</td>
+<td>Factor</td>
+<td>Tratamiento</td>
+</tr>
+<tr class="odd">
+<td><code>miss.pat</code></td>
+<td>2</td>
+<td>Factor</td>
+<td>Patrón de faltantes</td>
+</tr>
+<tr class="even">
+<td><code>subject</code></td>
+<td>2</td>
+<td>Identificador</td>
+<td>Paciente</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tiempo-time-time.f-y-tp" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="tiempo-time-time.f-y-tp"><span class="header-section-number">10</span> 👁Tiempo: time, time.f y tp</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd<span class="sc">$</span>time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  4  12  24  52 
+231 227 214 195 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd<span class="sc">$</span>time.f)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 4wks 12wks 24wks 52wks 
+  231   227   214   195 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(armd<span class="sc">$</span>tp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.00    1.00    2.00    2.43    3.00    4.00 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<ul>
+<li><code>time</code> — semana como número continuo</li>
+<li><code>time.f</code> — semana como factor ordenado</li>
+<li><code>tp</code> — posición numérica de la visita</li>
+<li>Los contrastes polinómicos se asignan a <code>time.f</code> mediante <code>contr.poly()</code></li>
+</ul>
+</blockquote>
+</section>
+<section id="contrastes-polinómicos-para-time.f" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="contrastes-polinómicos-para-time.f"><span class="header-section-number">11</span> 👁Contrastes polinómicos para time.f</h2>
+<p>Galecki asigna contrastes polinómicos ortogonales a <code>time.f</code> para que el tiempo como factor pueda representar tendencias lineales, cuadráticas y de orden superior entre las visitas post-baseline.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(armd<span class="sc">$</span>time.f)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               .L         .Q          .C
+4wks  -0.52216722  0.5650459 -0.39757328
+12wks -0.30230734 -0.1623336  0.79514657
+24wks  0.02748249 -0.7367449 -0.45436947
+52wks  0.79699208  0.3340327  0.05679618</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Estos contrastes no cambian los datos observados — modifican la forma en que R codifica el factor <code>time.f</code> cuando se usa en modelos posteriores.</p>
+</blockquote>
+</section>
+<section id="exploración-descriptiva" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="exploración-descriptiva"><span class="header-section-number">12</span> 👁Exploración descriptiva</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="base-lista-para-modelos-mixtos" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="base-lista-para-modelos-mixtos"><span class="header-section-number">13</span> 👁Base lista para modelos mixtos</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat.f) <span class="sc">|&gt;</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pacientes  =</span> <span class="fu">n_distinct</span>(subject),</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mediciones =</span> <span class="fu">n</span>(),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">visual_med =</span> <span class="fu">round</span>(<span class="fu">mean</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>),</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">visual_de  =</span> <span class="fu">round</span>(<span class="fu">sd</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Resumen por grupo de tratamiento"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Resumen por grupo de tratamiento</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">treat.f</th>
+<th style="text-align: right;">pacientes</th>
+<th style="text-align: right;">mediciones</th>
+<th style="text-align: right;">visual_med</th>
+<th style="text-align: right;">visual_de</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Placebo</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">451</td>
+<td style="text-align: right;">50.31</td>
+<td style="text-align: right;">17.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Active</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: right;">416</td>
+<td style="text-align: right;">46.43</td>
+<td style="text-align: right;">17.87</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">14</span> 👁Conclusiones</h2>
+<ul>
+<li>El ARMD Trial tiene estructura longitudinal: las mediciones repetidas están agrupadas dentro de pacientes</li>
+<li>La preparación correcta requiere pasar de formato <strong>wide a long</strong> y separar baseline del outcome</li>
+<li><code>visual0</code> se conserva como <strong>covariable fija</strong> — no como fila del outcome longitudinal</li>
+<li>El data frame <code>armd</code> está listo para ajustar modelos mixtos en capítulos posteriores</li>
+</ul>
+<blockquote class="blockquote">
+<p>Galecki usa el ARMD Trial para mostrar cómo pasar de datos crudos en formato ancho a un data frame longitudinal listo para modelos mixtos, conservando la medición basal como covariable y modelando solo las mediciones post-baseline como respuesta longitudinal.</p>
+</blockquote>
 
 
 <!-- -->
@@ -674,17 +1263,266 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Longitudinal Grouped (ARMD)"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Próximamente</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Este ejemplo está en construcción.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Modelo longitudinal con observaciones agrupadas (Longitudinal Grouped Data)"</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "The ARMD Trial👁️ - Galecki &amp; Burzykowski, Cap. 2 (p. 11-22)"</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Elena Lazo"</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlmeU)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(armd.wide, <span class="at">package =</span> <span class="st">"nlmeU"</span>)</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(armd0,     <span class="at">package =</span> <span class="st">"nlmeU"</span>)</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(armd,      <span class="at">package =</span> <span class="st">"nlmeU"</span>)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Objetivo del ARMD Trial</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>El **Age-Related Macular Degeneration (ARMD) Trial** es un</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>ensayo clínico aleatorizado que evalúa el efecto de un</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>tratamiento sobre la **agudeza visual** en pacientes con</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>degeneración macular relacionada con la edad.</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Objetivo de este capítulo:** Galecki usa el ARMD Trial</span></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; para mostrar cómo preparar correctamente datos longitudinales</span></span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; para modelos mixtos — pasando de formato ancho a formato</span></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; largo y conservando la medición basal como covariable.</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Diseño longitudinal</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**240 pacientes** asignados aleatoriamente a tratamiento</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>  activo o placebo</span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Agudeza visual medida al **baseline (semana 0)** y a las</span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>  semanas **4, 12, 24 y 52**</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El outcome longitudinal es la agudeza visual</span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>  **post-baseline**</span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La medición basal (<span class="in">`visual0`</span>) se conserva como</span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>  **covariable fija en el tiempo**</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>    A[Semana <span class="dv">0</span>\nBaseline] --&gt; B[Semana <span class="dv">4</span>]</span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>    B --&gt; C[Semana <span class="dv">12</span>]</span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>    C --&gt; D[Semana <span class="dv">24</span>]</span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a>    D --&gt; E[Semana <span class="dv">52</span>]</span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a>    A --&gt;|visual0 como covariable| F[Modelo mixto]</span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a>    B --&gt; F</span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a>    C --&gt; F</span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a>    D --&gt; F</span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a>    E --&gt; F</span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Formato wide procesado: armd.wide</span></span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r armd_wide}</span></span>
+<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd.wide)</span>
+<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(armd.wide)</span>
+<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd.wide)</span>
+<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Estructura del formato wide</span></span>
+<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r str_wide}</span></span>
+<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd.wide)</span>
+<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variable <span class="pp">|</span> Tipo <span class="pp">|</span> Descripción <span class="pp">|</span></span>
+<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|------|-------------|</span></span>
+<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`subject`</span> <span class="pp">|</span> Identificador <span class="pp">|</span> Paciente <span class="pp">|</span></span>
+<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`treat.f`</span> <span class="pp">|</span> Factor <span class="pp">|</span> Tratamiento (Active/Placebo) <span class="pp">|</span></span>
+<span id="cb37-74"><a href="#cb37-74" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual0`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual baseline <span class="pp">|</span></span>
+<span id="cb37-75"><a href="#cb37-75" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual4`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual semana 4 <span class="pp">|</span></span>
+<span id="cb37-76"><a href="#cb37-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual12`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual semana 12 <span class="pp">|</span></span>
+<span id="cb37-77"><a href="#cb37-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual24`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual semana 24 <span class="pp">|</span></span>
+<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual52`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual semana 52 <span class="pp">|</span></span>
+<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`miss.pat`</span> <span class="pp">|</span> Factor <span class="pp">|</span> Patrón de datos faltantes <span class="pp">|</span></span>
+<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`lesion`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Tamaño de lesión baseline <span class="pp">|</span></span>
+<span id="cb37-81"><a href="#cb37-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`line0`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Líneas de visión baseline <span class="pp">|</span></span>
+<span id="cb37-82"><a href="#cb37-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-83"><a href="#cb37-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Patrones de datos faltantes</span></span>
+<span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-85"><a href="#cb37-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r miss_pat}</span></span>
+<span id="cb37-86"><a href="#cb37-86" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd.wide<span class="sc">$</span>miss.pat)</span>
+<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Formato long completo: armd0</span></span>
+<span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r armd0}</span></span>
+<span id="cb37-92"><a href="#cb37-92" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd0)</span>
+<span id="cb37-93"><a href="#cb37-93" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd0)</span>
+<span id="cb37-94"><a href="#cb37-94" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd0, <span class="dv">10</span>)</span>
+<span id="cb37-95"><a href="#cb37-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-96"><a href="#cb37-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-97"><a href="#cb37-97" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`armd0`</span><span class="at"> incluye la fila de baseline como observación</span></span>
+<span id="cb37-98"><a href="#cb37-98" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; longitudinal — útil para exploración.</span></span>
+<span id="cb37-99"><a href="#cb37-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-100"><a href="#cb37-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Formato long para análisis: armd</span></span>
+<span id="cb37-101"><a href="#cb37-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-102"><a href="#cb37-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r armd_long}</span></span>
+<span id="cb37-103"><a href="#cb37-103" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(armd)</span>
+<span id="cb37-104"><a href="#cb37-104" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(armd)</span>
+<span id="cb37-105"><a href="#cb37-105" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(armd, <span class="dv">10</span>)</span>
+<span id="cb37-106"><a href="#cb37-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-107"><a href="#cb37-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-108"><a href="#cb37-108" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`armd`</span><span class="at"> **excluye las filas de baseline** como respuesta</span></span>
+<span id="cb37-109"><a href="#cb37-109" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; longitudinal, pero conserva </span><span class="in">`visual0`</span><span class="at"> como covariable</span></span>
+<span id="cb37-110"><a href="#cb37-110" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; fija en el tiempo. Este es el data frame principal</span></span>
+<span id="cb37-111"><a href="#cb37-111" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; para ajustar modelos mixtos.</span></span>
+<span id="cb37-112"><a href="#cb37-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-113"><a href="#cb37-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Tabla de objetos</span></span>
+<span id="cb37-114"><a href="#cb37-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-115"><a href="#cb37-115" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objeto <span class="pp">|</span> Formato <span class="pp">|</span> Filas <span class="pp">|</span> Baseline como fila <span class="pp">|</span> Uso <span class="pp">|</span></span>
+<span id="cb37-116"><a href="#cb37-116" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|---------|-------|-------------------|-----|</span></span>
+<span id="cb37-117"><a href="#cb37-117" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`armd.wide`</span> <span class="pp">|</span> Wide <span class="pp">|</span> 240 <span class="pp">|</span> Sí <span class="pp">|</span> Datos procesados en formato ancho <span class="pp">|</span></span>
+<span id="cb37-118"><a href="#cb37-118" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`armd0`</span> <span class="pp">|</span> Long <span class="pp">|</span> 1107 <span class="pp">|</span> Sí <span class="pp">|</span> Exploración longitudinal completa <span class="pp">|</span></span>
+<span id="cb37-119"><a href="#cb37-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`armd`</span> <span class="pp">|</span> Long <span class="pp">|</span> 867 <span class="pp">|</span> No <span class="pp">|</span> **Data frame principal para análisis** <span class="pp">|</span></span>
+<span id="cb37-120"><a href="#cb37-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-121"><a href="#cb37-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Variables time-fixed y time-varying</span></span>
+<span id="cb37-122"><a href="#cb37-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-123"><a href="#cb37-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r variables}</span></span>
+<span id="cb37-124"><a href="#cb37-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables fijas en el tiempo (nivel paciente)</span></span>
+<span id="cb37-125"><a href="#cb37-125" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, treat.f, visual0, miss.pat) <span class="sc">|&gt;</span></span>
+<span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">|&gt;</span></span>
+<span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables que cambian en el tiempo (nivel medición)</span></span>
+<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, time, time.f, tp, visual) <span class="sc">|&gt;</span></span>
+<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variable <span class="pp">|</span> Nivel <span class="pp">|</span> Tipo <span class="pp">|</span> Descripción <span class="pp">|</span></span>
+<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|-------|------|-------------|</span></span>
+<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> **Outcome** — agudeza visual post-baseline <span class="pp">|</span></span>
+<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`time`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> Semana (4, 12, 24, 52) <span class="pp">|</span></span>
+<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`time.f`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Factor <span class="pp">|</span> Semana como factor ordenado <span class="pp">|</span></span>
+<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tp`</span> <span class="pp">|</span> 1 <span class="pp">|</span> Continua <span class="pp">|</span> Posición de la visita <span class="pp">|</span></span>
+<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visual0`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Continua <span class="pp">|</span> Agudeza visual baseline <span class="pp">|</span></span>
+<span id="cb37-143"><a href="#cb37-143" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`treat.f`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Factor <span class="pp">|</span> Tratamiento <span class="pp">|</span></span>
+<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`miss.pat`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Factor <span class="pp">|</span> Patrón de faltantes <span class="pp">|</span></span>
+<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`subject`</span> <span class="pp">|</span> 2 <span class="pp">|</span> Identificador <span class="pp">|</span> Paciente <span class="pp">|</span></span>
+<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Tiempo: time, time.f y tp</span></span>
+<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tiempo}</span></span>
+<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd<span class="sc">$</span>time)</span>
+<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(armd<span class="sc">$</span>time.f)</span>
+<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(armd<span class="sc">$</span>tp)</span>
+<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - </span><span class="in">`time`</span><span class="at"> — semana como número continuo</span></span>
+<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - </span><span class="in">`time.f`</span><span class="at"> — semana como factor ordenado</span></span>
+<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - </span><span class="in">`tp`</span><span class="at"> — posición numérica de la visita</span></span>
+<span id="cb37-158"><a href="#cb37-158" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - Los contrastes polinómicos se asignan a </span><span class="in">`time.f`</span></span>
+<span id="cb37-159"><a href="#cb37-159" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   mediante </span><span class="in">`contr.poly()`</span></span>
+<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Contrastes polinómicos para time.f</span></span>
+<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a>Galecki asigna contrastes polinómicos ortogonales a <span class="in">`time.f`</span></span>
+<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a>para que el tiempo como factor pueda representar tendencias</span>
+<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a>lineales, cuadráticas y de orden superior entre las visitas</span>
+<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a>post-baseline.</span>
+<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r contrastes}</span></span>
+<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(armd<span class="sc">$</span>time.f)</span>
+<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-172"><a href="#cb37-172" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Estos contrastes no cambian los datos observados —</span></span>
+<span id="cb37-173"><a href="#cb37-173" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; modifican la forma en que R codifica el factor </span><span class="in">`time.f`</span></span>
+<span id="cb37-174"><a href="#cb37-174" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; cuando se usa en modelos posteriores.</span></span>
+<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Exploración descriptiva</span></span>
+<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig1, echo=FALSE}</span></span>
+<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(armd,</span>
+<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> visual,</span>
+<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a>           <span class="at">group =</span> subject,</span>
+<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> treat.f)) <span class="sc">+</span></span>
+<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#8e44ad"</span>, <span class="st">"#2C5F2D"</span>)) <span class="sc">+</span></span>
+<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trayectorias de agudeza visual post-baseline"</span>,</span>
+<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Semana"</span>, <span class="at">y =</span> <span class="st">"Agudeza visual"</span>,</span>
+<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Tratamiento"</span>) <span class="sc">+</span></span>
+<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, echo=FALSE}</span></span>
+<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time, treat.f) <span class="sc">|&gt;</span></span>
+<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a>    <span class="at">media =</span> <span class="fu">mean</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">ee    =</span> <span class="fu">sd</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> media,</span>
+<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> treat.f,</span>
+<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a>             <span class="at">group =</span> treat.f)) <span class="sc">+</span></span>
+<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> media <span class="sc">-</span> ee,</span>
+<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ymax =</span> media <span class="sc">+</span> ee),</span>
+<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a>                <span class="at">width =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#8e44ad"</span>, <span class="st">"#2C5F2D"</span>)) <span class="sc">+</span></span>
+<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trayectoria media por grupo de tratamiento"</span>,</span>
+<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Semana"</span>, <span class="at">y =</span> <span class="st">"Agudeza visual media"</span>,</span>
+<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Tratamiento"</span>) <span class="sc">+</span></span>
+<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig3, echo=FALSE}</span></span>
+<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(armd,</span>
+<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> visual0, <span class="at">y =</span> visual,</span>
+<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> treat.f)) <span class="sc">+</span></span>
+<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#8e44ad"</span>, <span class="st">"#2C5F2D"</span>)) <span class="sc">+</span></span>
+<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Agudeza visual post-baseline vs baseline"</span>,</span>
+<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Agudeza visual baseline (visual0)"</span>,</span>
+<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Agudeza visual post-baseline"</span>,</span>
+<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Tratamiento"</span>) <span class="sc">+</span></span>
+<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Base lista para modelos mixtos</span></span>
+<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r resumen}</span></span>
+<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a>armd <span class="sc">|&gt;</span></span>
+<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat.f) <span class="sc">|&gt;</span></span>
+<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a>    <span class="at">pacientes  =</span> <span class="fu">n_distinct</span>(subject),</span>
+<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>    <span class="at">mediciones =</span> <span class="fu">n</span>(),</span>
+<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a>    <span class="at">visual_med =</span> <span class="fu">round</span>(<span class="fu">mean</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>),</span>
+<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>    <span class="at">visual_de  =</span> <span class="fu">round</span>(<span class="fu">sd</span>(visual, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Resumen por grupo de tratamiento"</span>)</span>
+<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## 👁Conclusiones</span></span>
+<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El ARMD Trial tiene estructura longitudinal: las mediciones</span>
+<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>  repetidas están agrupadas dentro de pacientes</span>
+<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La preparación correcta requiere pasar de formato</span>
+<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a>  **wide a long** y separar baseline del outcome</span>
+<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`visual0`</span> se conserva como **covariable fija** — no</span>
+<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a>  como fila del outcome longitudinal</span>
+<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El data frame <span class="in">`armd`</span> está listo para ajustar modelos</span>
+<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a>  mixtos en capítulos posteriores</span>
+<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Galecki usa el ARMD Trial para mostrar cómo pasar de</span></span>
+<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; datos crudos en formato ancho a un data frame longitudinal</span></span>
+<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; listo para modelos mixtos, conservando la medición basal</span></span>
+<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; como covariable y modelando solo las mediciones</span></span>
+<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; post-baseline como respuesta longitudinal.</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

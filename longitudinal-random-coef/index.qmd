@@ -3,23 +3,6 @@ title: "Modelo para datos longitudinales con coeficientes aleatorios (Longitudin
 subtitle: "The Autism Example🧠🚸 - West et al., Cap. 6 (p. 249)"
 author: "Elena Lazo"
 date: junio 2026
-format:
-  html:
-    theme:
-      - cosmo
-      - ../custom.scss
-    toc: true
-    toc-location: right
-    toc-depth: 3
-    toc-title: "Contenido"
-    number-sections: true
-    smooth-scroll: true
-    code-fold: true
-    code-summary: "Mostrar código"
-    code-tools: true
-    embed-resources: true
-    title-block-banner: "#f3e8ff"
-    title-block-banner-color: "#3b2552"
 ---
 
 ```{r setup, include=FALSE}
@@ -49,7 +32,7 @@ autism.grouped <- groupedData(
   order.groups = FALSE)
 ```
 
-## 1.🧠Problema de investigación
+## 🚸Problema de investigación
 
 Se estudia el desarrollo de la socialización (`vsae`)
 en niños con autismo a lo largo del tiempo. Los niños fueron
@@ -59,7 +42,7 @@ medidos a los 2, 3, 5, 9 y 13 años.
 y difiere esta trayectoria según el grupo de competencia lingüística
 inicial (`sicdegp`)?
 
-## 2.🧠Diseño longitudinal
+## 🚸Diseño longitudinal
 
 - Datos **longitudinales** — mismos niños medidos en múltiples
   momentos del tiempo
@@ -80,7 +63,7 @@ autism_updated |>
 table(autism_updated$age, autism_updated$sicdegp2.f)
 ```
 
-## 3.🧠Variables
+## 🚸Variables
 
 | Variable | Nivel | Tipo | Rol | Codificación |
 |----------|-------|------|-----|--------------|
@@ -96,7 +79,7 @@ table(autism_updated$age, autism_updated$sicdegp2.f)
 > 2 años en la primera medición. Así el intercepto representa
 > el VSAE esperado **al inicio del seguimiento**, no al año 0.
 
-## 4.🧠Exploración descriptiva
+## 🚸Exploración descriptiva
 
 ```{r fig1, echo=FALSE}
 ggplot(autism_updated,
@@ -128,7 +111,7 @@ ggplot(autism_updated,
   theme_minimal()
 ```
 
-## 5.🧠Estrategia top-down
+## 🚸Estrategia top-down
 
 ```{mermaid}
 flowchart TD
@@ -141,7 +124,7 @@ flowchart TD
     G -->|Sí p<0.001| H[Model 6.3 — Modelo Final]
 ```
 
-## 6.🧠Model 6.1 — Modelo cargado
+## 🚸Model 6.1 — Modelo cargado
 
 Este modelo incluye intercepto, pendiente lineal y cuadrática
 como efectos aleatorios. West lo ajusta primero pero encuentra
@@ -162,7 +145,7 @@ summary(model6.1.fit)
 > lo que indica que los niños no difieren significativamente
 > en su VSAE inicial a los 2 años — solo en sus trayectorias.
 
-## 7.🧠Model 6.2: Sin intercepto aleatorio
+## 🚸Model 6.2: Sin intercepto aleatorio
 
 Se elimina el intercepto aleatorio con `-1` en la fórmula
 de efectos aleatorios.
@@ -177,7 +160,7 @@ model6.2.fit <- lme(
 summary(model6.2.fit)
 ```
 
-## 8.🧠H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?
+## 🚸H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?
 
 ```{r h61}
 model6.2a.fit <- update(
@@ -199,7 +182,7 @@ cat("p-value corregido H6.1:", h6.1.pvalue, "\n")
 > Resultado: **p < 0.001** → se retiene la pendiente
 > cuadrática aleatoria.
 
-## 9.🧠H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?
+## 🚸H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?
 
 ```{r h62}
 model6.2.ml.fit <- update(
@@ -218,7 +201,7 @@ anova(model6.2.ml.fit, model6.3.ml.fit)
 > entre grupos. Se elimina la interacción cuadrática →
 > **Model 6.3**.
 
-## 10.🧠H6.3: ¿Es necesaria la interacción grupo × edad lineal?
+## 🚸H6.3: ¿Es necesaria la interacción grupo × edad lineal?
 
 ```{r h63}
 model6.4.ml.fit <- update(
@@ -232,7 +215,7 @@ anova(model6.3.ml.fit, model6.4.ml.fit)
 > **p < 0.001** → la trayectoria lineal difiere entre grupos.
 > Se retiene la interacción lineal.
 
-## 11.🧠Resumen de comparación de modelos
+## 🚸Resumen de comparación de modelos
 
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
@@ -242,7 +225,7 @@ anova(model6.3.ml.fit, model6.4.ml.fit)
 | 6.3 vs 6.4 (ML) | Interacción lineal grupo×edad | p < 0.001 | Mantener |
 | **Modelo final** | — | — | **Model 6.3** |
 
-## 12.🧠Modelo final: Model 6.3
+## 🚸Modelo final: Model 6.3
 
 ```{r modelo_final}
 model6.3.fit <- update(
@@ -254,7 +237,7 @@ summary(model6.3.fit)
 intervals(model6.3.fit, which = "fixed")
 ```
 
-## 13.🧠Interpretación de efectos fijos
+## 🚸Interpretación de efectos fijos
 
 ```{r tabla_efectos, echo=FALSE}
 coefs <- intervals(model6.3.fit, which = "fixed")$fixed
@@ -275,7 +258,7 @@ data.frame(
 > - `age.2:sicdegp2.f1` y `age.2:sicdegp2.f2` indican si los
 >   grupos 1 y 2 crecen más rápido o más lento que el grupo 3
 
-## 14.🧠Efectos aleatorios y matriz D
+## 🚸Efectos aleatorios y matriz D
 
 ```{r varianza}
 VarCorr(model6.3.fit)
@@ -290,7 +273,7 @@ VarCorr(model6.3.fit)
 > - **Sin intercepto aleatorio** — los niños no difieren
 >   significativamente en su VSAE inicial a los 2 años
 
-## 15.🧠Predicciones marginales
+## 🚸Predicciones marginales
 
 ```{r pred_marginal, echo=FALSE}
 autism_updated$pred_marginal <- predict(
@@ -315,7 +298,7 @@ ggplot(pred_marginal_df,
   theme_minimal()
 ```
 
-## 16.🧠Predicciones condicionales
+## 🚸Predicciones condicionales
 
 ```{r pred_condicional, echo=FALSE}
 autism_updated$pred_cond <- predict(
@@ -335,7 +318,7 @@ ggplot(autism_updated,
   theme_minimal()
 ```
 
-## 17.🧠Diagnósticos
+## 🚸Diagnósticos
 
 ```{r diagnosticos, echo=FALSE}
 residuos_norm <- residuals(model6.3.fit, type = "normalized")
@@ -364,7 +347,7 @@ qqnorm(re[, 2], main = "Q-Q EBLUPs pendiente cuadrática")
 qqline(re[, 2])
 ```
 
-## 18.🧠Conclusiones
+## 🚸Conclusiones
 
 - El VSAE crece con la edad siguiendo una **trayectoria cuadrática**
 - La **tasa de crecimiento lineal difiere entre grupos** —

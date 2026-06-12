@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Elena Lazo">
+<meta name="dcterms.date" content="2026-06-11">
 
-<title>Crossed Random Effects (SAT Score) – Mixed Models - West, Finch &amp; Galecki</title>
+<title>Modelos con factores aleatorios cruzados (Crossed Random Effects) – Mixed Models - West, Finch &amp; Galecki</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ffa9a6279353761231ec249df0a7fdd3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +105,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -184,10 +190,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contenido</h2>
    
   <ul>
-  <li><a href="#próximamente" id="toc-próximamente" class="nav-link active" data-scroll-target="#próximamente">Próximamente</a></li>
+  <li><a href="#problema-de-investigación" id="toc-problema-de-investigación" class="nav-link active" data-scroll-target="#problema-de-investigación"><span class="header-section-number">1</span> 📊Problema de investigación</a></li>
+  <li><a href="#diseño-con-factores-aleatorios-cruzados" id="toc-diseño-con-factores-aleatorios-cruzados" class="nav-link" data-scroll-target="#diseño-con-factores-aleatorios-cruzados"><span class="header-section-number">2</span> 📊Diseño con factores aleatorios cruzados</a></li>
+  <li><a href="#por-qué-no-es-anidado" id="toc-por-qué-no-es-anidado" class="nav-link" data-scroll-target="#por-qué-no-es-anidado"><span class="header-section-number">3</span> 📊¿Por qué no es anidado?</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables"><span class="header-section-number">4</span> 📊Variables</a></li>
+  <li><a href="#exploración-descriptiva" id="toc-exploración-descriptiva" class="nav-link" data-scroll-target="#exploración-descriptiva"><span class="header-section-number">5</span> 📊Exploración descriptiva</a></li>
+  <li><a href="#estrategia-de-análisis" id="toc-estrategia-de-análisis" class="nav-link" data-scroll-target="#estrategia-de-análisis"><span class="header-section-number">6</span> 📊Estrategia de análisis</a></li>
+  <li><a href="#model-8.1-modelo-con-factores-cruzados" id="toc-model-8.1-modelo-con-factores-cruzados" class="nav-link" data-scroll-target="#model-8.1-modelo-con-factores-cruzados"><span class="header-section-number">7</span> 📊Model 8.1 — Modelo con factores cruzados</a></li>
+  <li><a href="#h8.1-varianza-entre-estudiantes" id="toc-h8.1-varianza-entre-estudiantes" class="nav-link" data-scroll-target="#h8.1-varianza-entre-estudiantes"><span class="header-section-number">8</span> 📊H8.1 — ¿Varianza entre estudiantes?</a></li>
+  <li><a href="#h8.2-varianza-entre-profesores" id="toc-h8.2-varianza-entre-profesores" class="nav-link" data-scroll-target="#h8.2-varianza-entre-profesores"><span class="header-section-number">9</span> 📊H8.2 — ¿Varianza entre profesores?</a></li>
+  <li><a href="#h8.3-efecto-fijo-de-year" id="toc-h8.3-efecto-fijo-de-year" class="nav-link" data-scroll-target="#h8.3-efecto-fijo-de-year"><span class="header-section-number">10</span> 📊H8.3 — ¿Efecto fijo de year?</a></li>
+  <li><a href="#resumen-de-comparación-de-modelos" id="toc-resumen-de-comparación-de-modelos" class="nav-link" data-scroll-target="#resumen-de-comparación-de-modelos"><span class="header-section-number">11</span> 📊Resumen de comparación de modelos</a></li>
+  <li><a href="#interpretación-de-efectos-fijos" id="toc-interpretación-de-efectos-fijos" class="nav-link" data-scroll-target="#interpretación-de-efectos-fijos"><span class="header-section-number">12</span> 📊Interpretación de efectos fijos</a></li>
+  <li><a href="#componentes-de-varianza" id="toc-componentes-de-varianza" class="nav-link" data-scroll-target="#componentes-de-varianza"><span class="header-section-number">13</span> 📊Componentes de varianza</a></li>
+  <li><a href="#diagnósticos" id="toc-diagnósticos" class="nav-link" data-scroll-target="#diagnósticos"><span class="header-section-number">14</span> 📊Diagnósticos</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">15</span> 📊Conclusiones</a></li>
   </ul>
 </nav>
     </div>
@@ -196,14 +216,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Crossed Random Effects (SAT Score)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Modelos con factores aleatorios cruzados (Crossed Random Effects)</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">The SAT Score Example 📊 - West et al., Cap. 8 (p.&nbsp;369)</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elena Lazo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -213,9 +246,473 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="próximamente" class="level2">
-<h2 class="anchored" data-anchor-id="próximamente">Próximamente</h2>
-<p>Este ejemplo está en construcción.</p>
+<section id="problema-de-investigación" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="problema-de-investigación"><span class="header-section-number">1</span> 📊Problema de investigación</h2>
+<p>Se estudia el puntaje en matemáticas (<code>math</code>) de estudiantes que fueron evaluados por distintos profesores a lo largo del tiempo.</p>
+<blockquote class="blockquote">
+<p><strong>Pregunta central:</strong> ¿Difieren los puntajes en matemáticas entre estudiantes y entre profesores, y cambian con el año, considerando que estudiantes y profesores son factores <strong>cruzados</strong> — no anidados?</p>
+</blockquote>
+</section>
+<section id="diseño-con-factores-aleatorios-cruzados" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="diseño-con-factores-aleatorios-cruzados"><span class="header-section-number">2</span> 📊Diseño con factores aleatorios cruzados</h2>
+<ul>
+<li>Cada estudiante puede haber tenido <strong>distintos profesores</strong> en distintos años</li>
+<li>Cada profesor puede haber enseñado a <strong>distintos estudiantes</strong></li>
+<li>Esto es un diseño <strong>cruzado</strong> — no una jerarquía anidada</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[Estudiante 1] --&gt; P1[Profesor A]
+    A --&gt; P2[Profesor B]
+    B[Estudiante 2] --&gt; P1
+    B --&gt; P3[Profesor C]
+    C[Estudiante 3] --&gt; P2
+    C --&gt; P3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="por-qué-no-es-anidado" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="por-qué-no-es-anidado"><span class="header-section-number">3</span> 📊¿Por qué no es anidado?</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 41%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Diseño</th>
+<th>Especificación</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Anidado</strong></td>
+<td><code>(1 &amp;#124; tchrid/studid)</code></td>
+<td>Estudiantes dentro de profesores</td>
+</tr>
+<tr class="even">
+<td><strong>Cruzado</strong></td>
+<td><code>(1 &amp;#124; studid) + (1 &amp;#124; tchrid)</code></td>
+<td>Estudiantes y profesores como factores cruzados</td>
+</tr>
+</tbody>
+</table>
+<p>En este ejemplo los estudiantes <strong>no están fijos</strong> a un profesor — pueden cambiar de profesor cada año. Por eso el modelo correcto usa factores cruzados.</p>
+</section>
+<section id="variables" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="variables"><span class="header-section-number">4</span> 📊Variables</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Tipo</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>math</code></td>
+<td>Continua</td>
+<td><strong>Outcome</strong> — puntaje SAT matemáticas</td>
+</tr>
+<tr class="even">
+<td><code>year</code></td>
+<td>Continua</td>
+<td>Efecto fijo — año (-1, 0, 1)</td>
+</tr>
+<tr class="odd">
+<td><code>studid</code></td>
+<td>Identificador</td>
+<td>Efecto aleatorio — estudiante</td>
+</tr>
+<tr class="even">
+<td><code>tchrid</code></td>
+<td>Identificador</td>
+<td>Efecto aleatorio — profesor</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sat_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 234</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(sat_data<span class="sc">$</span>studid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 122</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(sat_data<span class="sc">$</span>tchrid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sat_data<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+-1  0  1 
+85 83 66 </code></pre>
+</div>
+</div>
+</section>
+<section id="exploración-descriptiva" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="exploración-descriptiva"><span class="header-section-number">5</span> 📊Exploración descriptiva</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estrategia-de-análisis" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="estrategia-de-análisis"><span class="header-section-number">6</span> 📊Estrategia de análisis</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Model 8.1\nFactores cruzados\nestud + profesor] --&gt; B{H8.1\n¿Varianza entre estudiantes?}
+    B --&gt;|Sí p&lt;0.001| C{H8.2\n¿Varianza entre profesores?}
+    C --&gt;|Sí p&lt;0.001| D{H8.3\n¿Efecto fijo de year?}
+    D --&gt;|Sí| E[Model 8.1 — Modelo Final]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="model-8.1-modelo-con-factores-cruzados" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="model-8.1-modelo-con-factores-cruzados"><span class="header-section-number">7</span> 📊Model 8.1 — Modelo con factores cruzados</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> studid) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> tchrid),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model8.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: math ~ year + (1 | studid) + (1 | tchrid)
+   Data: sat_data
+
+REML criterion at convergence: 2123.6
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.07907 -0.51907 -0.05871  0.44093  2.83753 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ studid   (Intercept) 338.4    18.40   
+ tchrid   (Intercept) 762.9    27.62   
+ Residual             238.3    15.44   
+Number of obs: 234, groups:  studid, 122; tchrid, 12
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)  597.381      8.378   8.722  71.302 2.27e-13 ***
+year          29.050      9.627   8.435   3.018   0.0156 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+     (Intr)
+year 0.057 </code></pre>
+</div>
+</div>
+</section>
+<section id="h8.1-varianza-entre-estudiantes" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="h8.1-varianza-entre-estudiantes"><span class="header-section-number">8</span> 📊H8.1 — ¿Varianza entre estudiantes?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>nostud <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> tchrid),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model8.<span class="fl">1.</span>nostud, model8.<span class="fl">1.</span>fit, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: sat_data
+Models:
+model8.1.nostud: math ~ year + (1 | tchrid)
+model8.1.fit: math ~ year + (1 | studid) + (1 | tchrid)
+                npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)    
+model8.1.nostud    4 2178.3 2192.1 -1085.1    2170.3                         
+model8.1.fit       5 2133.6 2150.9 -1061.8    2123.6 46.641  1  8.525e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># p-value corregido por mezcla de chi-cuadrados</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>lrt_h81 <span class="ot">&lt;-</span> <span class="dv">46</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>p_h81 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h81, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>          <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h81, <span class="dv">1</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value corregido H8.1:"</span>, p_h81, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value corregido H8.1: 5.912659e-12 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>p &lt; 0.001</strong> → existe variabilidad significativa entre estudiantes. Se retiene el intercepto aleatorio de estudiante.</p>
+</blockquote>
+</section>
+<section id="h8.2-varianza-entre-profesores" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="h8.2-varianza-entre-profesores"><span class="header-section-number">9</span> 📊H8.2 — ¿Varianza entre profesores?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>notchr <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> studid),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model8.<span class="fl">1.</span>notchr, model8.<span class="fl">1.</span>fit, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: sat_data
+Models:
+model8.1.notchr: math ~ year + (1 | studid)
+model8.1.fit: math ~ year + (1 | studid) + (1 | tchrid)
+                npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)    
+model8.1.notchr    4 2211.1 2224.9 -1101.5    2203.1                         
+model8.1.fit       5 2133.6 2150.9 -1061.8    2123.6 79.446  1  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># p-value corregido</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>lrt_h82 <span class="ot">&lt;-</span> <span class="dv">79</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p_h82 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h82, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>          <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h82, <span class="dv">1</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value corregido H8.2:"</span>, p_h82, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value corregido H8.2: 0 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>p &lt; 0.001</strong> → existe variabilidad significativa entre profesores. Se retiene el intercepto aleatorio de profesor.</p>
+</blockquote>
+</section>
+<section id="h8.3-efecto-fijo-de-year" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="h8.3-efecto-fijo-de-year"><span class="header-section-number">10</span> 📊H8.3 — ¿Efecto fijo de year?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model8.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: math ~ year + (1 | studid) + (1 | tchrid)
+   Data: sat_data
+
+REML criterion at convergence: 2123.6
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.07907 -0.51907 -0.05871  0.44093  2.83753 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ studid   (Intercept) 338.4    18.40   
+ tchrid   (Intercept) 762.9    27.62   
+ Residual             238.3    15.44   
+Number of obs: 234, groups:  studid, 122; tchrid, 12
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)  597.381      8.378   8.722  71.302 2.27e-13 ***
+year          29.050      9.627   8.435   3.018   0.0156 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+     (Intr)
+year 0.057 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>El efecto de <code>year</code> se evalúa directamente desde el <code>summary()</code> con <code>lmerTest</code> que proporciona p-values para los efectos fijos.</p>
+</blockquote>
+</section>
+<section id="resumen-de-comparación-de-modelos" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="resumen-de-comparación-de-modelos"><span class="header-section-number">11</span> 📊Resumen de comparación de modelos</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Hipótesis</th>
+<th>Componente evaluado</th>
+<th>Resultado</th>
+<th>Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H8.1</td>
+<td>Varianza entre estudiantes</td>
+<td>p &lt; 0.001</td>
+<td>Mantener</td>
+</tr>
+<tr class="even">
+<td>H8.2</td>
+<td>Varianza entre profesores</td>
+<td>p &lt; 0.001</td>
+<td>Mantener</td>
+</tr>
+<tr class="odd">
+<td>H8.3</td>
+<td>Efecto fijo de year</td>
+<td>Significativo</td>
+<td>Mantener</td>
+</tr>
+<tr class="even">
+<td><strong>Modelo final</strong></td>
+<td>—</td>
+<td>—</td>
+<td><strong>Model 8.1</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="interpretación-de-efectos-fijos" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="interpretación-de-efectos-fijos"><span class="header-section-number">12</span> 📊Interpretación de efectos fijos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Efectos fijos — Model 8.1 (REML)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Efecto</th>
+<th style="text-align: right;">Estimacion</th>
+<th style="text-align: right;">EE</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">597.381</td>
+<td style="text-align: right;">8.378</td>
+<td style="text-align: right;">71.302</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">year</td>
+<td style="text-align: left;">year</td>
+<td style="text-align: right;">29.050</td>
+<td style="text-align: right;">9.627</td>
+<td style="text-align: right;">3.018</td>
+<td style="text-align: right;">0.0156</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="componentes-de-varianza" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="componentes-de-varianza"><span class="header-section-number">13</span> 📊Componentes de varianza</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(model8.<span class="fl">1.</span>fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> Groups   Name        Std.Dev.
+ studid   (Intercept) 18.396  
+ tchrid   (Intercept) 27.621  
+ Residual             15.437  </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>La variabilidad total se descompone en:</p>
+<ul>
+<li><strong>Varianza entre estudiantes</strong> — diferencias sistemáticas en el nivel de matemáticas entre estudiantes</li>
+<li><strong>Varianza entre profesores</strong> — diferencias sistemáticas en el nivel de matemáticas entre profesores</li>
+<li><strong>Varianza residual</strong> — variación no explicada</li>
+</ul>
+</blockquote>
+</section>
+<section id="diagnósticos" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="diagnósticos"><span class="header-section-number">14</span> 📊Diagnósticos</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/diagnosticos-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/eblups-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">15</span> 📊Conclusiones</h2>
+<ul>
+<li>Existen diferencias sistemáticas entre <strong>estudiantes</strong> y entre <strong>profesores</strong></li>
+<li>El puntaje SAT matemáticas <strong>cambia con el año</strong></li>
+<li>El diseño es <strong>cruzado</strong> — no anidado — porque los estudiantes cambian de profesor cada año</li>
+<li>El <strong>Model 8.1</strong> con factores aleatorios cruzados es el modelo apropiado y final</li>
+</ul>
+<blockquote class="blockquote">
+<p>El modelo final descompone la variabilidad de los puntajes en variación atribuible a estudiantes, profesores y error residual, mientras que <code>year</code> estima el cambio promedio en el puntaje a través del tiempo.</p>
+</blockquote>
 
 
 <!-- -->
@@ -674,17 +1171,266 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Crossed Random Effects (SAT Score)"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Próximamente</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Este ejemplo está en construcción.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Modelos con factores aleatorios cruzados (Crossed Random Effects)"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "The SAT Score Example 📊 - West et al., Cap. 8 (p. 369)"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Elena Lazo"</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>sat_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"school_data_final.csv"</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>sat_data <span class="ot">&lt;-</span> sat_data <span class="sc">|&gt;</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">studid =</span> <span class="fu">factor</span>(studid),</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">tchrid =</span> <span class="fu">factor</span>(tchrid),</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">year   =</span> <span class="fu">as.numeric</span>(year))</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Problema de investigación</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>Se estudia el puntaje en matemáticas (<span class="in">`math`</span>) de estudiantes</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>que fueron evaluados por distintos profesores a lo largo del tiempo.</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Pregunta central:** ¿Difieren los puntajes en matemáticas</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; entre estudiantes y entre profesores, y cambian con el año,</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; considerando que estudiantes y profesores son factores</span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **cruzados** — no anidados?</span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Diseño con factores aleatorios cruzados</span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cada estudiante puede haber tenido **distintos profesores**</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>  en distintos años</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cada profesor puede haber enseñado a **distintos estudiantes**</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Esto es un diseño **cruzado** — no una jerarquía anidada</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>    A[Estudiante <span class="dv">1</span>] --&gt; P1[Profesor A]</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>    A --&gt; P2[Profesor B]</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>    B[Estudiante <span class="dv">2</span>] --&gt; P1</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>    B --&gt; P3[Profesor C]</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>    C[Estudiante <span class="dv">3</span>] --&gt; P2</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    C --&gt; P3</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊¿Por qué no es anidado?</span></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Diseño <span class="pp">|</span> Especificación <span class="pp">|</span> Significado <span class="pp">|</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|---------------|-------------|</span></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Anidado** <span class="pp">|</span> <span class="in">`(1 &amp;#124; tchrid/studid)`</span> <span class="pp">|</span> Estudiantes dentro de profesores <span class="pp">|</span></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Cruzado** <span class="pp">|</span> <span class="in">`(1 &amp;#124; studid) + (1 &amp;#124; tchrid)`</span> <span class="pp">|</span> Estudiantes y profesores como factores cruzados <span class="pp">|</span></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>En este ejemplo los estudiantes **no están fijos** a un profesor</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>— pueden cambiar de profesor cada año. Por eso el modelo</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>correcto usa factores cruzados.</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Variables</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variable <span class="pp">|</span> Tipo <span class="pp">|</span> Rol <span class="pp">|</span></span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|------|-----|</span></span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`math`</span> <span class="pp">|</span> Continua <span class="pp">|</span> **Outcome** — puntaje SAT matemáticas <span class="pp">|</span></span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`year`</span> <span class="pp">|</span> Continua <span class="pp">|</span> Efecto fijo — año (-1, 0, 1) <span class="pp">|</span></span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`studid`</span> <span class="pp">|</span> Identificador <span class="pp">|</span> Efecto aleatorio — estudiante <span class="pp">|</span></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tchrid`</span> <span class="pp">|</span> Identificador <span class="pp">|</span> Efecto aleatorio — profesor <span class="pp">|</span></span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r verificacion}</span></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sat_data)</span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(sat_data<span class="sc">$</span>studid)</span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(sat_data<span class="sc">$</span>tchrid)</span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sat_data<span class="sc">$</span>year)</span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Exploración descriptiva</span></span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig1, echo=FALSE}</span></span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sat_data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> math)) <span class="sc">+</span></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"#8e44ad"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Puntaje SAT matemáticas por año"</span>,</span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Año"</span>, <span class="at">y =</span> <span class="st">"Puntaje matemáticas"</span>) <span class="sc">+</span></span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, echo=FALSE}</span></span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a>sat_data <span class="sc">|&gt;</span></span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(studid) <span class="sc">|&gt;</span></span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> math,</span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a>             <span class="at">group =</span> studid)) <span class="sc">+</span></span>
+<span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"#8e44ad"</span>) <span class="sc">+</span></span>
+<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trayectorias individuales por estudiante"</span>,</span>
+<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Año"</span>, <span class="at">y =</span> <span class="st">"Puntaje matemáticas"</span>) <span class="sc">+</span></span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Estrategia de análisis</span></span>
+<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a>    A[Model <span class="fl">8.1</span>\nFactores cruzados\nestud + profesor] --&gt; B{H8.<span class="dv">1</span>\n¿Varianza entre estudiantes?}</span>
+<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Sí p&lt;<span class="fl">0.001</span>| C{H8.<span class="dv">2</span>\n¿Varianza entre profesores?}</span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a>    C --&gt;|Sí p&lt;<span class="fl">0.001</span>| D{H8.<span class="dv">3</span>\n¿Efecto fijo de year?}</span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a>    D --&gt;|Sí| E[Model <span class="fl">8.1</span> — Modelo Final]</span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Model 8.1 — Modelo con factores cruzados</span></span>
+<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model81}</span></span>
+<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>fit <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> studid) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> tchrid),</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model8.<span class="fl">1.</span>fit)</span>
+<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊H8.1 — ¿Varianza entre estudiantes?</span></span>
+<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h81}</span></span>
+<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>nostud <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> tchrid),</span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model8.<span class="fl">1.</span>nostud, model8.<span class="fl">1.</span>fit, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a><span class="co"># p-value corregido por mezcla de chi-cuadrados</span></span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a>lrt_h81 <span class="ot">&lt;-</span> <span class="dv">46</span></span>
+<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a>p_h81 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h81, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a>          <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h81, <span class="dv">1</span>))</span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value corregido H8.1:"</span>, p_h81, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **p &lt; 0.001** → existe variabilidad significativa</span></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; entre estudiantes. Se retiene el intercepto aleatorio</span></span>
+<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; de estudiante.</span></span>
+<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊H8.2 — ¿Varianza entre profesores?</span></span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h82}</span></span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>model8.<span class="fl">1.</span>notchr <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a>  math <span class="sc">~</span> year <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> studid),</span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sat_data,</span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">REML =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model8.<span class="fl">1.</span>notchr, model8.<span class="fl">1.</span>fit, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a><span class="co"># p-value corregido</span></span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>lrt_h82 <span class="ot">&lt;-</span> <span class="dv">79</span></span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>p_h82 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h82, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>          <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(lrt_h82, <span class="dv">1</span>))</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value corregido H8.2:"</span>, p_h82, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **p &lt; 0.001** → existe variabilidad significativa</span></span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; entre profesores. Se retiene el intercepto aleatorio</span></span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; de profesor.</span></span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊H8.3 — ¿Efecto fijo de year?</span></span>
+<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r h83}</span></span>
+<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model8.<span class="fl">1.</span>fit)</span>
+<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; El efecto de </span><span class="in">`year`</span><span class="at"> se evalúa directamente desde el</span></span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`summary()`</span><span class="at"> con </span><span class="in">`lmerTest`</span><span class="at"> que proporciona p-values</span></span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; para los efectos fijos.</span></span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Resumen de comparación de modelos</span></span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Hipótesis <span class="pp">|</span> Componente evaluado <span class="pp">|</span> Resultado <span class="pp">|</span> Decisión <span class="pp">|</span></span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----------|---------------------|-----------|----------|</span></span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H8.1 <span class="pp">|</span> Varianza entre estudiantes <span class="pp">|</span> p &lt; 0.001 <span class="pp">|</span> Mantener <span class="pp">|</span></span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H8.2 <span class="pp">|</span> Varianza entre profesores <span class="pp">|</span> p &lt; 0.001 <span class="pp">|</span> Mantener <span class="pp">|</span></span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H8.3 <span class="pp">|</span> Efecto fijo de year <span class="pp">|</span> Significativo <span class="pp">|</span> Mantener <span class="pp">|</span></span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Modelo final** | — | — | **Model 8.1** <span class="pp">|</span></span>
+<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Interpretación de efectos fijos</span></span>
+<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tabla_efectos, echo=FALSE}</span></span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">summary</span>(model8.<span class="fl">1.</span>fit)<span class="sc">$</span>coefficients</span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">Efecto      =</span> <span class="fu">rownames</span>(coefs),</span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimacion  =</span> <span class="fu">round</span>(coefs[, <span class="st">"Estimate"</span>], <span class="dv">3</span>),</span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">EE          =</span> <span class="fu">round</span>(coefs[, <span class="st">"Std. Error"</span>], <span class="dv">3</span>),</span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">t           =</span> <span class="fu">round</span>(coefs[, <span class="st">"t value"</span>], <span class="dv">3</span>),</span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">p           =</span> <span class="fu">round</span>(coefs[, <span class="st">"Pr(&gt;|t|)"</span>], <span class="dv">4</span>)</span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Efectos fijos — Model 8.1 (REML)"</span>)</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Componentes de varianza</span></span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a><span class="in">```{r varianza}</span></span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a><span class="fu">VarCorr</span>(model8.<span class="fl">1.</span>fit)</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; La variabilidad total se descompone en:</span></span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Varianza entre estudiantes** — diferencias sistemáticas</span></span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   en el nivel de matemáticas entre estudiantes</span></span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Varianza entre profesores** — diferencias sistemáticas</span></span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;   en el nivel de matemáticas entre profesores</span></span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; - **Varianza residual** — variación no explicada</span></span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Diagnósticos</span></span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnosticos, echo=FALSE}</span></span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>residuos <span class="ot">&lt;-</span> <span class="fu">residuals</span>(model8.<span class="fl">1.</span>fit)</span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>ajustados <span class="ot">&lt;-</span> <span class="fu">fitted</span>(model8.<span class="fl">1.</span>fit)</span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ajustados, residuos,</span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Valores ajustados"</span>,</span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Residuos"</span>,</span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Residuos vs ajustados"</span>)</span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(residuos, <span class="at">main =</span> <span class="st">"Q-Q plot residuos"</span>)</span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(residuos)</span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eblups, echo=FALSE}</span></span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>re_stud <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model8.<span class="fl">1.</span>fit)<span class="sc">$</span>studid</span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>re_tchr <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model8.<span class="fl">1.</span>fit)<span class="sc">$</span>tchrid</span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_stud[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs estudiantes"</span>)</span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_stud[, <span class="dv">1</span>])</span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(re_tchr[, <span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Q-Q EBLUPs profesores"</span>)</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(re_tchr[, <span class="dv">1</span>])</span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📊Conclusiones</span></span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Existen diferencias sistemáticas entre **estudiantes** y</span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>  entre **profesores**</span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El puntaje SAT matemáticas **cambia con el año**</span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El diseño es **cruzado** — no anidado — porque los</span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>  estudiantes cambian de profesor cada año</span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El **Model 8.1** con factores aleatorios cruzados es</span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>  el modelo apropiado y final</span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; El modelo final descompone la variabilidad de los puntajes</span></span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; en variación atribuible a estudiantes, profesores y error</span></span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; residual, mientras que </span><span class="in">`year`</span><span class="at"> estima el cambio promedio</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; en el puntaje a través del tiempo.</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

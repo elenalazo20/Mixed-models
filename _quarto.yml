@@ -31,7 +31,14 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: flatly
     toc: true
+    toc-location: right
+    toc-depth: 3
+    toc-title: "Contenido"
+    number-sections: true
+    number-offset: 0
+    smooth-scroll: true
     code-fold: true
+    code-summary: "Mostrar código"
     code-tools: true

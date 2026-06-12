@@ -1,19 +1,8 @@
 ---
-title: "Longitudinal Data in Clusters"
+title: "Modelo para datos longitudinales en clusters (Longitudinal Data in Clusters)"
 subtitle: "The Dental Veneer Example👄🦷 - West et al., Cap. 7 (p. 307)"
 author: "Elena Lazo"
-date: 11-junio-2016
-format:
-  html:
-    toc: true
-    toc-depth: 3
-    code-fold: true
-    code-tools: true
-    theme: cosmo
-execute:
-  echo: true
-  warning: false
-  message: false
+date: today
 ---
 
 ```{r setup, include=FALSE}
@@ -32,7 +21,7 @@ veneer_data <- veneer |>
     time = as.numeric(as.character(time)))
 ```
 
-## 1.🦷Problema de investigación
+## 🦷Problema de investigación
 
 Se estudia el efecto de una restauración dental (veneer) sobre
 el **índice de fluido crevicular gingival** (`gcf`) medido a los
@@ -43,7 +32,7 @@ el **índice de fluido crevicular gingival** (`gcf`) medido a los
 > paciente y el diente, considerando la estructura jerárquica
 > de tres niveles?
 
-## 2.🦷Diseño clustered longitudinal
+## 🦷Diseño clustered longitudinal
 
 Este es un diseño de **tres niveles longitudinal**:
 
@@ -62,7 +51,7 @@ flowchart TD
     C --> H[GCF 6 meses]
 ```
 
-## 3.🦷Estructura de los datos
+## 🦷Estructura de los datos
 
 ```{r estructura}
 nrow(veneer_data)
@@ -79,7 +68,7 @@ veneer_data |>
 table(veneer_data$time)
 ```
 
-## 4.🦷Variables
+## 🦷Variables
 
 | Variable | Nivel | Tipo | Rol |
 |----------|-------|------|-----|
@@ -91,7 +80,7 @@ table(veneer_data$time)
 | `patient` | 3 | Identificador | Paciente |
 | `age` | 3 | Continua | Covariable — edad del paciente |
 
-## 5.🦷Exploración descriptiva
+## 🦷Exploración descriptiva
 
 ```{r fig1, echo=FALSE}
 ggplot(veneer_data,
@@ -115,7 +104,7 @@ ggplot(veneer_data,
   theme_minimal()
 ```
 
-## 6.🦷Estrategia top-down
+## 🦷Estrategia top-down
 
 ```{mermaid}
 flowchart TD
@@ -125,7 +114,7 @@ flowchart TD
     D -->|No| E[Model 7.3 — Modelo Final]
 ```
 
-## 7.🦷Model 7.1: Modelo cargado
+## 🦷Model 7.1: Modelo cargado
 
 ```{r model71}
 model7.1.fit <- lme(
@@ -139,7 +128,7 @@ model7.1.fit <- lme(
 summary(model7.1.fit)
 ```
 
-## 8.🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?
+## 🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?
 
 ```{r h71}
 model7.1A.fit <- lme(
@@ -156,7 +145,7 @@ anova(model7.1.fit, model7.1A.fit)
 > de varianza en el límite del espacio paramétrico.
 > Si es significativo → se retiene el intercepto aleatorio de diente.
 
-## 9.🦷H7.2: ¿Varianza residual heterogénea por tiempo?
+## 🦷H7.2: ¿Varianza residual heterogénea por tiempo?
 
 ```{r h72}
 model7.2C.fit <- lme(
@@ -174,7 +163,7 @@ anova(model7.1.fit, model7.2C.fit)
 
 > Si no es significativo → se mantiene varianza residual homogénea.
 
-## 10.🦷H7.3: ¿Son necesarias las interacciones con el tiempo?
+## 🦷H7.3: ¿Son necesarias las interacciones con el tiempo?
 
 ```{r h73}
 model7.1.ml.fit <- update(
@@ -194,7 +183,7 @@ anova(model7.1.ml.fit, model7.3.ml.fit)
 
 > Si no es significativo → se eliminan las interacciones.
 
-## 11.🦷Resumen de comparación de modelos
+## 🦷Resumen de comparación de modelos
 
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
@@ -203,7 +192,7 @@ anova(model7.1.ml.fit, model7.3.ml.fit)
 | 7.1 vs 7.3 (ML) | Interacciones con tiempo | No significativo | Eliminar |
 | **Modelo final** | — | — | **Model 7.3** |
 
-## 12. 🦷Modelo final — Model 7.3
+## 🦷Modelo final — Model 7.3
 
 ```{r modelo_final}
 model7.3.fit <- lme(
@@ -217,7 +206,7 @@ summary(model7.3.fit)
 intervals(model7.3.fit, which = "fixed")
 ```
 
-## 13.🦷Interpretación de efectos fijos
+## 🦷Interpretación de efectos fijos
 
 ```{r tabla_efectos, echo=FALSE}
 coefs <- intervals(model7.3.fit, which = "fixed")$fixed
@@ -229,7 +218,7 @@ data.frame(
   knitr::kable(caption = "Efectos fijos — Model 7.3 (REML)")
 ```
 
-## 14.🦷Componentes de varianza
+## 🦷Componentes de varianza
 
 ```{r varianza}
 VarCorr(model7.3.fit)
@@ -245,7 +234,7 @@ VarCorr(model7.3.fit)
 > - **Varianza residual homogénea** — no fue necesario
 >   permitir varianzas distintas entre 3 y 6 meses
 
-## 15.🦷Diagnósticos
+## 🦷Diagnósticos
 
 ```{r diagnosticos, echo=FALSE}
 residuos_norm <- residuals(model7.3.fit, type = "normalized")
@@ -275,7 +264,7 @@ qqnorm(re_tooth[, 1], main = "Q-Q EBLUPs diente")
 qqline(re_tooth[, 1])
 ```
 
-## 16.🦷Conclusiones
+## 🦷Conclusiones
 
 - El GCF se modela longitudinalmente entre los 3 y 6 meses
 - Las interacciones con el tiempo no fueron necesarias en 

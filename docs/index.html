@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ffa9a6279353761231ec249df0a7fdd3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +103,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -184,11 +188,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contenido</h2>
    
   <ul>
-  <li><a href="#acerca-de-este-sitio" id="toc-acerca-de-este-sitio" class="nav-link active" data-scroll-target="#acerca-de-este-sitio">Acerca de este sitio</a></li>
-  <li><a href="#ejemplos" id="toc-ejemplos" class="nav-link" data-scroll-target="#ejemplos">Ejemplos</a></li>
+  <li><a href="#acerca-de-este-sitio" id="toc-acerca-de-este-sitio" class="nav-link active" data-scroll-target="#acerca-de-este-sitio"><span class="header-section-number">1</span> Acerca de este sitio</a></li>
+  <li><a href="#ejemplos" id="toc-ejemplos" class="nav-link" data-scroll-target="#ejemplos"><span class="header-section-number">2</span> Ejemplos</a></li>
+  <li><a href="#mapa-conceptual-de-los-modelos" id="toc-mapa-conceptual-de-los-modelos" class="nav-link" data-scroll-target="#mapa-conceptual-de-los-modelos"><span class="header-section-number">3</span> Mapa conceptual de los modelos</a></li>
   </ul>
 </nav>
     </div>
@@ -214,8 +219,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="acerca-de-este-sitio" class="level2">
-<h2 class="anchored" data-anchor-id="acerca-de-este-sitio">Acerca de este sitio</h2>
+<section id="acerca-de-este-sitio" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="acerca-de-este-sitio"><span class="header-section-number">1</span> Acerca de este sitio</h2>
 <p>Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de texto:</p>
 <ul>
 <li><strong>West, Brady T., Kathleen B. Welch, and Andrzej T. Galecki</strong> - <em>Linear Mixed Models: A Practical Guide Using Statistical Software</em></li>
@@ -223,8 +228,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Galecki, Andrzej T., and Tomasz Burzykowski</strong> - <em>Linear Mixed-Effects Models Using R</em></li>
 </ul>
 </section>
-<section id="ejemplos" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplos">Ejemplos</h2>
+<section id="ejemplos" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="ejemplos"><span class="header-section-number">2</span> Ejemplos</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -236,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="./two-level-clusters/index.html">🎯 Two-Level Clusters (Rat Pup)</a></td>
+<td><a href="./two-level-clusters/index.html">Two-Level Clusters (Rat Pup)</a></td>
 <td>West et al.</td>
 <td>Cap. 3 (p.59)</td>
 <td>Modelos para datos en clusters de 2 niveles</td>
@@ -288,6 +293,126 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Galecki et al.</td>
 <td>Cap. 2 (p.20)</td>
 <td>Modelo pre-post con datos en clusters</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mapa-conceptual-de-los-modelos" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="mapa-conceptual-de-los-modelos"><span class="header-section-number">3</span> Mapa conceptual de los modelos</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Modelos mixtos / multinivel] --&gt; B[Outcome continuo&lt;br/&gt;LMM gaussiano]
+    A --&gt; C[Outcome binario&lt;br/&gt;GLMM logístico]
+    B --&gt; D[2 niveles&lt;br/&gt;Rat Pup]
+    B --&gt; E[3 niveles&lt;br/&gt;Classroom]
+    B --&gt; F[Medidas repetidas&lt;br/&gt;Rat Brain]
+    B --&gt; G[Coeficientes aleatorios&lt;br/&gt;longitudinal&lt;br/&gt;Autism]
+    B --&gt; H[3 niveles longitudinal&lt;br/&gt;Dental Veneer]
+    B --&gt; I[Factores aleatorios cruzados&lt;br/&gt;SAT Score]
+    B --&gt; J[Ensayo longitudinal agrupado&lt;br/&gt;ARMD Trial]
+    B --&gt; K[Pre-post agrupado por sujeto&lt;br/&gt;PRT Trial]
+    C --&gt; L[Intercepto aleatorio logístico&lt;br/&gt;Mathematics Achievement]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 23%">
+<col style="width: 10%">
+<col style="width: 26%">
+<col style="width: 12%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tipo de outcome</th>
+<th>Familia del modelo</th>
+<th>Ejemplo</th>
+<th>Estructura principal</th>
+<th>Función R</th>
+<th>Libro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>Rat Pup</td>
+<td>2 niveles: crías dentro de camadas</td>
+<td><code>lme()</code></td>
+<td>West</td>
+</tr>
+<tr class="even">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>Classroom</td>
+<td>3 niveles: estudiantes, salones, escuelas</td>
+<td><code>lme()</code></td>
+<td>West</td>
+</tr>
+<tr class="odd">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>Rat Brain</td>
+<td>Medidas repetidas dentro de rata</td>
+<td><code>lme()</code></td>
+<td>West</td>
+</tr>
+<tr class="even">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>Autism</td>
+<td>Longitudinal con coeficientes aleatorios</td>
+<td><code>lme()</code></td>
+<td>West</td>
+</tr>
+<tr class="odd">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>Dental Veneer</td>
+<td>Longitudinal de 3 niveles</td>
+<td><code>lme()</code></td>
+<td>West</td>
+</tr>
+<tr class="even">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>SAT Score</td>
+<td>Factores aleatorios cruzados</td>
+<td><code>lmer()</code></td>
+<td>West</td>
+</tr>
+<tr class="odd">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>ARMD Trial</td>
+<td>Ensayo clínico longitudinal agrupado</td>
+<td><code>lme()</code></td>
+<td>Galecki</td>
+</tr>
+<tr class="even">
+<td>Continuo</td>
+<td>LMM gaussiano</td>
+<td>PRT Trial</td>
+<td>Pre-post con observaciones agrupadas por sujeto</td>
+<td><code>lme()</code> / <code>pdKronecker</code></td>
+<td>Galecki</td>
+</tr>
+<tr class="odd">
+<td>Binario</td>
+<td>GLMM logístico</td>
+<td>Mathematics Achievement</td>
+<td>Estudiantes dentro de escuelas</td>
+<td><code>glmer()</code></td>
+<td>Finch</td>
 </tr>
 </tbody>
 </table>
@@ -765,7 +890,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ejemplo <span class="pp">|</span> Libro <span class="pp">|</span> Capítulo <span class="pp">|</span> Modelo <span class="pp">|</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|-------|----------|--------|</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">🎯 Two-Level Clusters (Rat Pup)</span><span class="co">](two-level-clusters/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 3 (p.59) <span class="pp">|</span> Modelos para datos en clusters de 2 niveles <span class="pp">|</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Two-Level Clusters (Rat Pup)</span><span class="co">](two-level-clusters/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 3 (p.59) <span class="pp">|</span> Modelos para datos en clusters de 2 niveles <span class="pp">|</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Three-Level Clusters (Classroom)</span><span class="co">](three-level-clusters/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 4 (p.135) <span class="pp">|</span> Modelos para datos en clusters de 3 niveles <span class="pp">|</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Repeated Measures (Rat Brain)</span><span class="co">](repeated-measures/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 5 (p.199) <span class="pp">|</span> Modelo para datos de medidas repetidas <span class="pp">|</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Longitudinal Random Coef (Autism)</span><span class="co">](longitudinal-random-coef/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 6 (p.249) <span class="pp">|</span> Modelos longitudinales con coeficientes aleatorios <span class="pp">|</span></span>
@@ -773,11 +898,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Crossed Random Effects (SAT Score)</span><span class="co">](crossed-random-effects/index.qmd)</span> <span class="pp">|</span> West et al. <span class="pp">|</span> Cap. 8 (p.369) <span class="pp">|</span> Modelos con factores aleatorios cruzados <span class="pp">|</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Multilevel GLM (Mathematics)</span><span class="co">](multilevel-glm/index.qmd)</span> <span class="pp">|</span> Finch et al. <span class="pp">|</span> Cap. 8 (p.133) <span class="pp">|</span> Modelo lineal generalizado multinivel <span class="pp">|</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Longitudinal Grouped (ARMD)</span><span class="co">](longitudinal-grouped/index.qmd)</span> <span class="pp">|</span> Galecki et al. <span class="pp">|</span> Cap. 2 (p.11-22) <span class="pp">|</span> Modelo longitudinal con obs. agrupadas <span class="pp">|</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Pre-Post Clusters (PRT)</span><span class="co">](pre-post-clusters/index.qmd)</span> <span class="pp">|</span> Galecki et al. <span class="pp">|</span> Cap. 2 (p.20) <span class="pp">|</span> Modelo pre-post con datos en clusters <span class="pp">|</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="co">[</span><span class="ot">Pre-Post Clusters (PRT)</span><span class="co">](pre-post-clusters/index.qmd)</span> <span class="pp">|</span> Galecki et al. <span class="pp">|</span> Cap. 2 (p.20) <span class="pp">|</span> Modelo pre-post con datos en clusters <span class="pp">|</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mapa conceptual de los modelos</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    A[Modelos mixtos / multinivel] --&gt; B[Outcome continuo&lt;br/&gt;LMM gaussiano]</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Outcome binario&lt;br/&gt;GLMM logístico]</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    B --&gt; D[<span class="dv">2</span> niveles&lt;br/&gt;Rat Pup]</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[<span class="dv">3</span> niveles&lt;br/&gt;Classroom]</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[Medidas repetidas&lt;br/&gt;Rat Brain]</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    B --&gt; G[Coeficientes aleatorios&lt;br/&gt;longitudinal&lt;br/&gt;Autism]</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    B --&gt; H[<span class="dv">3</span> niveles longitudinal&lt;br/&gt;Dental Veneer]</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    B --&gt; I[Factores aleatorios cruzados&lt;br/&gt;SAT Score]</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    B --&gt; J[Ensayo longitudinal agrupado&lt;br/&gt;ARMD Trial]</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    B --&gt; K[Pre-post agrupado por sujeto&lt;br/&gt;PRT Trial]</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    C --&gt; L[Intercepto aleatorio logístico&lt;br/&gt;Mathematics Achievement]</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tipo de outcome <span class="pp">|</span> Familia del modelo <span class="pp">|</span> Ejemplo <span class="pp">|</span> Estructura principal <span class="pp">|</span> Función R <span class="pp">|</span> Libro <span class="pp">|</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|------------------|---------------------|---------|------------------------|-----------|-------|</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> Rat Pup <span class="pp">|</span> 2 niveles: crías dentro de camadas <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> Classroom <span class="pp">|</span> 3 niveles: estudiantes, salones, escuelas <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> Rat Brain <span class="pp">|</span> Medidas repetidas dentro de rata <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> Autism <span class="pp">|</span> Longitudinal con coeficientes aleatorios <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> Dental Veneer <span class="pp">|</span> Longitudinal de 3 niveles <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> SAT Score <span class="pp">|</span> Factores aleatorios cruzados <span class="pp">|</span> <span class="in">`lmer()`</span> <span class="pp">|</span> West <span class="pp">|</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> ARMD Trial <span class="pp">|</span> Ensayo clínico longitudinal agrupado <span class="pp">|</span> <span class="in">`lme()`</span> <span class="pp">|</span> Galecki <span class="pp">|</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Continuo <span class="pp">|</span> LMM gaussiano <span class="pp">|</span> PRT Trial <span class="pp">|</span> Pre-post con observaciones agrupadas por sujeto <span class="pp">|</span> <span class="in">`lme()`</span> / <span class="in">`pdKronecker`</span> <span class="pp">|</span> Galecki <span class="pp">|</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Binario <span class="pp">|</span> GLMM logístico <span class="pp">|</span> Mathematics Achievement <span class="pp">|</span> Estudiantes dentro de escuelas <span class="pp">|</span> <span class="in">`glmer()`</span> <span class="pp">|</span> Finch <span class="pp">|</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

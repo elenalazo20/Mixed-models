@@ -1,8 +1,286 @@
 ---
-title: "Multilevel GLM (Mathematics)"
+title: "Modelo lineal generalizado multinivel (Multilevel GLM)"
+subtitle: "The Mathematics Achievement Example 📐 - Finch et al., Cap. 8 (p. 133)"
+author: "Elena Lazo"
+date: today
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(lme4)
+library(readxl)
+library(dplyr)
+library(ggplot2)
 
-Este ejemplo está en construcción.
+mathfinal <- read_excel("mathfinal.xlsx")
 
+mathfinal <- mathfinal |>
+  mutate(
+    school = factor(school),
+    score2 = as.numeric(score2),
+    female = as.numeric(female))
+
+mathfinal.nomiss <- mathfinal |>
+  select(score2, numsense, female, L_Free, school) |>
+  na.omit()
+```
+
+## 📐Problema de investigación
+
+Se estudia la **probabilidad de aprobar** un examen de
+matemáticas (`score2` = 1 aprobar, 0 reprobar) en estudiantes
+anidados dentro de escuelas.
+
+> **Pregunta central:** ¿Qué factores a nivel de estudiante
+> y escuela se asocian con la probabilidad de aprobar el
+> examen de matemáticas, considerando que los estudiantes
+> están agrupados dentro de escuelas?
+
+## 📐¿Por qué un modelo logístico multinivel?
+
+El outcome es **binario** — no continuo — por lo que no
+aplica un modelo lineal mixto estándar. Se necesita:
+
+| Característica | Modelo usado |
+|----------------|-------------|
+| Outcome binario | Regresión logística |
+| Estudiantes agrupados en escuelas | Multinivel |
+| Combinación | **GLMM logístico** con `glmer()` |
+
+```{mermaid}
+flowchart TD
+    A[Outcome binario\nscore2 = 0/1] --> B[Link logit]
+    B --> C[Probabilidad de aprobar]
+    C --> D[Nivel 1: estudiante\nnumsense, female]
+    C --> E[Nivel 2: escuela\nL_Free]
+    D --> F[GLMM logístico]
+    E --> F
+```
+
+## 📐Estructura de los datos
+
+```{r estructura}
+nrow(mathfinal)
+n_distinct(mathfinal$school)
+
+mathfinal |>
+  count(score2, name = "n") |>
+  mutate(prop = round(n / sum(n), 3))
+
+mathfinal |>
+  count(school, name = "est_por_escuela") |>
+  summarise(
+    min   = min(est_por_escuela),
+    max   = max(est_por_escuela),
+    media = round(mean(est_por_escuela), 1))
+```
+
+## 📐Variables
+
+| Variable | Nivel | Tipo | Rol |
+|----------|-------|------|-----|
+| `score2` | 1 | Binaria | **Outcome** — 1=aprueba, 0=reprueba |
+| `numsense` | 1 | Continua | Covariable — sentido numérico |
+| `female` | 1 | Binaria | Covariable — sexo |
+| `L_Free` | 2 | Continua | Covariable — % almuerzo gratis (pobreza) |
+| `school` | 2 | Identificador | Agrupación |
+
+## 📐Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(mathfinal, aes(x = factor(score2))) +
+  geom_bar(fill = "#8e44ad", alpha = 0.7) +
+  labs(title = "Distribución del outcome",
+       x = "score2 (0=reprueba, 1=aprueba)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+ggplot(mathfinal |> filter(!is.na(score2)),
+       aes(x = numsense, fill = factor(score2))) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(
+    values = c("#e67e22", "#8e44ad"),
+    labels = c("Reprueba", "Aprueba")) +
+  labs(title = "Distribución de numsense por resultado",
+       x = "Sentido numérico", y = "Densidad",
+       fill = "Resultado") +
+  theme_minimal()
+```
+
+## 📐Estrategia de análisis
+
+```{mermaid}
+flowchart TD
+    A[Model 8.1\nIntercepto aleatorio\n+ numsense] --> B[Model 8.2\nPendiente aleatoria\nde numsense]
+    B --> C{¿Mejora 8.2 vs 8.1?}
+    C -->|Sí p<0.001| D[La relación numsense-aprobación\nvaría entre escuelas]
+    D --> E[Model 8.3\n+ female + L_Free\nintercepto aleatorio]
+    E --> F[Model 8.4\nPendiente aleatoria\nde female]
+    F --> G{¿Mejora 8.4 vs 8.3?}
+    G -->|No| H[Model 8.3 — Preferido\npor parsimonia]
+```
+
+## 📐Model 8.1 — Intercepto aleatorio
+
+```{r model81}
+model8.1 <- glmer(
+  score2 ~ numsense + (1 | school),
+  family = binomial,
+  data = mathfinal,
+  na.action = na.omit)
+summary(model8.1)
+```
+
+## 📐Intervalos de confianza Model 8.1
+
+```{r ic81}
+confint(model8.1, method = "Wald")
+```
+
+## 📐Model 8.2 — Pendiente aleatoria de numsense
+
+```{r model82, error=TRUE}
+model8.2 <- glmer(
+  score2 ~ numsense + (numsense | school),
+  family = binomial,
+  data = mathfinal,
+  na.action = na.omit,
+  control = glmerControl(optimizer = "bobyqa",
+                         optCtrl = list(maxfun = 2e5)))
+summary(model8.2)
+anova(model8.1, model8.2)
+```
+
+> En Finch, Model 8.2 mejora significativamente respecto
+> a Model 8.1, lo que sugiere que la asociación entre
+> `numsense` y aprobar varía entre escuelas.
+
+## 📐Model 8.3 — Predictores nivel 1 y nivel 2
+
+```{r model83}
+model8.3 <- glmer(
+  score2 ~ numsense + female + L_Free + (1 | school),
+  family = binomial,
+  data = mathfinal.nomiss,
+  na.action = na.omit)
+summary(model8.3)
+```
+
+## 📐Model 8.4 — Pendiente aleatoria de female
+
+```{r model84, error=TRUE}
+model8.4 <- glmer(
+  score2 ~ numsense + female + L_Free + (female | school),
+  family = binomial,
+  data = mathfinal.nomiss,
+  na.action = na.omit)
+summary(model8.4)
+anova(model8.3, model8.4)
+```
+
+> La pendiente aleatoria de `female` no mejora
+> significativamente el ajuste → se prefiere Model 8.3
+> por parsimonia.
+
+## 📐Resumen de comparación de modelos
+
+| Comparación | Componente evaluado | Resultado | Decisión |
+|-------------|---------------------|-----------|----------|
+| 8.1 vs 8.2 | Pendiente aleatoria numsense | p < 0.001 | Mejora |
+| 8.3 vs 8.4 | Pendiente aleatoria female | No significativo | No retener |
+| **Modelo preferido** | — | — | **Model 8.3** |
+
+## 📐Odds ratios e interpretación
+
+```{r odds_ratios, echo=FALSE}
+coef_tab <- summary(model8.3)$coefficients
+
+data.frame(
+  Efecto = rownames(coef_tab),
+  Logit  = round(coef_tab[, "Estimate"], 3),
+  OR     = round(exp(coef_tab[, "Estimate"]), 3),
+  EE     = round(coef_tab[, "Std. Error"], 3),
+  z      = round(coef_tab[, "z value"], 3),
+  p      = round(coef_tab[, "Pr(>|z|)"], 4)) |>
+  knitr::kable(caption = "Odds ratios — Model 8.3")
+```
+
+> - **OR > 1** → aumentan los odds de aprobar
+> - **OR < 1** → disminuyen los odds de aprobar
+> - `numsense`: por cada punto adicional en sentido numérico,
+>   los odds de aprobar se multiplican por el OR estimado
+> - `L_Free`: escuelas con mayor pobreza tienen menores
+>   odds basales de aprobar
+
+## 📐Probabilidades predichas
+
+```{r pred, echo=FALSE}
+mathfinal.nomiss$prob_pred <- predict(
+  model8.3,
+  type = "response")
+
+ggplot(mathfinal.nomiss,
+       aes(x = numsense, y = prob_pred,
+           color = factor(round(L_Free / 25) * 25))) +
+  geom_point(alpha = 0.3, size = 0.8) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Probabilidad predicha de aprobar",
+       x = "Sentido numérico",
+       y = "P(aprobar)",
+       color = "L_Free (aprox)") +
+  theme_minimal()
+```
+
+## 📐Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos <- residuals(model8.3, type = "pearson")
+ajustados <- fitted(model8.3)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos,
+     xlab = "Probabilidades ajustadas",
+     ylab = "Residuos Pearson",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos, main = "Q-Q plot residuos")
+qqline(residuos)
+```
+
+```{r eblups, echo=FALSE}
+re <- ranef(model8.3)$school
+
+qqnorm(re[, 1], main = "Q-Q EBLUPs escuela")
+qqline(re[, 1])
+```
+
+## 📐Conclusiones
+
+- El outcome binario requiere un **modelo logístico multinivel**
+- El sentido numérico (`numsense`) se asocia positivamente
+  con los odds de aprobar
+- La pobreza escolar (`L_Free`) se asocia negativamente
+- La pendiente aleatoria de `numsense` mejora el ajuste
+  en el modelo simple
+- La pendiente aleatoria de `female` no mejora el ajuste
+  respecto al model8.3
+- El **Model 8.3** es el modelo preferido — intercepto
+  aleatorio por escuela con predictores de nivel 1 y 2
+
+> El modelo preferido es un modelo logístico multinivel de
+> intercepto aleatorio, en el que la probabilidad de aprobar
+> depende del sentido numérico del estudiante y de
+> características escolares, mientras que las escuelas
+> pueden diferir en su nivel basal de aprobación.
+
+---
+
+## Anexo técnico — Intervalos bootstrap
+
+```{r boot, eval=FALSE}
+# Tarda varios minutos — ejecutar manualmente
+confint(model8.3, method = "boot", boot.type = "perc")
+```

@@ -1,8 +1,254 @@
 ---
-title: "Crossed Random Effects (SAT Score)"
+title: "Modelos con factores aleatorios cruzados (Crossed Random Effects)"
+subtitle: "The SAT Score Example 📊 - West et al., Cap. 8 (p. 369)"
+author: "Elena Lazo"
+date: today
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(lme4)
+library(lmerTest)
+library(dplyr)
+library(ggplot2)
 
-Este ejemplo está en construcción.
+sat_data <- read.csv("school_data_final.csv")
 
+sat_data <- sat_data |>
+  mutate(
+    studid = factor(studid),
+    tchrid = factor(tchrid),
+    year   = as.numeric(year))
+```
+
+## 📊Problema de investigación
+
+Se estudia el puntaje en matemáticas (`math`) de estudiantes
+que fueron evaluados por distintos profesores a lo largo del tiempo.
+
+> **Pregunta central:** ¿Difieren los puntajes en matemáticas
+> entre estudiantes y entre profesores, y cambian con el año,
+> considerando que estudiantes y profesores son factores
+> **cruzados** — no anidados?
+
+## 📊Diseño con factores aleatorios cruzados
+
+- Cada estudiante puede haber tenido **distintos profesores**
+  en distintos años
+- Cada profesor puede haber enseñado a **distintos estudiantes**
+- Esto es un diseño **cruzado** — no una jerarquía anidada
+
+```{mermaid}
+flowchart LR
+    A[Estudiante 1] --> P1[Profesor A]
+    A --> P2[Profesor B]
+    B[Estudiante 2] --> P1
+    B --> P3[Profesor C]
+    C[Estudiante 3] --> P2
+    C --> P3
+```
+
+## 📊¿Por qué no es anidado?
+
+| Diseño | Especificación | Significado |
+|--------|---------------|-------------|
+| **Anidado** | `(1 &#124; tchrid/studid)` | Estudiantes dentro de profesores |
+| **Cruzado** | `(1 &#124; studid) + (1 &#124; tchrid)` | Estudiantes y profesores como factores cruzados |
+
+En este ejemplo los estudiantes **no están fijos** a un profesor
+— pueden cambiar de profesor cada año. Por eso el modelo
+correcto usa factores cruzados.
+
+## 📊Variables
+
+| Variable | Tipo | Rol |
+|----------|------|-----|
+| `math` | Continua | **Outcome** — puntaje SAT matemáticas |
+| `year` | Continua | Efecto fijo — año (-1, 0, 1) |
+| `studid` | Identificador | Efecto aleatorio — estudiante |
+| `tchrid` | Identificador | Efecto aleatorio — profesor |
+
+```{r verificacion}
+nrow(sat_data)
+n_distinct(sat_data$studid)
+n_distinct(sat_data$tchrid)
+table(sat_data$year)
+```
+
+## 📊Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(sat_data, aes(x = factor(year), y = math)) +
+  geom_boxplot(fill = "#8e44ad", alpha = 0.7) +
+  labs(title = "Puntaje SAT matemáticas por año",
+       x = "Año", y = "Puntaje matemáticas") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+sat_data |>
+  group_by(studid) |>
+  filter(n() > 1) |>
+  ggplot(aes(x = factor(year), y = math,
+             group = studid)) +
+  geom_line(alpha = 0.2, color = "#8e44ad") +
+  labs(title = "Trayectorias individuales por estudiante",
+       x = "Año", y = "Puntaje matemáticas") +
+  theme_minimal()
+```
+
+## 📊Estrategia de análisis
+
+```{mermaid}
+flowchart TD
+    A[Model 8.1\nFactores cruzados\nestud + profesor] --> B{H8.1\n¿Varianza entre estudiantes?}
+    B -->|Sí p<0.001| C{H8.2\n¿Varianza entre profesores?}
+    C -->|Sí p<0.001| D{H8.3\n¿Efecto fijo de year?}
+    D -->|Sí| E[Model 8.1 — Modelo Final]
+```
+
+## 📊Model 8.1 — Modelo con factores cruzados
+
+```{r model81}
+model8.1.fit <- lmer(
+  math ~ year + (1 | studid) + (1 | tchrid),
+  data = sat_data,
+  REML = TRUE
+)
+summary(model8.1.fit)
+```
+
+## 📊H8.1 — ¿Varianza entre estudiantes?
+
+```{r h81}
+model8.1.nostud <- lmer(
+  math ~ year + (1 | tchrid),
+  data = sat_data,
+  REML = TRUE
+)
+
+anova(model8.1.nostud, model8.1.fit, refit = FALSE)
+
+# p-value corregido por mezcla de chi-cuadrados
+lrt_h81 <- 46
+p_h81 <- 0.5 * (1 - pchisq(lrt_h81, 0)) +
+          0.5 * (1 - pchisq(lrt_h81, 1))
+cat("p-value corregido H8.1:", p_h81, "\n")
+```
+
+> **p < 0.001** → existe variabilidad significativa
+> entre estudiantes. Se retiene el intercepto aleatorio
+> de estudiante.
+
+## 📊H8.2 — ¿Varianza entre profesores?
+
+```{r h82}
+model8.1.notchr <- lmer(
+  math ~ year + (1 | studid),
+  data = sat_data,
+  REML = TRUE
+)
+
+anova(model8.1.notchr, model8.1.fit, refit = FALSE)
+
+# p-value corregido
+lrt_h82 <- 79
+p_h82 <- 0.5 * (1 - pchisq(lrt_h82, 0)) +
+          0.5 * (1 - pchisq(lrt_h82, 1))
+cat("p-value corregido H8.2:", p_h82, "\n")
+```
+
+> **p < 0.001** → existe variabilidad significativa
+> entre profesores. Se retiene el intercepto aleatorio
+> de profesor.
+
+## 📊H8.3 — ¿Efecto fijo de year?
+
+```{r h83}
+summary(model8.1.fit)
+```
+
+> El efecto de `year` se evalúa directamente desde el
+> `summary()` con `lmerTest` que proporciona p-values
+> para los efectos fijos.
+
+## 📊Resumen de comparación de modelos
+
+| Hipótesis | Componente evaluado | Resultado | Decisión |
+|-----------|---------------------|-----------|----------|
+| H8.1 | Varianza entre estudiantes | p < 0.001 | Mantener |
+| H8.2 | Varianza entre profesores | p < 0.001 | Mantener |
+| H8.3 | Efecto fijo de year | Significativo | Mantener |
+| **Modelo final** | — | — | **Model 8.1** |
+
+## 📊Interpretación de efectos fijos
+
+```{r tabla_efectos, echo=FALSE}
+coefs <- summary(model8.1.fit)$coefficients
+data.frame(
+  Efecto      = rownames(coefs),
+  Estimacion  = round(coefs[, "Estimate"], 3),
+  EE          = round(coefs[, "Std. Error"], 3),
+  t           = round(coefs[, "t value"], 3),
+  p           = round(coefs[, "Pr(>|t|)"], 4)
+) |>
+  knitr::kable(caption = "Efectos fijos — Model 8.1 (REML)")
+```
+
+## 📊Componentes de varianza
+
+```{r varianza}
+VarCorr(model8.1.fit)
+```
+
+> La variabilidad total se descompone en:
+>
+> - **Varianza entre estudiantes** — diferencias sistemáticas
+>   en el nivel de matemáticas entre estudiantes
+> - **Varianza entre profesores** — diferencias sistemáticas
+>   en el nivel de matemáticas entre profesores
+> - **Varianza residual** — variación no explicada
+
+## 📊Diagnósticos
+
+```{r diagnosticos, echo=FALSE}
+residuos <- residuals(model8.1.fit)
+ajustados <- fitted(model8.1.fit)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos,
+     xlab = "Valores ajustados",
+     ylab = "Residuos",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos, main = "Q-Q plot residuos")
+qqline(residuos)
+```
+
+```{r eblups, echo=FALSE}
+re_stud <- ranef(model8.1.fit)$studid
+re_tchr <- ranef(model8.1.fit)$tchrid
+
+par(mfrow = c(1, 2))
+qqnorm(re_stud[, 1], main = "Q-Q EBLUPs estudiantes")
+qqline(re_stud[, 1])
+
+qqnorm(re_tchr[, 1], main = "Q-Q EBLUPs profesores")
+qqline(re_tchr[, 1])
+```
+
+## 📊Conclusiones
+
+- Existen diferencias sistemáticas entre **estudiantes** y
+  entre **profesores**
+- El puntaje SAT matemáticas **cambia con el año**
+- El diseño es **cruzado** — no anidado — porque los
+  estudiantes cambian de profesor cada año
+- El **Model 8.1** con factores aleatorios cruzados es
+  el modelo apropiado y final
+
+> El modelo final descompone la variabilidad de los puntajes
+> en variación atribuible a estudiantes, profesores y error
+> residual, mientras que `year` estima el cambio promedio
+> en el puntaje a través del tiempo.

@@ -2,18 +2,7 @@
 title: "Modelo para datos de medidas repetidas (Repeated-measures linear mixed-effects model)"
 subtitle: "The Rat Brain Example🧠🐁 - West et al., Cap. 5 (p. 199)"
 author: "Elena Lazo"
-date: 11-junio-2026
-format:
-  html:
-    toc: true
-    toc-depth: 3
-    code-fold: true
-    code-tools: true
-    theme: cosmo
-execute:
-  echo: true
-  warning: false
-  message: false
+date: today
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +27,7 @@ rat_brain <- rat.brain |>
       treatment == 2 ~ 1))
 ```
 
-## 1.🐁Problema de investigación
+## 🐁Problema de investigación
 
 Se mide la **activación cerebral** (`activate`) en 5 ratas en
 3 regiones cerebrales bajo 2 condiciones de tratamiento
@@ -48,7 +37,7 @@ Se mide la **activación cerebral** (`activate`) en 5 ratas en
 > regiones y tratamientos, considerando que cada rata contribuye
 > con múltiples observaciones?
 
-## 2.🐁Diseño de medidas repetidas
+## 🐁Diseño de medidas repetidas
 
 - Cada rata tiene **6 observaciones** (3 regiones × 2 tratamientos)
 - Las observaciones dentro de una misma rata **no son independientes**
@@ -62,7 +51,7 @@ table(rat_brain$treatment, rat_brain$treat)
 nrow(rat_brain)
 ```
 
-## 3.🐁Variables
+## 🐁Variables
 
 | Variable | Tipo | Rol | Codificación |
 |----------|------|-----|--------------|
@@ -71,7 +60,7 @@ nrow(rat_brain)
 | `treat` | Categórica | Factor intra-sujeto | Basal = 0 (ref), Carbachol = 1 |
 | `animal` | Identificador | Sujeto | 5 ratas |
 
-## 4.🐁Exploración descriptiva
+## 🐁Exploración descriptiva
 
 ```{r fig1, echo=FALSE}
 ggplot(rat_brain, aes(x = region.f, y = activate,
@@ -99,7 +88,7 @@ ggplot(rat_brain, aes(x = region.f, y = activate,
   theme_minimal()
 ```
 
-## 5.🐁Estrategia top-down
+## 🐁Estrategia top-down
 
 ```{mermaid}
 flowchart TD
@@ -110,7 +99,7 @@ flowchart TD
     E -->|Sí| F[Model 5.2 — Modelo Final]
 ```
 
-## 6.🐁Model 5.1: Intercepto aleatorio
+## 🐁Model 5.1: Intercepto aleatorio
 
 ```{r model51}
 model5.1.fit <- lme(
@@ -121,7 +110,7 @@ model5.1.fit <- lme(
 summary(model5.1.fit)
 ```
 
-## 7.🐁H5.1: ¿Varía el efecto del tratamiento entre ratas?
+## 🐁H5.1: ¿Varía el efecto del tratamiento entre ratas?
 
 ```{r h51}
 model5.2.fit <- update(
@@ -153,7 +142,7 @@ anova(model5.2.fit, model5.3.fit)
 > **p = 0.66** → no se necesita varianza residual heterogénea.
 > Se prefiere el **Model 5.2**.
 
-## 9.🐁H5.3: ¿Es significativa la interacción región × tratamiento?
+## 🐁H5.3: ¿Es significativa la interacción región × tratamiento?
 
 ```{r h53}
 anova(model5.2.fit)
@@ -163,7 +152,7 @@ anova(model5.2.fit)
 > el efecto del tratamiento depende de la región cerebral.
 > Se mantiene el **Model 5.2** como modelo final.
 
-## 10.🐁Resumen de comparación de modelos
+## 🐁Resumen de comparación de modelos
 
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
@@ -172,7 +161,7 @@ anova(model5.2.fit)
 | anova(5.2) | Interacción región × tratamiento | Significativa | Mantener |
 | **Modelo final** | — | — | **Model 5.2** |
 
-## 11.🐁Modelo final
+## 🐁Modelo final
 
 ```{r modelo_final}
 summary(model5.2.fit)
@@ -180,7 +169,7 @@ VarCorr(model5.2.fit)
 intervals(model5.2.fit)
 ```
 
-## 12.🐁Interpretación de la interacción
+## 🐁Interpretación de la interacción
 
 Como la interacción región × tratamiento es significativa,
 no conviene interpretar efectos principales por separado.
@@ -205,7 +194,7 @@ emm2
 pairs(emm2)
 ```
 
-## 13.🐁Componentes de varianza
+## 🐁Componentes de varianza
 
 ```{r varianza}
 vc <- VarCorr(model5.2.fit)
@@ -217,7 +206,7 @@ print(vc)
 > - Su propio **nivel basal** de activación (intercepto aleatorio)
 > - Su propia **respuesta al tratamiento** (efecto aleatorio de treat)
 
-## 14.🐁Diagnósticos
+## 🐁Diagnósticos
 
 ```{r diagnosticos, echo=FALSE}
 residuos_norm <- residuals(model5.2.fit, type = "normalized")
@@ -246,7 +235,7 @@ qqnorm(re[, 2], main = "Q-Q EBLUPs tratamiento")
 qqline(re[, 2])
 ```
 
-## 15.🐁Conclusiones
+## 🐁Conclusiones
 
 - La activación cerebral varía significativamente entre regiones
   y tratamientos

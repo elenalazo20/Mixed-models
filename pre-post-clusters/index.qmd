@@ -1,8 +1,306 @@
 ---
-title: "Pre-Post Clusters (PRT)"
+title: "Modelo mixto pre-post con datos agrupados por sujeto (Pre-Post Clustered Mixed Model)"
+subtitle: "The PRT Trial💪 - Galecki & Burzykowski, Cap. 2, 3 y 17"
+author: "Elena Lazo"
+date: today
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(nlme)
+library(nlmeU)
+library(dplyr)
+library(ggplot2)
 
-Este ejemplo está en construcción.
+data(prt, package = "nlmeU")
 
+lme.spec.form1 <- formula(
+  spec.fo ~ (prt.f + occ.f)^2 + sex.f + age.f +
+    sex.f:age.f + bmi)
+
+prt1 <- subset(
+  prt,
+  fiber.f == "Type 1",
+  select = -fiber.f)
+
+lme.spec.form3 <- update(
+  lme.spec.form1,
+  . ~ . + fiber.f + prt.f:fiber.f + occ.f:fiber.f)
+```
+
+## 💪Problema de investigación
+
+El **Progressive Resistance Training (PRT) Trial** estudia
+el efecto del entrenamiento de resistencia sobre la fuerza
+específica de la fibra muscular (`spec.fo`), comparando
+mediciones **pre y post** entrenamiento.
+
+> **Pregunta central:** ¿Cambia la fuerza específica de la
+> fibra muscular entre el periodo pre y post entrenamiento,
+> y difiere este cambio según el grupo de entrenamiento
+> (alta/baja intensidad), el tipo de fibra, y características
+> del sujeto (sexo, edad, BMI)?
+
+## 💪Diseño del PRT Trial
+
+- **63 sujetos** asignados a entrenamiento de alta o baja
+  intensidad (`prt.f`)
+- Cada sujeto tiene **múltiples fibras musculares** medidas
+- Dos **tipos de fibra**: Tipo 1 y Tipo 2
+- Dos **ocasiones**: Pre y Post entrenamiento
+- Covariables de sujeto: `sex.f`, `age.f`, `bmi`
+- Diseño **pre-post con datos agrupados por sujeto**
+
+```{mermaid}
+flowchart TD
+    A[Sujeto] --> B[Fibra Tipo 1]
+    A --> C[Fibra Tipo 2]
+    B --> D[Pre]
+    B --> E[Post]
+    C --> D
+    C --> E
+    D --> F[spec.fo]
+    E --> F
+```
+
+## 💪Estructura agrupada de los datos
+
+```{r estructura}
+n_distinct(prt$id)
+nrow(prt)
+table(prt$fiber.f, prt$occ.f)
+table(prt$prt.f)
+```
+
+## 💪Variables principales
+
+| Variable | Nivel | Tipo | Rol |
+|----------|-------|------|-----|
+| `spec.fo` | 1 | Continua | **Outcome** — fuerza específica |
+| `occ.f` | 1 | Factor | Ocasión (Pre/Pos) |
+| `fiber.f` | 1 | Factor | Tipo de fibra (Type 1/Type 2) |
+| `id` | 2 | Identificador | Sujeto |
+| `prt.f` | 2 | Factor | Grupo de entrenamiento (High/Low) |
+| `sex.f` | 2 | Factor | Sexo |
+| `age.f` | 2 | Factor | Grupo de edad (Young/Old) |
+| `bmi` | 2 | Continua | Índice de masa corporal |
+
+## 💪Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(prt1, aes(x = occ.f, y = spec.fo, fill = prt.f)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_manual(values = c("#8e44ad", "#2C5F2D")) +
+  labs(title = "Fuerza específica (Fibra Tipo 1) — Pre vs Post",
+       x = "Ocasión", y = "spec.fo",
+       fill = "Grupo entrenamiento") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+ggplot(prt, aes(x = occ.f, y = spec.fo, fill = fiber.f)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_manual(values = c("#8e44ad", "#2C5F2D")) +
+  labs(title = "Fuerza específica por ocasión y tipo de fibra",
+       x = "Ocasión", y = "spec.fo",
+       fill = "Tipo de fibra") +
+  theme_minimal()
+```
+
+## 💪Estrategia de modelado (Cap. 17)
+
+```{mermaid}
+flowchart TD
+    A[M17.1\nFibra Tipo 1\nInterceptos aleatorios por ocasion] --> B{Heterogeneidad media-varianza?}
+    B -->|Si, varPower| C[M17.2\nVarianza dependiente de la media]
+    C --> D[M17.3\nAmbos tipos de fibra\n4 interceptos aleatorios]
+    D --> E[M17.4\nKronecker UN x UN]
+    E --> F[M17.5\nKronecker CS x CS]
+    F --> G[M17.6\nExtension conjunta\niso.fo y spec.fo]
+```
+
+## 💪M17.1 — Fibra Tipo 1, interceptos aleatorios por ocasión
+
+```{r model171}
+model17.1.fit <- lme(
+  lme.spec.form1,
+  random = ~ occ.f - 1 | id,
+  data = prt1,
+  method = "REML")
+summary(model17.1.fit)
+```
+
+> Cada sujeto tiene dos interceptos aleatorios, uno para
+> Pre y otro para Pos. La matriz D permite estimar la
+> correlación entre ambos niveles de fuerza específica
+> dentro del mismo sujeto.
+
+## 💪Diagnóstico de M17.1
+
+```{r diag171, echo=FALSE}
+residuos <- residuals(model17.1.fit, type = "normalized")
+ajustados <- fitted(model17.1.fit)
+
+par(mfrow = c(1, 2))
+
+plot(ajustados, residuos,
+     xlab = "Valores ajustados",
+     ylab = "Residuos normalizados",
+     main = "Residuos vs ajustados")
+abline(h = 0, lty = 2)
+
+qqnorm(residuos, main = "Q-Q plot residuos")
+qqline(residuos)
+```
+
+> El patrón en forma de embudo sugiere que la varianza
+> aumenta con la magnitud de los valores ajustados —
+> motiva el siguiente modelo con `varPower()`.
+
+## 💪M17.2: Modelo media-varianza con varPower()
+
+```{r model172}
+model17.2.fit <- update(
+  model17.1.fit,
+  weights = varPower(form = ~ fitted(.)),
+  data = prt1,
+  control = lmeControl(maxIter = 200, msMaxIter = 200))
+
+anova(model17.1.fit, model17.2.fit)
+```
+
+> **p < 0.001** → `varPower()` mejora significativamente
+> el ajuste. La varianza residual aumenta con la magnitud
+> de la fuerza específica predicha.
+
+## 💪M17.3 — Ambos tipos de fibra, 4 interceptos aleatorios
+
+```{r model173}
+model17.3.fit <- lme(
+  lme.spec.form3,
+  random = ~ occ.f:fiber.f - 1 | id,
+  data = prt,
+  method = "REML",
+  control = lmeControl(maxIter = 200, msMaxIter = 200))
+summary(model17.3.fit)
+```
+
+> Este modelo permite que cada sujeto tenga **4 interceptos
+> aleatorios** — uno por cada combinación de ocasión
+> (Pre/Post) y tipo de fibra (1/2). La matriz de covarianza
+> es **no estructurada** (4×4 general, simétrica positiva).
+
+## 💪Comparación de modelos
+
+| Modelo | Datos | Efectos aleatorios | Estructura residual | Decisión |
+|--------|-------|---------------------|---------------------|----------|
+| M17.1 | Fibra Tipo 1 | 2 interceptos (Pre/Post) | Homogénea | Base |
+| M17.2 | Fibra Tipo 1 | 2 interceptos (Pre/Post) | varPower | Mejora (p<0.001) |
+| M17.3 | Ambas fibras | 4 interceptos (occ×fibra) | Homogénea | Matriz D 4×4 general |
+
+## 💪Interpretación de M17.3
+
+```{r tabla_efectos, echo=FALSE}
+coefs <- summary(model17.3.fit)$tTable
+data.frame(
+  Efecto     = rownames(coefs),
+  Estimacion = round(coefs[, "Value"], 3),
+  EE         = round(coefs[, "Std.Error"], 3),
+  p          = round(coefs[, "p-value"], 4)) |>
+  knitr::kable(caption = "Efectos fijos — Model 17.3 (REML)")
+```
+
+> - **`fiber.fType 2`** — las fibras tipo 2 tienen mayor
+>   fuerza específica basal que las tipo 1
+> - **`occ.fPos`** — cambio post-entrenamiento para la categoría de referencia del modelo
+> - **`age.fOld`** — los sujetos del grupo de mayor edad
+>   muestran diferencias respecto al grupo joven
+> - Las interacciones asociadas al grupo de entrenamiento se revisan
+>   para evaluar si el cambio pre-post difiere entre intensidades
+>   de entrenamiento.
+
+## 💪M17.4 a M17.6 — Estructuras Kronecker
+
+Galecki extiende M17.3 estructurando la matriz de covarianza
+4×4 mediante **productos de Kronecker**, lo que permite
+separar la variación atribuible al **tipo de fibra** de
+la atribuible a la **ocasión**:
+
+> - **M17.4** — estructura Kronecker **UN × UN**
+>   (no estructurada × no estructurada)
+> - **M17.5** — estructura más parsimoniosa Kronecker
+>   **CS × CS** (simetría compuesta × simetría compuesta)
+> - **M17.6** — extensión conjunta para analizar
+>   simultáneamente `iso.fo` y `spec.fo` como dos
+>   outcomes correlacionados
+
+```{r model174_175, eval=FALSE}
+# M17.4 — Kronecker UN x UN
+# Requiere la clase pdKronecker usada en el material del libro
+
+pdId  <- pdIdent(~ 1)
+pd1UN <- pdLogChol(~ fiber.f - 1)
+pd2UN <- pdLogChol(~ occ.f - 1)
+
+pdL1 <- list(
+  X = pdId,
+  FiberType = pd1UN,
+  PrePos = pd2UN)
+
+model17.4.fit <- lme(
+  lme.spec.form3,
+  random = list(id = pdKronecker(pdL1)),
+  data = prt,
+  method = "REML")
+
+# M17.5 — Kronecker CS x CS
+
+pdId  <- pdIdent(~ 1)
+pd1CS <- pdCompSymm(~ fiber.f - 1)
+pd2CS <- pdCompSymm(~ occ.f - 1)
+
+pdL2 <- list(
+  X = pdId,
+  FiberType = pd1CS,
+  PrePos = pd2CS)
+
+model17.5.fit <- lme(
+  lme.spec.form3,
+  random = list(id = pdKronecker(pdL2)),
+  data = prt,
+  method = "REML")
+
+anova(model17.3.fit, model17.4.fit, model17.5.fit)
+```
+
+> Los modelos M17.4–M17.6 requieren la clase `pdKronecker`,
+> usada por Galecki para estructurar la matriz D mediante
+> productos de Kronecker. Si la función no está disponible
+> en la instalación local, estos bloques se dejan como
+> código conceptual.
+
+## 💪 Conclusiones
+
+- El PRT Trial tiene estructura **pre-post con datos
+  agrupados por sujeto**
+- En el análisis de fibras Tipo 1, los diagnósticos de M17.1
+  sugieren heterocedasticidad: la varianza residual aumenta
+  con la media
+- M17.2 incorpora `varPower()` y mejora significativamente
+  el ajuste respecto a M17.1
+- M17.3 extiende el análisis a ambos tipos de fibra,
+  permitiendo **4 interceptos aleatorios correlacionados**
+  por sujeto (uno por cada combinación ocasión × tipo de fibra)
+- Las fibras tipo 1 y tipo 2 difieren en su nivel basal
+  de fuerza específica
+- M17.4 y M17.5 estructuran esa matriz de covarianza 4×4
+  mediante **productos de Kronecker**, separando la
+  variación por tipo de fibra de la variación por ocasión,
+  para obtener modelos más parsimoniosos
+
+> El PRT Trial corresponde a un diseño pre-post con
+> mediciones de fibras musculares agrupadas dentro de
+> sujetos. El análisis muestra cómo especificar modelos
+> lineales mixtos con estructuras de efectos aleatorios
+> cada vez más complejas, comenzando con fibras tipo 1
+> y extendiendo a ambos tipos de fibra mediante productos
+> de Kronecker.

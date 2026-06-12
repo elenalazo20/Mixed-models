@@ -14,7 +14,7 @@ Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de text
 
 | Ejemplo | Libro | Capítulo | Modelo |
 |---------|-------|----------|--------|
-| [🎯 Two-Level Clusters (Rat Pup)](two-level-clusters/index.qmd) | West et al. | Cap. 3 (p.59) | Modelos para datos en clusters de 2 niveles |
+| [Two-Level Clusters (Rat Pup)](two-level-clusters/index.qmd) | West et al. | Cap. 3 (p.59) | Modelos para datos en clusters de 2 niveles |
 | [Three-Level Clusters (Classroom)](three-level-clusters/index.qmd) | West et al. | Cap. 4 (p.135) | Modelos para datos en clusters de 3 niveles |
 | [Repeated Measures (Rat Brain)](repeated-measures/index.qmd) | West et al. | Cap. 5 (p.199) | Modelo para datos de medidas repetidas |
 | [Longitudinal Random Coef (Autism)](longitudinal-random-coef/index.qmd) | West et al. | Cap. 6 (p.249) | Modelos longitudinales con coeficientes aleatorios |
@@ -23,3 +23,33 @@ Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de text
 | [Multilevel GLM (Mathematics)](multilevel-glm/index.qmd) | Finch et al. | Cap. 8 (p.133) | Modelo lineal generalizado multinivel |
 | [Longitudinal Grouped (ARMD)](longitudinal-grouped/index.qmd) | Galecki et al. | Cap. 2 (p.11-22) | Modelo longitudinal con obs. agrupadas |
 | [Pre-Post Clusters (PRT)](pre-post-clusters/index.qmd) | Galecki et al. | Cap. 2 (p.20) | Modelo pre-post con datos en clusters |
+
+
+## Mapa conceptual de los modelos
+
+```{mermaid}
+flowchart TD
+    A[Modelos mixtos / multinivel] --> B[Outcome continuo<br/>LMM gaussiano]
+    A --> C[Outcome binario<br/>GLMM logístico]
+    B --> D[2 niveles<br/>Rat Pup]
+    B --> E[3 niveles<br/>Classroom]
+    B --> F[Medidas repetidas<br/>Rat Brain]
+    B --> G[Coeficientes aleatorios<br/>longitudinal<br/>Autism]
+    B --> H[3 niveles longitudinal<br/>Dental Veneer]
+    B --> I[Factores aleatorios cruzados<br/>SAT Score]
+    B --> J[Ensayo longitudinal agrupado<br/>ARMD Trial]
+    B --> K[Pre-post agrupado por sujeto<br/>PRT Trial]
+    C --> L[Intercepto aleatorio logístico<br/>Mathematics Achievement]
+```
+
+| Tipo de outcome | Familia del modelo | Ejemplo | Estructura principal | Función R | Libro |
+|------------------|---------------------|---------|------------------------|-----------|-------|
+| Continuo | LMM gaussiano | Rat Pup | 2 niveles: crías dentro de camadas | `lme()` | West |
+| Continuo | LMM gaussiano | Classroom | 3 niveles: estudiantes, salones, escuelas | `lme()` | West |
+| Continuo | LMM gaussiano | Rat Brain | Medidas repetidas dentro de rata | `lme()` | West |
+| Continuo | LMM gaussiano | Autism | Longitudinal con coeficientes aleatorios | `lme()` | West |
+| Continuo | LMM gaussiano | Dental Veneer | Longitudinal de 3 niveles | `lme()` | West |
+| Continuo | LMM gaussiano | SAT Score | Factores aleatorios cruzados | `lmer()` | West |
+| Continuo | LMM gaussiano | ARMD Trial | Ensayo clínico longitudinal agrupado | `lme()` | Galecki |
+| Continuo | LMM gaussiano | PRT Trial | Pre-post con observaciones agrupadas por sujeto | `lme()` / `pdKronecker` | Galecki |
+| Binario | GLMM logístico | Mathematics Achievement | Estudiantes dentro de escuelas | `glmer()` | Finch |

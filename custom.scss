@@ -1,25 +1,13 @@
 /*-- scss:rules --*/
 
-.reveal {
-  font-size: 24px;
+#title-block-header {
+  background-color: #f3e8ff !important;
+  padding: 2em;
 }
 
-.reveal h1 {
-  font-size: 1.8em;
-}
-
-.reveal h2 {
-  font-size: 1.4em;
-}
-
-.reveal h3 {
-  font-size: 1.1em;
-}
-
-.reveal pre {
-  font-size: 0.7em;
-}
-
-.reveal .mermaid {
-  font-size: 0.8em;
+#title-block-header .title,
+#title-block-header .subtitle,
+#title-block-header .author,
+#title-block-header .date {
+  color: #3b2552 !important;
 }

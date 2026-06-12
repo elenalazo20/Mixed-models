@@ -1,8 +1,254 @@
 ---
-title: "Longitudinal Grouped (ARMD)"
+title: "Modelo longitudinal con observaciones agrupadas (Longitudinal Grouped Data)"
+subtitle: "The ARMD Trial👁️ - Galecki & Burzykowski, Cap. 2 (p. 11-22)"
+author: "Elena Lazo"
+date: today
 ---
 
-## Próximamente
+```{r setup, include=FALSE}
+library(nlmeU)
+library(dplyr)
+library(ggplot2)
 
-Este ejemplo está en construcción.
+data(armd.wide, package = "nlmeU")
+data(armd0,     package = "nlmeU")
+data(armd,      package = "nlmeU")
+```
 
+## 👁Objetivo del ARMD Trial
+
+El **Age-Related Macular Degeneration (ARMD) Trial** es un
+ensayo clínico aleatorizado que evalúa el efecto de un
+tratamiento sobre la **agudeza visual** en pacientes con
+degeneración macular relacionada con la edad.
+
+> **Objetivo de este capítulo:** Galecki usa el ARMD Trial
+> para mostrar cómo preparar correctamente datos longitudinales
+> para modelos mixtos — pasando de formato ancho a formato
+> largo y conservando la medición basal como covariable.
+
+## 👁Diseño longitudinal
+
+- **240 pacientes** asignados aleatoriamente a tratamiento
+  activo o placebo
+- Agudeza visual medida al **baseline (semana 0)** y a las
+  semanas **4, 12, 24 y 52**
+- El outcome longitudinal es la agudeza visual
+  **post-baseline**
+- La medición basal (`visual0`) se conserva como
+  **covariable fija en el tiempo**
+
+```{mermaid}
+flowchart LR
+    A[Semana 0\nBaseline] --> B[Semana 4]
+    B --> C[Semana 12]
+    C --> D[Semana 24]
+    D --> E[Semana 52]
+    A -->|visual0 como covariable| F[Modelo mixto]
+    B --> F
+    C --> F
+    D --> F
+    E --> F
+```
+
+## 👁Formato wide procesado: armd.wide
+
+```{r armd_wide}
+dim(armd.wide)
+names(armd.wide)
+head(armd.wide)
+```
+
+## 👁Estructura del formato wide
+
+```{r str_wide}
+str(armd.wide)
+```
+
+| Variable | Tipo | Descripción |
+|----------|------|-------------|
+| `subject` | Identificador | Paciente |
+| `treat.f` | Factor | Tratamiento (Active/Placebo) |
+| `visual0` | Continua | Agudeza visual baseline |
+| `visual4` | Continua | Agudeza visual semana 4 |
+| `visual12` | Continua | Agudeza visual semana 12 |
+| `visual24` | Continua | Agudeza visual semana 24 |
+| `visual52` | Continua | Agudeza visual semana 52 |
+| `miss.pat` | Factor | Patrón de datos faltantes |
+| `lesion` | Continua | Tamaño de lesión baseline |
+| `line0` | Continua | Líneas de visión baseline |
+
+## 👁Patrones de datos faltantes
+
+```{r miss_pat}
+table(armd.wide$miss.pat)
+```
+
+## 👁Formato long completo: armd0
+
+```{r armd0}
+dim(armd0)
+str(armd0)
+head(armd0, 10)
+```
+
+> `armd0` incluye la fila de baseline como observación
+> longitudinal — útil para exploración.
+
+## 👁Formato long para análisis: armd
+
+```{r armd_long}
+dim(armd)
+str(armd)
+head(armd, 10)
+```
+
+> `armd` **excluye las filas de baseline** como respuesta
+> longitudinal, pero conserva `visual0` como covariable
+> fija en el tiempo. Este es el data frame principal
+> para ajustar modelos mixtos.
+
+## 👁Tabla de objetos
+
+| Objeto | Formato | Filas | Baseline como fila | Uso |
+|--------|---------|-------|-------------------|-----|
+| `armd.wide` | Wide | 240 | Sí | Datos procesados en formato ancho |
+| `armd0` | Long | 1107 | Sí | Exploración longitudinal completa |
+| `armd` | Long | 867 | No | **Data frame principal para análisis** |
+
+## 👁Variables time-fixed y time-varying
+
+```{r variables}
+# Variables fijas en el tiempo (nivel paciente)
+armd |>
+  select(subject, treat.f, visual0, miss.pat) |>
+  distinct() |>
+  head()
+
+# Variables que cambian en el tiempo (nivel medición)
+armd |>
+  select(subject, time, time.f, tp, visual) |>
+  head(10)
+```
+
+| Variable | Nivel | Tipo | Descripción |
+|----------|-------|------|-------------|
+| `visual` | 1 | Continua | **Outcome** — agudeza visual post-baseline |
+| `time` | 1 | Continua | Semana (4, 12, 24, 52) |
+| `time.f` | 1 | Factor | Semana como factor ordenado |
+| `tp` | 1 | Continua | Posición de la visita |
+| `visual0` | 2 | Continua | Agudeza visual baseline |
+| `treat.f` | 2 | Factor | Tratamiento |
+| `miss.pat` | 2 | Factor | Patrón de faltantes |
+| `subject` | 2 | Identificador | Paciente |
+
+## 👁Tiempo: time, time.f y tp
+
+```{r tiempo}
+table(armd$time)
+table(armd$time.f)
+summary(armd$tp)
+```
+
+> - `time` — semana como número continuo
+> - `time.f` — semana como factor ordenado
+> - `tp` — posición numérica de la visita
+> - Los contrastes polinómicos se asignan a `time.f`
+>   mediante `contr.poly()`
+
+## 👁Contrastes polinómicos para time.f
+
+Galecki asigna contrastes polinómicos ortogonales a `time.f`
+para que el tiempo como factor pueda representar tendencias
+lineales, cuadráticas y de orden superior entre las visitas
+post-baseline.
+
+```{r contrastes}
+contrasts(armd$time.f)
+```
+
+> Estos contrastes no cambian los datos observados —
+> modifican la forma en que R codifica el factor `time.f`
+> cuando se usa en modelos posteriores.
+
+## 👁Exploración descriptiva
+
+```{r fig1, echo=FALSE}
+ggplot(armd,
+       aes(x = time, y = visual,
+           group = subject,
+           color = treat.f)) +
+  geom_line(alpha = 0.25) +
+  geom_point(alpha = 0.4, size = 0.8) +
+  scale_color_manual(values = c("#8e44ad", "#2C5F2D")) +
+  labs(title = "Trayectorias de agudeza visual post-baseline",
+       x = "Semana", y = "Agudeza visual",
+       color = "Tratamiento") +
+  theme_minimal()
+```
+
+```{r fig2, echo=FALSE}
+armd |>
+  group_by(time, treat.f) |>
+  summarise(
+    media = mean(visual, na.rm = TRUE),
+    ee    = sd(visual, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop") |>
+  ggplot(aes(x = time, y = media,
+             color = treat.f,
+             group = treat.f)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = media - ee,
+                    ymax = media + ee),
+                width = 1) +
+  scale_color_manual(values = c("#8e44ad", "#2C5F2D")) +
+  labs(title = "Trayectoria media por grupo de tratamiento",
+       x = "Semana", y = "Agudeza visual media",
+       color = "Tratamiento") +
+  theme_minimal()
+```
+
+```{r fig3, echo=FALSE}
+ggplot(armd,
+       aes(x = visual0, y = visual,
+           color = treat.f)) +
+  geom_point(alpha = 0.3, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = c("#8e44ad", "#2C5F2D")) +
+  labs(title = "Agudeza visual post-baseline vs baseline",
+       x = "Agudeza visual baseline (visual0)",
+       y = "Agudeza visual post-baseline",
+       color = "Tratamiento") +
+  theme_minimal()
+```
+
+## 👁Base lista para modelos mixtos
+
+```{r resumen}
+armd |>
+  group_by(treat.f) |>
+  summarise(
+    pacientes  = n_distinct(subject),
+    mediciones = n(),
+    visual_med = round(mean(visual, na.rm = TRUE), 2),
+    visual_de  = round(sd(visual, na.rm = TRUE), 2)) |>
+  knitr::kable(caption = "Resumen por grupo de tratamiento")
+```
+
+## 👁Conclusiones
+
+- El ARMD Trial tiene estructura longitudinal: las mediciones
+  repetidas están agrupadas dentro de pacientes
+- La preparación correcta requiere pasar de formato
+  **wide a long** y separar baseline del outcome
+- `visual0` se conserva como **covariable fija** — no
+  como fila del outcome longitudinal
+- El data frame `armd` está listo para ajustar modelos
+  mixtos en capítulos posteriores
+
+> Galecki usa el ARMD Trial para mostrar cómo pasar de
+> datos crudos en formato ancho a un data frame longitudinal
+> listo para modelos mixtos, conservando la medición basal
+> como covariable y modelando solo las mediciones
+> post-baseline como respuesta longitudinal.
