@@ -837,8 +837,6 @@ StdDev:   0.3146374 0.5144324
 
 Esto confirma que **las camadas sí difieren entre sí** (consistente con H3.1).
 
----
-
 **2. Variance function (estructura de varianza heterogénea)**
 
 ```
@@ -849,8 +847,6 @@ Esto confirma que **las camadas sí difieren entre sí** (consistente con H3.1).
 Esto es lo que decidimos en H3.3/H3.4. Estos valores son **razones de desviaciones estándar** (no de varianzas directamente), con Control como referencia (=1).
 
 La **SD** de High_Low es 0.589 veces la de Control. Para obtener la razón de **varianzas**, hay que elevar al cuadrado: 0.589² ≈ 0.347 — es decir, la varianza residual de las crías en grupos tratados (Low/High) es aproximadamente **0.347 veces** la del grupo Control (alrededor de un tercio menor).
-
----
 
 **3. Fixed effects — lo más importante para interpretar**
 
@@ -877,13 +873,9 @@ litsize       -0.130681 ...  p<0.0001
 
 **Todos los p-values son significativos** (< 0.01), lo que respalda mantener estos 4 efectos fijos.
 
----
-
 **4. Correlation (entre estimadores de los coeficientes)**
 
 Esta tabla muestra la **correlación entre las estimaciones de los coeficientes** del modelo — es decir, cómo se mueven conjuntamente las incertidumbres al estimar cada parámetro. No es una prueba formal de colinealidad entre las variables predictoras en sí, sino una propiedad de cómo el modelo estimó conjuntamente esos parámetros. Por ejemplo, ves correlaciones notables entre `treatment` y `litsize` (-0.61, -0.91), lo cual tiene sentido porque el tamaño de camada difiere algo entre grupos de tratamiento — pero esto describe la estimación, no constituye un diagnóstico de colinealidad por sí solo.
-
----
 
 **5. `intervals()` — Intervalos de confianza al 95%**
 
@@ -896,7 +888,6 @@ litsize       -0.1691  -0.1307  -0.0923
 
 Esto te da el **rango plausible** de cada efecto. Por ejemplo, para `treatmentHigh`: el efecto real está probablemente entre **-1.24 g y -0.48 g** — siempre negativo, lo que refuerza la significancia.
 
----
 > Ajustando por sexo y tamaño de camada, las crías expuestas a dosis **alta** pesan en promedio **0.86 g menos** y las de dosis **baja** **0.43 g menos** que el grupo control — sugiriendo un efecto dosis-respuesta. Además, las hembras pesan menos que los machos, y a mayor tamaño de camada, menor peso por cría. Las camadas tratadas (Low/High) muestran menor variabilidad residual que el grupo control (varianza ≈ 0.35 veces la de Control).
 :::
 

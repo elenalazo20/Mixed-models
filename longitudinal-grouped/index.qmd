@@ -1,5 +1,5 @@
 ---
-title: "Modelo longitudinal con observaciones agrupadas (Longitudinal Grouped Data)"
+title: "Datos longitudinales con un único nivel de agrupación (Longitudinal Data with a Single Level of Grouping)"
 subtitle: "The ARMD Trial👁️ - Galecki & Burzykowski, Cap. 2 (p. 11-22)"
 author: "Elena Lazo"
 date: today
@@ -7,15 +7,22 @@ date: today
 
 ```{r setup, include=FALSE}
 library(nlmeU)
+library(nlme)
 library(dplyr)
 library(ggplot2)
 
 data(armd.wide, package = "nlmeU")
 data(armd0,     package = "nlmeU")
-data(armd,      package = "nlmeU")
+
+# Crear el data frame de análisis como en el libro:
+# se conservan solo las mediciones post-baseline
+auxDt <- subset(armd0, time > 0)
+
+# Eliminar niveles no usados después del filtrado
+armd <- droplevels(auxDt)
 ```
 
-## 👁Objetivo del ARMD Trial
+## Objetivo del ARMD Trial
 
 El **Age-Related Macular Degeneration (ARMD) Trial** es un
 ensayo clínico aleatorizado que evalúa el efecto de un
@@ -27,7 +34,64 @@ degeneración macular relacionada con la edad.
 > para modelos mixtos — pasando de formato ancho a formato
 > largo y conservando la medición basal como covariable.
 
-## 👁Diseño longitudinal
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el **ejemplo más extenso** del sitio — 12 modelos a
+lo largo de 3 capítulos (6, 9, 12, 16) de Galecki. Vale la
+pena tener clara la "hoja de ruta" desde el inicio.
+
+**¿Por qué empezar con "preparación de datos" y no con un
+modelo?**
+
+A diferencia de los otros 8 ejemplos (que empiezan
+relativamente rápido con el primer modelo), ARMD dedica
+varias secciones a la **estructura de los datos** antes de
+ajustar nada — porque el objetivo pedagógico de Galecki en
+este capítulo es precisamente **eso**: cómo preparar datos
+longitudinales correctamente. Los modelos en sí vienen
+después, en capítulos posteriores del libro.
+
+**Los 3 bloques de modelos que vienen**
+
+```
+Bloque 1 (Cap 6, 9):  GLS con varianza heterogénea
+                      → fm6.1, fm9.1, fm9.2
+
+Bloque 2 (Cap 12):    GLS con correlación
+                      → fm12.1, fm12.2, fm12.3, fm12.5
+
+Bloque 3 (Cap 16):    LME (modelos mixtos)
+                      → fm16.1 a fm16.5
+```
+
+**La progresión conceptual: de GLS a LME**
+
+Los Bloques 1 y 2 usan `gls()` — modelos que describen la
+covarianza **directamente** (sin "efectos aleatorios"
+explícitos). El Bloque 3 usa `lme()` — el enfoque de
+**efectos mixtos** que se usó en los otros 8 ejemplos del
+sitio. ARMD es el único ejemplo que muestra **ambos
+enfoques** para el mismo problema, permitiendo comparar
+explícitamente cómo se relacionan.
+
+**¿Qué hace especial a ARMD entre los 3 ejemplos
+longitudinales?**
+
+| | ARMD | Dental Veneer | Autism |
+|---|---|---|---|
+| Niveles de agrupación | 1 (paciente) | 2 (diente, paciente) | 1 (niño) |
+| Tiempos | 4 (4,12,24,52 sem) | 2 (3,6 meses) | 5 (2,3,5,9,13 años) |
+| Enfoques mostrados | GLS **y** LME | Solo LME | Solo LME |
+| Estructura de varianza | Power, varIdent | Homogénea (no necesaria) | No aplica (sin GLS) |
+| Estructura de correlación | CompSymm, AR1, General | No identificable (2 tiempos) | No aplica |
+
+ARMD es el ejemplo donde se exploran **más alternativas de
+estructura de varianza-covarianza** — relevante si se necesita 
+mostrar el "menú completo" de opciones
+disponibles en `nlme` antes de llegar a un modelo final.
+:::
+
+## Diseño longitudinal
 
 - **240 pacientes** asignados aleatoriamente a tratamiento
   activo o placebo
@@ -40,7 +104,7 @@ degeneración macular relacionada con la edad.
 
 ```{mermaid}
 flowchart LR
-    A[Semana 0\nBaseline] --> B[Semana 4]
+    A[Semana 0<br/>Baseline] --> B[Semana 4]
     B --> C[Semana 12]
     C --> D[Semana 24]
     D --> E[Semana 52]
@@ -51,7 +115,76 @@ flowchart LR
     E --> F
 ```
 
-## 👁Formato wide procesado: armd.wide
+::: {.callout-note collapse="true"}
+## 🖊
+Este diagrama y la lista de arriba describen el diseño **antes**
+de cualquier transformación de datos — es la estructura
+"conceptual" del ensayo clínico.
+
+**240 pacientes — comparando con los otros ejemplos**
+
+```
+Rat Pup:        30 camadas (~10 crías c/u) = ~300 crías
+Classroom:      105 escuelas, 1190 estudiantes
+ARMD:           240 pacientes
+Dental Veneer:  12 pacientes, 55 dientes
+Autism:         158 niños
+Finch:          9316 estudiantes, 40 escuelas
+```
+
+ARMD tiene una escala intermedia — ni tan grande como
+classroom/Finch, ni tan pequeña como dental veneer/autism.
+
+**Las 5 mediciones: 1 baseline + 4 post-baseline**
+
+```
+Semana 0  → baseline (visual0) — covariable, NO outcome
+Semana 4  → outcome
+Semana 12 → outcome
+Semana 24 → outcome
+Semana 52 → outcome
+```
+
+Esta distinción es **crucial** y se repetirá varias veces:
+de las 5 mediciones totales, **solo 4** son observaciones del
+outcome longitudinal (`visual`) — la primera (`visual0`) se
+"separa" para usarse como **predictor**, no como parte de la
+variable que se está modelando en el tiempo.
+
+**¿Por qué separar baseline como covariable, y no como
+"tiempo 0" del outcome?**
+
+Si `visual0` fuera parte del outcome longitudinal, el modelo
+intentaría **explicar** la agudeza visual basal con las
+mismas variables (tratamiento, tiempo) que explican el
+post-baseline — pero el baseline ocurre **antes** de que el
+tratamiento pueda tener efecto (se mide al momento de
+aleatorización). Usar `visual0` como covariable permite
+**controlar** por el punto de partida de cada paciente,
+similar a cómo `mathkind` (puntaje inicial) se usaba en
+classroom — ambos son "valores de partida" que se convierten
+en predictores, no en parte del outcome repetido.
+
+**El diagrama: 4 flechas hacia "Modelo mixto", 1 flecha
+etiquetada distinto**
+
+Nota que las semanas 4, 12, 24, 52 apuntan a "Modelo mixto"
+con flechas simples (son las observaciones del outcome),
+mientras que la semana 0 apunta con una flecha **etiquetada**
+("visual0 como covariable") — visualmente refuerza que
+`visual0` entra al modelo de una **forma distinta** a las
+demás mediciones.
+
+**Conexión con la siguiente sección (formato wide/long)**
+
+Esta estructura conceptual (1 baseline + 4 post-baseline) es
+exactamente lo que determinará, en la sección de preparación
+de datos, por qué `armd` (formato long para análisis) tiene
+**menos filas** que `armd0` (formato long completo) — `armd`
+excluye las filas de baseline.
+:::
+
+## Formato wide procesado: armd.wide
 
 ```{r armd_wide}
 dim(armd.wide)
@@ -59,7 +192,71 @@ names(armd.wide)
 head(armd.wide)
 ```
 
-## 👁Estructura del formato wide
+::: {.callout-note collapse="true"}
+## 🖊
+`armd.wide` tiene **240 filas y 10 columnas** — confirma que
+es **una fila por paciente** (formato wide/ancho), con todas
+sus mediciones como columnas separadas.
+
+**Las 10 columnas, agrupadas por tipo**
+
+```
+Identificador:        subject
+Covariables fijas:    lesion, line0, visual0, treat.f
+Outcome (4 columnas): visual4, visual12, visual24, visual52
+Diagnóstico:          miss.pat
+```
+
+**`visual0` ya está aquí — como columna, no como fila**
+
+Esto es la confirmación numérica de lo que decía la sección
+anterior: `visual0` es **una columna más** de `armd.wide`,
+al mismo nivel que `lesion` o `treat.f` — no es "la primera
+medición de una serie", sino una **característica del
+paciente** desde el punto de vista de este formato.
+
+**Leyendo `head()` — el paciente 5 como ejemplo de
+`miss.pat`**
+
+```
+subject=5: visual0=70, visual4=NA, visual12=NA, visual24=NA, visual52=NA
+miss.pat = "XXXX"
+```
+
+El paciente 5 tiene **todas** las mediciones post-baseline
+faltantes (`miss.pat="XXXX"`) — solo se registró su
+`visual0`. Esto contrasta con:
+
+```
+subject=1: visual0=59, visual4=55, visual12=45, visual24=NA, visual52=NA
+miss.pat = "--XX"
+```
+
+El paciente 1 tiene las 2 primeras mediciones post-baseline
+(4 y 12 semanas) pero **no** las 2 últimas (24 y 52 semanas)
+— un patrón de **abandono progresivo** (dropout), muy común
+en ensayos clínicos longitudinales.
+
+**¿Por qué esto importa para los modelos que vienen?**
+
+Estos patrones de datos faltantes son la razón por la que
+`armd` (formato long, que se construye después) tendrá
+**menos de 240×4=960 filas** — pacientes como el 5 (todo
+faltante) o el 1 (2 de 4 faltantes) contribuyen menos filas
+al formato long que un paciente con las 4 mediciones
+completas (como el paciente 2 o 4, `miss.pat="----"`).
+
+**`miss.pat` — un resumen visual del patrón de cada
+paciente**
+
+Cada carácter de `miss.pat` corresponde a una visita
+(4, 12, 24, 52 semanas): `-` = presente, `X` = faltante. Esto
+permite, en la siguiente sección (`table(armd.wide$miss.pat)`),
+ver **cuántos pacientes** siguen cada patrón — información
+clave para entender el desbalance del diseño.
+:::
+
+## Estructura del formato wide
 
 ```{r str_wide}
 str(armd.wide)
@@ -78,13 +275,145 @@ str(armd.wide)
 | `lesion` | Continua | Tamaño de lesión baseline |
 | `line0` | Continua | Líneas de visión baseline |
 
-## 👁Patrones de datos faltantes
+::: {.callout-note collapse="true"}
+## 🖊
+`str()` confirma los **tipos de datos** de cada columna —
+útil para entender cómo R tratará cada variable en los
+modelos.
+
+**Tipos de variable**
+
+```
+subject:  Factor (240 niveles) — identificador, no se usa
+          como predictor directamente, sino para agrupar
+treat.f:  Factor (2 niveles: Placebo, Active)
+miss.pat: Factor (9 niveles) — patrones de datos faltantes
+visual0, visual4, ..., visual52: int (numéricas)
+lesion, line0: int (numéricas)
+```
+
+**`miss.pat` tiene 9 niveles — no solo "completo" vs
+"incompleto"**
+
+Con 4 visitas post-baseline, hay `2^4=16` combinaciones
+posibles de presente/faltante — pero solo **9** patrones
+aparecen realmente en los datos. Esto sugiere que los
+patrones de abandono **no son aleatorios** en cualquier
+combinación — probablemente la mayoría de los pacientes que
+abandonan lo hacen de forma **progresiva** (una vez que
+faltan a una visita, faltan a todas las posteriores), lo cual
+reduce drásticamente el número de patrones observados
+respecto a las 16 combinaciones teóricas.
+
+**`treat.f`: Placebo=1, Active=2 — el orden de los niveles
+importa**
+
+```
+Factor w/ 2 levels "Placebo","Active": 2 2 1 1 2 ...
+```
+
+R codifica `treat.f` con **Placebo como nivel de referencia**
+(nivel 1) y **Active como nivel 2**. Esto significa que en
+los modelos posteriores (`fm6.1`, `fm16.5`, etc.), el
+coeficiente `treat.fActive` se interpreta como "diferencia
+respecto a Placebo" — Placebo es el grupo de comparación
+implícito.
+
+**Las 4 columnas `visualN` — mismo tipo, mismo rango
+esperado**
+
+`visual0`, `visual4`, `visual12`, `visual24`, `visual52` son
+todas `int` — la **agudeza visual** se mide en una escala
+numérica entera (probablemente número de letras leídas
+correctamente en una carta optométrica, un valor típico en
+estudios de ARMD). El hecho de que las 5 columnas tengan el
+mismo tipo confirma que son **la misma medición**, repetida
+en 5 momentos — consistente con la idea de "1 baseline + 4
+post-baseline" que ya vimos.
+
+**Para qué sirve esta sección en el flujo del documento**
+
+Esta es la última vista de los datos en formato **wide**
+antes de pasar a formato **long** (`armd0`, `armd`) — sirve
+como punto de referencia: cuando veas `armd` más adelante con
+columnas como `time`, `time.f`, `visual` (sin número), podrás
+comparar mentalmente "esto es lo mismo que `visual4`,
+`visual12`, etc., pero apiladas en una sola columna con
+`time` indicando cuál era cuál".
+:::
+
+## Patrones de datos faltantes
 
 ```{r miss_pat}
 table(armd.wide$miss.pat)
 ```
 
-## 👁Formato long completo: armd0
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla confirma numéricamente la observación del callout
+anterior: de los **9 patrones** posibles que aparecen en los
+datos, hay uno que domina ampliamente.
+
+**Leyendo la tabla**
+
+```
+----  188  (78.3%)  — completo, las 4 visitas
+---X   24  (10.0%)  — falta solo la última (52 sem)
+--X-    4  ( 1.7%)  — falta solo la semana 24
+--XX    8  ( 3.3%)  — faltan las 2 últimas (24, 52)
+-XX-    1  ( 0.4%)  — faltan semanas 12 y 24 (raro)
+-XXX    6  ( 2.5%)  — falta todo excepto la semana 4
+X---    2  ( 0.8%)  — falta solo la semana 4 (raro)
+X-XX    1  ( 0.4%)  — patrón "intermitente" (muy raro)
+XXXX    6  ( 2.5%)  — todas las visitas post-baseline faltan
+```
+
+**El patrón dominante: "----" con 188/240 = 78.3%**
+
+Casi 4 de cada 5 pacientes tienen **datos completos** en las
+4 visitas — un porcentaje alto para un ensayo longitudinal de
+52 semanas.
+
+**Los patrones "monótonos" (abandono progresivo) son la
+mayoría del resto**
+
+```
+----, ---X, --XX, -XXX, XXXX  →  188+24+8+6+6 = 232 (96.7%)
+```
+
+Estos 5 patrones representan **abandono progresivo**: una vez
+que un paciente falta a una visita, falta a **todas las
+posteriores**. Esto es consistente con la hipótesis del
+callout anterior — el abandono en ensayos clínicos suele ser
+**permanente** (el paciente deja el estudio), no
+"intermitente".
+
+**Los patrones "no monótonos" — solo 3 pacientes (1.3%)**
+
+```
+--X- (4), -XX- (1), X--- (2), X-XX (1)  →  8 pacientes
+```
+
+Estos patrones implican que un paciente **falta a una visita
+pero regresa después** — mucho menos común, y podría reflejar
+errores de registro o visitas perdidas por razones puntuales
+(no abandono del estudio).
+
+**¿Por qué esto importa para los modelos GLS/LME que
+vienen?**
+
+Tanto `gls()` como `lme()` pueden manejar datos faltantes
+**desbalanceados** sin problema (a diferencia de métodos como
+ANOVA de medidas repetidas, que requerirían eliminar
+cualquier paciente con al menos un dato faltante — lo cual
+eliminaría 52 de 240 pacientes, ~22%). Esta es una de las
+**ventajas prácticas** de los modelos mixtos para datos
+longitudinales con abandono — se aprovecha toda la
+información disponible de cada paciente, sin importar cuántas
+visitas completó.
+:::
+
+## Formato long completo: armd0
 
 ```{r armd0}
 dim(armd0)
@@ -95,7 +424,100 @@ head(armd0, 10)
 > `armd0` incluye la fila de baseline como observación
 > longitudinal — útil para exploración.
 
-## 👁Formato long para análisis: armd
+::: {.callout-note collapse="true"}
+## 🖊
+`armd0` es la **transformación wide→long** de `armd.wide` —
+1107 filas (vs 240) y 8 columnas (vs 10). Aquí se ve por
+primera vez la estructura "apilada" que usarán los modelos.
+
+**¿Por qué 1107 filas, no 240×5=1200?**
+
+```
+240 pacientes × 5 visitas (baseline+4) = 1200 filas posibles
+armd0 tiene 1107 filas
+1200 - 1107 = 93 filas "faltantes"
+```
+
+Las 93 filas que **no existen** en `armd0` corresponden a las
+mediciones faltantes que vimos en `miss.pat` — en formato
+wide, una medición faltante es un `NA` en una columna; en
+formato long, una medición faltante es **una fila que no
+existe**. Es la diferencia clave entre los 2 formatos.
+
+**Las 8 columnas — comparando con `armd.wide` (10 columnas)**
+
+```
+armd.wide: subject, lesion, line0, visual0, visual4, visual12,
+           visual24, visual52, treat.f, miss.pat   (10)
+
+armd0:     subject, treat.f, visual0, miss.pat, time.f, time,
+           visual, tp   (8)
+```
+
+- **Se eliminan**: `lesion`, `line0` (no se usan en los
+  modelos de este capítulo)
+- **Se colapsan**: `visual4`...`visual52` (4 columnas) →
+  `visual` (1 columna) + `time`/`time.f`/`tp` (3 columnas
+  nuevas que indican **cuál** medición era)
+- **Se mantienen**: `subject`, `treat.f`, `visual0`,
+  `miss.pat` — estas son **constantes por paciente**, se
+  **repiten** en cada fila de ese paciente
+
+**Leyendo el ejemplo del paciente 1 (filas 1-3)**
+
+```
+subject=1, visual0=59 (se repite en las 3 filas)
+Fila 1: time.f=Baseline, time=0,  visual=59, tp=0
+Fila 2: time.f=4wks,     time=4,  visual=55, tp=1
+Fila 3: time.f=12wks,    time=12, visual=45, tp=2
+```
+
+El paciente 1 tiene **solo 3 filas** (no 5) — consistente con
+`miss.pat="--XX"` (le faltan las visitas de 24 y 52 semanas).
+Nota que `visual0=59` aparece en **las 3 filas**, incluyendo
+la fila de `time.f=Baseline` donde **también** aparece como
+`visual=59` — en esta fila, baseline es tanto la covariable
+(`visual0`) como la "observación" (`visual`) de ese momento.
+
+**`time.f` — factor ordenado con 5 niveles**
+
+```
+Ord.factor w/ 5 levels "Baseline"<"4wks"<"12wks"<"24wks"<"52wks"
+```
+
+El operador `<` en la salida de `str()` confirma que
+`time.f` es un **factor ordenado** — preserva la secuencia
+temporal natural (Baseline < 4wks < ... < 52wks), aunque para
+los modelos posteriores se use principalmente como factor
+nominal (categorías sin asumir distancias iguales).
+
+**`tp` — la "posición de visita", distinta de `time`**
+
+```
+time:  0, 4, 12, 24, 52   (semanas reales, distancias desiguales)
+tp:    0, 1, 2, 3, 4      (posición secuencial, distancias=1)
+```
+
+Esta distinción será importante en el Bloque 2 (Cap. 12):
+`corAR1(form=~tp|subject)` usa `tp` (asumiendo que la
+correlación depende de la **posición** de la visita, no de
+cuántas semanas la separan literalmente) — mientras que
+`varPower(form=~time)` usa `time` (la variabilidad depende
+de las semanas reales transcurridas).
+
+**¿Por qué `armd0` "incluye baseline como fila" pero `armd`
+no?**
+
+`armd0` mantiene la fila de `time.f=Baseline` (con
+`visual=visual0`) — útil para **exploración** (puedes graficar
+la trayectoria completa incluyendo el punto de partida). Pero
+para los **modelos**, esa fila se elimina (recordando la
+sección de diseño: baseline es covariable, no parte del
+outcome longitudinal) — esto es exactamente lo que hace
+`armd <- droplevels(subset(armd0, time > 0))`.
+:::
+
+## Formato long para análisis: armd
 
 ```{r armd_long}
 dim(armd)
@@ -103,20 +525,124 @@ str(armd)
 head(armd, 10)
 ```
 
-> `armd` **excluye las filas de baseline** como respuesta
-> longitudinal, pero conserva `visual0` como covariable
-> fija en el tiempo. Este es el data frame principal
-> para ajustar modelos mixtos.
+> Siguiendo a Galecki, `armd` se construye filtrando
+> `armd0` con `subset(armd0, time > 0)` (solo mediciones
+> post-baseline) y aplicando `droplevels()` para eliminar
+> niveles de factor sin observaciones (por ejemplo,
+> "Baseline" en `time.f`). `armd` **excluye las filas de
+> baseline** como respuesta longitudinal, pero conserva
+> `visual0` como covariable fija en el tiempo. Este es el
+> data frame principal para ajustar modelos mixtos.
 
-## 👁Tabla de objetos
+::: {.callout-note collapse="true"}
+## 🖊
+Esta sección muestra el resultado final de
+`subset(armd0, time>0) |> droplevels()` — y revela algo
+importante que no era evidente solo con `dim()`.
 
-| Objeto | Formato | Filas | Baseline como fila | Uso |
-|--------|---------|-------|-------------------|-----|
-| `armd.wide` | Wide | 240 | Sí | Datos procesados en formato ancho |
-| `armd0` | Long | 1107 | Sí | Exploración longitudinal completa |
-| `armd` | Long | 867 | No | **Data frame principal para análisis** |
+**`subject`: 234 niveles, no 240**
 
-## 👁Variables time-fixed y time-varying
+```r
+str(armd)
+$ subject: Factor w/ 234 levels "1","2","3","4",...
+```
+
+`armd0` tenía 240 niveles de `subject`. Después de filtrar
+`time>0` y aplicar `droplevels()`, quedan **234**. Esto
+significa que **6 pacientes desaparecen completamente** de
+`armd` — no es solo "se elimina 1 fila por paciente", sino
+que para 6 pacientes esa **única fila eliminada era su única
+fila**.
+
+**¿Quiénes son esos 6 pacientes?**
+
+Recuerda `table(armd.wide$miss.pat)`:
+
+```
+XXXX: 6 pacientes
+```
+
+Estos 6 pacientes tienen **todas** las visitas
+post-baseline faltantes — en `armd0` solo tenían **1 fila**
+(la de `time.f="Baseline"`). Al filtrar `time>0`, esa fila se
+elimina — y como era su única fila, el paciente completo sale
+de `armd`.
+
+**`miss.pat`: 8 niveles, no 9**
+
+```r
+$ miss.pat: Factor w/ 8 levels "----","---X",...
+```
+
+El nivel `"XXXX"` desaparece de `miss.pat` en `armd` —
+consecuencia directa de `droplevels()`: ningún paciente con
+ese patrón tiene filas en `armd`, así que ese nivel de factor
+ya no existe.
+
+**`time.f`: 4 niveles, no 5**
+
+```r
+$ time.f: Ord.factor w/ 4 levels "4wks"<"12wks"<"24wks"<"52wks"
+```
+
+Igual lógica: "Baseline" desaparece de `time.f` — todas las
+filas de `armd` tienen `time>0`, por lo que "Baseline" nunca
+aparece como valor de `time.f`, y `droplevels()` lo quita de
+los niveles posibles.
+
+**Verificando con `head(armd, 10)` — el paciente 1**
+
+```
+subject=1, miss.pat="--XX"
+  Fila: time.f=4wks,  time=4,  visual=55
+  Fila: time.f=12wks, time=12, visual=45
+  (NO hay filas para 24wks ni 52wks — consistente con "--XX")
+```
+
+Solo **2 filas** para el paciente 1 (tenía `miss.pat="--XX"`,
+le faltaban las 2 últimas visitas) — y **ninguna** fila de
+`time.f=Baseline`, aunque su `visual0=59` (que era también
+`visual=59` en la fila Baseline de `armd0`) sigue apareciendo
+como **covariable** en ambas filas restantes.
+
+**Resumen: 240 → 234 pacientes, 1107 → 867 filas**
+
+```
+armd.wide: 240 pacientes
+armd0:     240 pacientes, 1107 filas (incl. baseline)
+armd:      234 pacientes, 867 filas (sin baseline)
+           ↑ 6 pacientes con miss.pat="XXXX" desaparecen
+```
+
+**Implicación para los 12 modelos que vienen**
+
+Todos los modelos (`fm6.1` ... `fm16.5`) usan `armd` —
+técnicamente se basan en **234 pacientes**, no 240. Esto es
+coherente: los 6 pacientes excluidos no aportan **ninguna**
+observación de `visual` (outcome longitudinal), por lo que no
+podrían contribuir a estimar relaciones en el tiempo, aunque
+sí tenían un valor de `visual0` registrado.
+:::
+
+## Tabla de objetos
+
+| Objeto | Formato | Filas | Pacientes | Baseline | Uso |
+|--------|---------|-------|-----------|----------|-----|
+| `armd.wide` | Wide | 240 | 240 | Como columna (`visual0`) | Datos procesados en formato ancho |
+| `armd0` | Long | 1107 | 240 | Como fila longitudinal | Exploración longitudinal completa |
+| `armd` | Long | 867 | **234** | Excluido como respuesta; conservado como `visual0` | **Data frame principal para análisis** |
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume los 3 objetos — la columna **Pacientes**
+es la pieza nueva: `armd` tiene **234**, no 240. La
+explicación completa (por qué 6 pacientes desaparecen) está
+en el callout de la sección anterior ("Formato long para
+análisis: armd") — aquí solo se refleja el número final para
+tener los 3 objetos comparables en una sola vista.
+:::
+
+## Variables time-fixed y time-varying
 
 ```{r variables}
 # Variables fijas en el tiempo (nivel paciente)
@@ -142,7 +668,86 @@ armd |>
 | `miss.pat` | 2 | Factor | Patrón de faltantes |
 | `subject` | 2 | Identificador | Paciente |
 
-## 👁Tiempo: time, time.f y tp
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla clasifica las variables de `armd` en **2 niveles**
+— time-varying (nivel 1) y time-fixed (nivel 2) — el mismo
+tipo de clasificación que vimos en classroom y dental veneer,
+pero aquí con una particularidad: el "nivel 2" no es una
+**unidad de agrupación física** (como salón o diente), sino
+**características fijas del paciente** a lo largo del tiempo.
+
+**Nivel 1 — lo que cambia entre filas del mismo paciente**
+
+```
+visual  → outcome, cambia en cada visita
+time    → 4, 12, 24, 52 (la semana de esa fila)
+time.f  → versión factor de time
+tp      → posición de la visita (0,1,2,3 para 4,12,24,52 sem)
+```
+
+Estas 4 variables tienen un valor **distinto en cada fila**
+— son las que varían dentro de un mismo `subject`.
+
+**Nivel 2 — lo que es constante para todas las filas de un
+paciente**
+
+```
+visual0   → siempre el mismo valor para un subject dado
+treat.f   → el tratamiento no cambia durante el estudio
+miss.pat  → el patrón de faltantes es una propiedad del
+            paciente completo
+subject   → el identificador en sí
+```
+
+**La diferencia con classroom/dental veneer: aquí "nivel 2"
+no agrupa filas de OTROS pacientes**
+
+```
+Classroom:     nivel 2 = salón → agrupa MUCHOS estudiantes
+Dental Veneer: nivel 2 = diente → agrupa 2 mediciones (3,6 meses)
+ARMD:          nivel 2 = "constante del paciente" → describe
+               AL MISMO paciente, no agrupa a otros
+```
+
+En ARMD solo hay **un nivel de agrupación real**: `subject`.
+La tabla de "nivel 1 / nivel 2" aquí es más una forma de
+**clasificar tipos de variables** (qué cambia vs qué no
+cambia en el tiempo) que una jerarquía de unidades anidadas
+como en los otros ejemplos.
+
+**`time` vs `time.f` vs `tp` — 3 formas de representar
+"cuándo"**
+
+Esta es la tabla más útil para anticipar los próximos
+modelos:
+
+| Variable | Tipo | Se usa en |
+|---|---|---|
+| `time` (numérica: 4,12,24,52) | Continua | `varPower(~time)`, efectos fijos lineales (`fm12.5`, `fm16.5`) |
+| `time.f` (factor: 4wks...52wks) | Categórica | `varIdent(~1\|time.f)`, efectos fijos categóricos (`fm6.1`, `fm9.1`) |
+| `tp` (posición: 0,1,2,3) | Continua (índice) | `corAR1(~tp\|subject)` |
+
+Tener estas 3 versiones de "tiempo" disponibles es lo que
+permite a Galecki probar **distintas formas funcionales** de
+cómo el tiempo afecta la varianza/correlación —
+`varPower(~time)` asume que la varianza depende de las
+**semanas reales**, mientras que `corAR1(~tp|subject)` asume
+que la correlación depende de la **posición secuencial** de
+la visita, sin importar cuántas semanas la separan
+literalmente.
+
+**Por qué esto es la "caja de herramientas" para los 12
+modelos**
+
+Cada uno de los 12 modelos que vienen usa **alguna
+combinación** de estas variables — esta tabla es,
+efectivamente, el glosario de referencia al que podrás volver
+cuando aparezcan términos como `varIdent(form=~1|time.f)` o
+`corAR1(form=~tp|subject)` en las fórmulas de los modelos.
+:::
+
+## Tiempo: time, time.f y tp
 
 ```{r tiempo}
 table(armd$time)
@@ -153,25 +758,144 @@ summary(armd$tp)
 > - `time` — semana como número continuo
 > - `time.f` — semana como factor ordenado
 > - `tp` — posición numérica de la visita
-> - Los contrastes polinómicos se asignan a `time.f`
->   mediante `contr.poly()`
 
-## 👁Contrastes polinómicos para time.f
+::: {.callout-note collapse="true"}
+## 🖊
+Estas 3 tablas confirman la distribución de observaciones en
+el tiempo — y revelan el **desbalance progresivo** del estudio.
 
-Galecki asigna contrastes polinómicos ortogonales a `time.f`
-para que el tiempo como factor pueda representar tendencias
-lineales, cuadráticas y de orden superior entre las visitas
-post-baseline.
+**`table(armd$time)` — menos observaciones con el tiempo**
+
+```
+  4   12   24   52
+231  227  214  195
+```
+
+El número de observaciones **disminuye** con cada visita —
+de 231 a la semana 4, hasta 195 a la semana 52. Esto es la
+consecuencia directa del abandono progresivo (dropout) que
+vimos en `miss.pat`: pacientes que dejan el estudio no
+aparecen en las visitas posteriores.
+
+La diferencia entre la primera y última visita es
+231-195=**36 observaciones menos** a la semana 52 — o ~15.6%
+menos que al inicio del seguimiento.
+
+**`table(armd$time.f)` — confirma lo mismo, en factor**
+
+Los valores son idénticos a `table(armd$time)` — confirma
+que `time` y `time.f` codifican la misma información,
+simplemente en distintos tipos (numérico vs factor ordenado).
+
+**`summary(armd$tp)` — posición 1 a 4**
+
+```
+Min=1  1Q=1  Median=2  Mean=2.43  3Q=3  Max=4
+```
+
+`tp` toma valores 1, 2, 3, 4 (posición secuencial de cada
+visita post-baseline). El hecho de que la **mediana=2** y
+**media=2.43** (ligeramente por encima) refleja el mismo
+patrón: hay más observaciones en las visitas tempranas
+(tp=1,2) que en las tardías (tp=3,4) — lo mismo que vimos
+en `table(time)`.
+
+**Conexión con los modelos que vienen**
+
+```
+fm6.1, fm9.1:  usan time.f (factor) → efectos categóricos
+fm9.2, fm16.2: usan time (continua) → varPower(~time)
+fm12.2, fm16.3: usan tp (posición) → corAR1(~tp|subject)
+fm12.5, fm16.5: usan time (continua) → efectos fijos lineales
+```
+
+Esta tabla es el **punto de referencia** para entender por
+qué los modelos usan distintas versiones de "tiempo" — ahora
+que ya tienes los números concretos (231/227/214/195 y tp
+1-4), podrás conectar cada uso en los modelos con lo que
+representa sustantivamente.
+:::
+
+## Contrastes para `time.f`
+
+`time.f` representa el tiempo como factor. Al revisar sus contrastes, se observa cómo R codifica internamente las visitas post-baseline cuando `time.f` se usa como predictor categórico en modelos posteriores.
 
 ```{r contrastes}
 contrasts(armd$time.f)
 ```
 
-> Estos contrastes no cambian los datos observados —
-> modifican la forma en que R codifica el factor `time.f`
-> cuando se usa en modelos posteriores.
+Estos contrastes no cambian los datos observados. Solo modifican la forma en que R representa el factor `time.f` dentro del modelo.
 
-## 👁Exploración descriptiva
+::: {.callout-note collapse="true"}
+## 🖊
+Esta matriz muestra cómo R codifica internamente `time.f`
+cuando se usa como predictor en un modelo — usando
+**contrastes polinómicos** (`.L`, `.Q`, `.C`).
+
+**Las 4 filas = las 4 visitas post-baseline**
+
+```
+Fila 1: 4wks    → tp=1
+Fila 2: 12wks   → tp=2
+Fila 3: 24wks   → tp=3
+Fila 4: 52wks   → tp=4
+```
+
+**Las 3 columnas = 3 componentes polinómicos**
+
+```
+.L (Linear)    → tendencia lineal en el tiempo
+.Q (Quadratic) → curvatura cuadrática
+.C (Cubic)     → curvatura cúbica
+```
+
+Con 4 categorías, se pueden estimar **3 contrastes
+independientes** (4-1=3) — uno lineal, uno cuadrático y uno
+cúbico.
+
+**¿Qué significan los valores concretos?**
+
+La columna `.L` tiene valores que **aumentan
+monotónicamente** (-0.671, -0.224, +0.224, +0.671) —
+captura la **tendencia lineal** del tiempo (si la agudeza
+visual disminuye o aumenta linealmente con el tiempo).
+
+La columna `.Q` tiene un patrón **en "U" invertida**
+(+0.5, -0.5, -0.5, +0.5) — captura la **curvatura
+cuadrática** (si hay aceleración o desaceleración en la
+trayectoria).
+
+La columna `.C` captura la **curvatura cúbica** — cambios
+en la forma de la curva más complejos.
+
+**¿Por qué contrastes polinómicos y no efectos simples?**
+
+R asigna contrastes polinómicos **por defecto** a factores
+ordenados (`Ord.factor`). Estos contrastes son
+**ortogonales** entre sí (no están correlacionados) — lo que
+facilita la interpretación y la estimación numérica.
+
+**¿Cuándo se usan estos contrastes en la práctica?**
+
+En los modelos del Bloque 1 y 2 (`fm6.1`, `fm9.1`,
+`fm12.3`...), `time.f` aparece como predictor categórico —
+R usa internamente estos contrastes para representar el
+tiempo en la matriz de diseño. Para los modelos del Bloque
+2 final y Bloque 3 (`fm12.5`, `fm16.5`), en cambio, se
+simplifica a `time` continuo — los contrastes de `time.f`
+ya no aplican directamente.
+
+**`contrasts()` solo inspecciona, no cambia nada**
+
+Como ya dice la nota del documento, este código solo
+**muestra** los contrastes que ya tiene asignados `time.f`
+por ser un factor ordenado — no los modifica. Si se quisiera
+cambiar a contrastes de tratamiento (efectos simples vs un
+nivel de referencia), habría que asignar explícitamente
+`contrasts(armd$time.f) <- contr.treatment(4)`.
+:::
+
+## Exploración descriptiva
 
 ```{r fig1, echo=FALSE}
 ggplot(armd,
@@ -186,6 +910,42 @@ ggplot(armd,
        color = "Tratamiento") +
   theme_minimal()
 ```
+
+::: {.callout-note collapse="true"}
+## 🖊
+Cada línea conecta las mediciones de **un paciente** a lo
+largo de las 4 visitas post-baseline (semanas 4, 12, 24, 52),
+coloreada por grupo de tratamiento.
+
+**Lo que se observa**
+
+- **Tendencia general descendente** — la mayoría de las
+  líneas van de arriba-izquierda hacia abajo-derecha, es
+  decir, la agudeza visual **disminuye** con el tiempo para
+  la mayoría de los pacientes — consistente con la progresión
+  natural de la degeneración macular
+- **Mucha variabilidad entre pacientes** — el rango de
+  agudeza visual va de ~5 a ~85 en cualquier momento del
+  tiempo. Esto anticipa la necesidad de efectos aleatorios
+  por paciente
+- **Algunas líneas "saltan"** — hay pacientes con valores
+  muy atípicos en alguna visita (por ejemplo, líneas que
+  bajan bruscamente a valores cercanos a 0 en semana 12 o 24
+  y luego "suben" — esto podría reflejar variabilidad real,
+  mediciones difíciles, o datos inusuales)
+- **Los colores se mezclan** — no hay una separación visual
+  clara entre Placebo (morado) y Active (verde) en las
+  trayectorias individuales — la diferencia entre grupos, si
+  existe, es más sutil que en autism o dental veneer
+
+**Conexión con los modelos**
+
+La variabilidad de **niveles** entre pacientes (algunos
+siempre altos, otros siempre bajos) sugiere un **intercepto
+aleatorio** — `fm16.1`. La variabilidad de **pendientes**
+(algunos bajan rápido, otros poco o nada) sugiere una
+**pendiente aleatoria de tiempo** — `fm16.3`.
+:::
 
 ```{r fig2, echo=FALSE}
 armd |>
@@ -209,6 +969,37 @@ armd |>
   theme_minimal()
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este gráfico resume la tendencia **promedio** de cada grupo
+(con barras de error ±1 EE), eliminando la variabilidad
+individual del gráfico anterior.
+
+**Lo que se observa**
+
+- **Ambos grupos descienden** — confirma la tendencia general
+  de deterioro visual en el tiempo, independientemente del
+  tratamiento
+- **Placebo (morado) parte más alto** (~54 a semana 4) y
+  **desciende más lentamente** (~44 a semana 52, -10 puntos)
+- **Active (verde) parte más bajo** (~51 a semana 4) y
+  **desciende más rápido** (~39 a semana 52, -12 puntos)
+- **La brecha entre grupos se amplía** con el tiempo — a la
+  semana 4 la diferencia es ~3 puntos, a la semana 52 es ~5
+  puntos
+- **Las barras de error se superponen** en todos los puntos
+  — la diferencia entre grupos, aunque visible, no es enorme
+
+**Conexión con el modelo final (fm16.5)**
+
+Este gráfico anticipa el coeficiente `treat.fActive ≈ -2.66`
+del modelo final — el grupo Active tiene, en promedio, menor
+agudeza visual que Placebo, ajustando por `visual0` y `time`.
+La pendiente negativa de ambos grupos anticipa el coeficiente
+`time ≈ -0.24` (por cada semana adicional, la agudeza visual
+disminuye ≈0.24 puntos en promedio).
+:::
+
 ```{r fig3, echo=FALSE}
 ggplot(armd,
        aes(x = visual0, y = visual,
@@ -223,7 +1014,44 @@ ggplot(armd,
   theme_minimal()
 ```
 
-## 👁Base lista para modelos mixtos
+::: {.callout-note collapse="true"}
+## 🖊
+Este gráfico muestra la relación entre `visual0` (baseline)
+y `visual` (post-baseline), coloreado por grupo de
+tratamiento, con líneas de regresión lineal por grupo.
+
+**Lo que se observa**
+
+- **Relación positiva y fuerte** — pacientes con mayor
+  agudeza visual basal tienden a tener mayor agudeza visual
+  post-baseline. Las líneas de regresión tienen pendiente
+  claramente positiva para ambos grupos
+- **Las dos líneas son casi paralelas** — pendientes muy
+  similares entre Placebo y Active — pero la línea de Placebo
+  (morado) está consistentemente **por encima** de la de
+  Active (verde)
+- **Dispersión considerable** — hay mucha variabilidad
+  alrededor de cada línea, confirmando que `visual0` no
+  explica todo — hay variabilidad residual importante
+
+**Conexión con los modelos**
+
+Este gráfico justifica por qué `visual0` se incluye como
+**covariable** en todos los modelos (`fm6.1`...`fm16.5`) —
+la relación es fuerte y lineal, y controlar por ella permite
+comparar los grupos de tratamiento de forma más precisa (los
+pacientes que entran con mayor agudeza visual tienden a
+mantenerla más alta post-baseline, independientemente del
+tratamiento).
+
+El coeficiente `visual0 ≈ 0.90` en el modelo final significa
+que por cada punto adicional de agudeza visual basal, se
+espera ~0.90 puntos más de agudeza visual post-baseline —
+casi una relación de **1 a 1**, visible directamente en la
+pendiente de estas líneas.
+:::
+
+## Base lista para modelos mixtos
 
 ```{r resumen}
 armd |>
@@ -236,7 +1064,65 @@ armd |>
   knitr::kable(caption = "Resumen por grupo de tratamiento")
 ```
 
-## 👁Conclusiones
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume `armd` desde la perspectiva del
+**diseño experimental** — la comparación entre los 2 grupos
+de tratamiento.
+
+**Balance de grupos**
+
+```
+Placebo: 118 pacientes, 451 mediciones
+Active:  116 pacientes, 416 mediciones
+```
+
+Los grupos están **razonablemente balanceados** en número de
+pacientes (118 vs 116) — consistente con la aleatorización
+del ensayo. Sin embargo, el grupo Active tiene **35
+mediciones menos** que Placebo (416 vs 451), lo que sugiere
+**mayor abandono** en el grupo Active — un patrón que podría
+ser sustantivamente relevante (¿el tratamiento activo causó
+efectos adversos que llevaron a más abandonos?).
+
+**Agudeza visual media post-baseline**
+
+```
+Placebo: visual_med = 50.31
+Active:  visual_med = 46.43
+Diferencia: ~3.9 puntos
+```
+
+El grupo Placebo tiene, en promedio, **~3.9 puntos más** de
+agudeza visual post-baseline que el grupo Active — antes de
+ajustar por ninguna covariable. Esto anticipa el coeficiente
+negativo de `treat.fActive` que veremos en todos los modelos.
+
+**`visual_de` — desviaciones estándar casi idénticas**
+
+```
+Placebo: SD = 17.86
+Active:  SD = 17.87
+```
+
+La variabilidad de `visual` es **prácticamente la misma** en
+ambos grupos — un indicador informal de que la varianza
+residual es similar entre grupos (homocedasticidad entre
+grupos de tratamiento). Esto es consistente con el modelo
+`fm6.1` (GLS homocedástico) como punto de partida razonable.
+
+**¿Por qué esta tabla cierra la sección de preparación?**
+
+Esta es la última verificación antes de los modelos:
+confirma que `armd` tiene la estructura correcta para el
+análisis (2 grupos balanceados, diferencia observable en
+agudeza visual, variabilidad similar entre grupos). Todo lo
+que viene después — los 12 modelos de los Bloques 1, 2 y 3
+— busca cuantificar y modelar formalmente lo que esta tabla
+muestra descriptivamente.
+:::
+
+## Conclusiones
 
 - El ARMD Trial tiene estructura longitudinal: las mediciones
   repetidas están agrupadas dentro de pacientes
@@ -252,3 +1138,1779 @@ armd |>
 > listo para modelos mixtos, conservando la medición basal
 > como covariable y modelando solo las mediciones
 > post-baseline como respuesta longitudinal.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Estas conclusiones cierran la **sección de preparación de
+datos** — antes de los 12 modelos que vienen. Vale la pena
+tener clara la distinción entre "lo que se hizo aquí" y "lo
+que viene después".
+
+**Lo que esta sección cubrió**
+
+```
+armd.wide → armd0 → armd
+(wide)      (long    (long
+             completo) sin baseline)
+```
+
+El recorrido fue: entender el formato wide original →
+transformar a long completo (`armd0`) → filtrar solo
+post-baseline (`armd`) → verificar la estructura resultante
+(234 pacientes, 867 filas, 2 grupos, variables time-fixed vs
+time-varying).
+
+**Lo que viene en los 3 bloques de modelos**
+
+```
+Bloque 1 (Cap 6, 9):  ¿Cómo modelar la heterogeneidad
+                       de varianza residual?
+                       lm6.1/fm6.1 → fm9.1 → fm9.2
+
+Bloque 2 (Cap 12):    ¿Cómo modelar la correlación
+                       entre mediciones del mismo paciente?
+                       fm12.1 → fm12.2 → fm12.3 → fm12.5
+
+Bloque 3 (Cap 16):    ¿Cómo modelar la variabilidad
+                       entre pacientes explícitamente?
+                       fm16.1 → fm16.2 → fm16.3 → fm16.4 → fm16.5
+```
+
+**La frase clave del blockquote**
+
+*"conservando la medición basal como covariable y modelando
+solo las mediciones post-baseline como respuesta
+longitudinal"* — esto es lo más importante de toda la
+preparación. Si `visual0` estuviera en `armd` como una
+observación más del outcome (como en `armd0`), el modelo
+estaría intentando "explicar" el nivel basal con el
+tratamiento — pero el baseline se mide **antes** de que el
+tratamiento tenga cualquier efecto. Separarlo evita ese error
+conceptual.
+
+**Comparando con los otros ejemplos longitudinales**
+
+| | ARMD | Dental Veneer | Autism |
+|---|---|---|---|
+| ¿Hay baseline separado? | **Sí** (`visual0`) | No (el GCF basal es `base.gcf`, covariable de nivel diente) | No (se centra `age` en 2, pero no hay "baseline separado") |
+| Preparación explícita | **Sí** (3 objetos) | No (un solo `veneer_data`) | No (un solo `autism_updated`) |
+
+ARMD es el único de los 9 ejemplos donde la **preparación
+de datos** ocupa varias secciones — reflejando que Galecki
+usa esto pedagógicamente para mostrar el proceso completo,
+no solo el resultado final.
+:::
+
+## 👁 Diseño analítico completo
+
+Más allá de la preparación de datos (secciones anteriores),
+Galecki usa el ARMD Trial como **hilo conductor** a lo largo
+de varios capítulos, mostrando una secuencia de modelos cada
+vez más complejos:
+
+```{mermaid}
+flowchart TD
+    A[lm6.1 / fm6.1<br/>OLS ≈ GLS homocedástico] --> B[fm9.1<br/>varianza por time.f]
+    B --> C[fm9.2<br/>varianza varPower]
+
+    C --> D[fm12.1<br/>correlación CompSymm]
+    D --> E[fm12.2<br/>correlación AR1]
+    E --> F[fm12.3<br/>correlación general]
+    F --> G[fm12.5<br/>efectos fijos simplificados<br/>modelo marginal final]
+
+    G -.-> X[Cambio de enfoque<br/>de GLS marginal a LME]
+    X -.-> H[fm16.1<br/>LME: intercepto aleatorio]
+
+    H --> I[fm16.2<br/>+ varPower residual]
+    I --> J[fm16.3<br/>+ pendiente aleatoria]
+    J --> K[fm16.4<br/>matriz D diagonal]
+    K --> L[fm16.5<br/>modelo mixto final]
+```
+
+> El camino tiene **tres bloques**: (1) modelos GLS con
+> varianza heterogénea (Cap. 6, 9), (2) modelos GLS con
+> distintas estructuras de correlación (Cap. 12), y (3)
+> modelos mixtos con efectos aleatorios (Cap. 16). Los dos
+> primeros bloques desarrollan modelos marginales con `gls()`, 
+> incorporando primero heterogeneidad de varianza y luego 
+> correlación residual. El tercer bloque cambia el enfoque 
+> hacia modelos mixtos con `lme()`, donde la dependencia 
+> longitudinal se representa mediante efectos aleatorios por sujeto.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Este diagrama es el **mapa completo** del ejemplo ARMD —
+útil tenerlo claro antes de entrar a los modelos individuales.
+
+**La lógica de los 3 bloques**
+
+Cada bloque responde una pregunta distinta sobre la
+**estructura de la varianza-covarianza** de los datos:
+
+```
+Bloque 1: ¿La varianza residual es constante en el tiempo?
+          → No → modelarla con varIdent o varPower
+
+Bloque 2: ¿Las mediciones del mismo paciente están
+          correlacionadas?
+          → Sí → modelar con corCompSymm, corAR1, corSymm
+
+Bloque 3: ¿La variabilidad entre pacientes se puede
+          representar con efectos aleatorios?
+          → Sí → intercepto aleatorio, pendiente aleatoria
+```
+
+**La línea punteada — el "cambio de enfoque"**
+
+La flecha punteada entre fm12.5 y fm16.1 no es una
+comparación estadística directa — es un **cambio de
+paradigma**:
+
+```
+GLS (Bloques 1 y 2):  modela la covarianza DIRECTAMENTE
+                       (parámetros de varianza y correlación)
+LME (Bloque 3):        modela la covarianza A TRAVÉS DE
+                       efectos aleatorios (intercepto, pendiente)
+```
+
+Ambos enfoques son **equivalentes en términos de la
+covarianza implícita** que pueden representar, pero difieren
+en interpretación y en los parámetros que estiman.
+
+**¿Por qué Galecki muestra los 2 enfoques?**
+
+Porque son **complementarios**:
+- GLS es más flexible para estructuras de covarianza
+  complejas (cualquier matriz de correlación)
+- LME es más interpretable (los efectos aleatorios tienen
+  significado sustantivo: "este paciente tiene un nivel
+  basal mayor" o "este paciente se deteriora más rápido")
+
+**El modelo final de cada bloque**
+
+```
+fm12.5 → modelo marginal final (GLS)
+fm16.5 → modelo mixto final (LME)
+```
+
+Ambos tienen los mismos efectos fijos
+(`visual ~ visual0 + time + treat.f`), pero los representan
+de forma distinta internamente — esto se discutirá en la
+sección de comparación entre enfoques.
+:::
+
+## 👁 Objetivos e hipótesis
+
+**Objetivo general:** Modelar la agudeza visual
+post-baseline (`visual`) en función del tratamiento, el
+tiempo y la agudeza visual basal (`visual0`), reconociendo
+que las mediciones repetidas dentro de cada paciente están
+correlacionadas y que su variabilidad cambia en el tiempo.
+
+**Objetivos analíticos:**
+
+1. Evaluar si la varianza residual es homogénea en el tiempo,
+   o si aumenta con las semanas de seguimiento
+2. Encontrar una representación parsimoniosa de esa
+   heterogeneidad de varianza (varPower vs varIdent)
+3. Evaluar distintas estructuras de correlación entre
+   mediciones del mismo paciente (compound symmetry, AR(1),
+   general no estructurada)
+4. Simplificar los efectos fijos una vez decidida la
+   estructura de varianza-covarianza (modelo marginal)
+5. Pasar de un modelo marginal (GLS) a un modelo mixto (LME)
+   con efectos aleatorios de paciente, evaluando si la
+   pendiente de tiempo varía entre pacientes
+6. Seleccionar el modelo mixto final más parsimonioso
+
+::: {.callout-note collapse="true"}
+## 🖊
+Estos 6 objetivos son el "índice" del análisis — cada uno
+se traduce directamente en una sección de los 3 bloques.
+
+**Mapeo objetivo → modelo(s)**
+
+| Objetivo | Sección correspondiente |
+|---|---|
+| 1. ¿Varianza homogénea? | fm6.1 vs fm9.1 (Bloque 1) |
+| 2. ¿varPower vs varIdent? | fm9.1 vs fm9.2 (Bloque 1) |
+| 3. Estructuras de correlación | fm12.1, fm12.2, fm12.3 (Bloque 2) |
+| 4. Simplificar efectos fijos | fm12.5 (Bloque 2, modelo marginal final) |
+| 5. GLS → LME, pendiente aleatoria | fm16.1 → fm16.3 (Bloque 3) |
+| 6. Modelo mixto final parsimonioso | fm16.4, fm16.5 (Bloque 3) |
+
+**Los primeros 4 objetivos corresponden a los Bloques 1 y 2
+(GLS) — los últimos 2 al Bloque 3 (LME)**
+
+Esto refleja la asimetría del análisis: **la mayoría del
+trabajo** está en elegir la estructura de varianza-covarianza
+correcta (Bloques 1 y 2), y recién después se "simplifica" el
+modelo fijo (Objetivo 4) y se cambia de paradigma a efectos
+aleatorios (Objetivos 5 y 6).
+
+**Una diferencia clave con los otros 8 ejemplos**
+
+En rat pup, classroom, autism y dental veneer, los objetivos
+se traducen directamente en **hipótesis con p-values** (H3.1,
+H4.1, H6.1...). En ARMD, los objetivos 1-3 también generan
+pruebas formales (LRT o comparación por AIC), pero hay un
+objetivo **conceptual** (Objetivo 5) que no es una hipótesis
+estadística sino una **decisión de enfoque**: ¿seguir con GLS
+o cambiar a LME?
+
+**Objetivo 4 — "simplificar efectos fijos"**
+
+En dental veneer y classroom, la simplificación de efectos
+fijos venía **al final** de una secuencia top-down o step-up.
+En ARMD, este objetivo viene **al cierre del Bloque 2** —
+antes incluso de pasar a LME. Esto es porque en GLS, la
+estructura de covarianza y los efectos fijos son componentes
+relativamente separables, y Galecki prefiere "cerrar" la
+parte marginal con un modelo fijo parsimonioso antes de
+retomar el problema desde el ángulo de efectos mixtos.
+:::
+
+## 👁 Bloque 1: GLS con varianza heterogénea (Cap. 6 y 9)
+
+### M6.1 — Modelo OLS / GLS homocedástico
+
+```{r m61}
+lm6.1 <- lm(
+  visual ~ -1 + visual0 + time.f + treat.f:time.f,
+  data = armd)
+
+fm6.1 <- gls(
+  visual ~ -1 + visual0 + time.f + treat.f:time.f,
+  data = armd)
+
+all.equal(coef(lm6.1), coef(fm6.1))
+```
+
+> `fm6.1` (GLS vía REML) produce coeficientes **idénticos**
+> a `lm6.1` (OLS) — esto es esperado porque, sin especificar
+> `weights` ni `correlation`, GLS se reduce a OLS. Esta
+> equivalencia es el punto de partida: ambos asumen
+> independencia y varianza constante, supuestos que se
+> evaluarán a continuación.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Este primer modelo establece el **punto de partida** del
+análisis — y confirma una equivalencia matemática importante.
+
+**`lm()` vs `gls()` — ¿por qué ambos?**
+
+Galecki muestra **los dos** para ilustrar que, sin especificar
+`weights` ni `correlation`, `gls()` es matemáticamente
+idéntico a `lm()`:
+
+```r
+all.equal(coef(lm6.1), coef(fm6.1))
+[1] TRUE
+```
+
+Los coeficientes son **exactamente iguales**. Esto es
+esperado: sin ninguna estructura adicional, GLS se reduce a
+mínimos cuadrados ordinarios (OLS). La diferencia entre
+ambas funciones no está en el resultado, sino en la
+**capacidad de extensión**: `gls()` acepta `weights` y
+`correlation`, mientras que `lm()` no — por eso todos los
+modelos del Bloque 1 y 2 usarán `gls()`.
+
+**La fórmula `~ -1 + visual0 + time.f + treat.f:time.f`**
+
+El `-1` elimina el intercepto global — en su lugar, cada
+nivel de `time.f` tiene su propio intercepto implícito a
+través del factor. Esto es una parametrización alternativa
+que Galecki usa para que los coeficientes de `time.f`
+representen directamente el **nivel esperado de `visual`**
+en cada visita (para el grupo Placebo, con `visual0=0`), en
+vez de diferencias respecto a un nivel de referencia.
+
+**`treat.f:time.f` — interacción sin efectos principales**
+
+La fórmula incluye la **interacción** `treat.f:time.f` pero
+**no** `treat.f` por separado — esto permite que el efecto
+del tratamiento sea **distinto en cada visita**, lo que es
+más flexible que asumir un efecto constante del tratamiento
+a lo largo del tiempo.
+
+**AIC = 6821.62 — la "línea base" de comparación**
+
+Este AIC será el punto de referencia para evaluar si los
+modelos del Bloque 1 (`fm9.1`, `fm9.2`) mejoran al modelar
+la heterogeneidad de varianza. Todo lo que venga con AIC
+menor que 6821.62 representa una mejora sobre este punto de
+partida.
+
+**¿Por qué este modelo "no cumple supuestos"?**
+
+Como anticipó la sección de objetivos (Objetivo 1), un modelo
+homocedástico asume varianza residual **constante** en el
+tiempo. Pero datos longitudinales de visión tienden a
+mostrar **mayor variabilidad** en visitas tardías que en
+tempranas — la dispersión aumenta conforme la degeneración
+avanza de forma heterogénea entre pacientes. El Bloque 1
+evaluará esto formalmente.
+:::
+
+### M9.1 — Varianza distinta por tiempo (varIdent)
+
+```{r m91}
+fm9.1 <- update(
+  fm6.1,
+  weights = varIdent(form = ~ 1 | time.f))
+
+anova(fm6.1, fm9.1)
+```
+
+> `varIdent(form=~1|time.f)` permite una desviación estándar
+> distinta para cada visita (4, 12, 24, 52 semanas). El LRT
+> es altamente significativo (p<0.0001) — la variabilidad de
+> `visual` **aumenta con el tiempo de seguimiento**.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm9.1** es el primer modelo que reconoce que la varianza
+residual **no es constante** en el tiempo — la primera mejora
+real sobre fm6.1.
+
+**`varIdent(form = ~ 1 | time.f)` — ¿qué hace exactamente?**
+
+Permite que cada visita (`time.f`) tenga su **propia
+desviación estándar residual**:
+
+```
+4wks:  SD = σ × 1.000  (referencia, fijada en 1)
+12wks: SD = σ × 1.398
+24wks: SD = σ × 1.664
+52wks: SD = σ × 1.881
+```
+
+Estas son las **razones** de SD respecto a la visita de
+referencia (4 semanas). Así, la variabilidad a las 52 semanas
+es ~1.88 veces mayor que a las 4 semanas — confirma que la
+varianza **aumenta progresivamente** con el tiempo de
+seguimiento.
+
+**El LRT — AIC mejora de 6821 a 6740**
+
+```
+fm6.1:  AIC=6821.62  logLik=-3400.81
+fm9.1:  AIC=6740.29  logLik=-3357.15
+L.Ratio=87.33  p<0.0001
+```
+
+Una mejora de **~81 puntos de AIC** y LRT altamente
+significativo — modelar la heterogeneidad de varianza es
+claramente necesario. Este es uno de los LRT más grandes de
+todos los 9 ejemplos del sitio.
+
+**`update(fm6.1, weights=...)` — heredando la estructura**
+
+`update()` parte de `fm6.1` y solo agrega el componente
+`weights` — efectos fijos, datos y método de estimación son
+**exactamente los mismos**. Esto es lo mismo que usamos en
+dental veneer y ARMD para construir modelos incrementalmente.
+
+**Conexión con el Objetivo 2**
+
+fm9.1 usa `varIdent` — una desviación estándar **separada
+por visita** (4 parámetros). El Objetivo 2 pregunta si hay
+una representación más **parsimoniosa** — con menos
+parámetros pero ajuste similar. Eso es exactamente lo que
+fm9.2 evaluará con `varPower`.
+:::
+
+### M9.2 — Varianza como función potencia (varPower)
+
+```{r m92}
+fm9.2 <- update(
+  fm9.1,
+  weights = varPower(form = ~ time))
+
+AIC(fm9.1, fm9.2)
+```
+
+> `varPower(form=~time)` modela la varianza como una función
+> continua de `time`, usando **un solo parámetro** (la
+> potencia) en vez de 4 desviaciones estándar separadas.
+> Logra un AIC similar o mejor (6738 vs 6740) con menos
+> parámetros — representación más **parsimoniosa**.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm9.2** responde al **Objetivo 2**: ¿se puede representar
+la heterogeneidad de varianza con **menos parámetros** que
+fm9.1, sin perder ajuste?
+
+**`varPower(form = ~ time)` — ¿qué hace exactamente?**
+
+En vez de estimar una SD separada para cada visita (4
+parámetros en fm9.1), modela la varianza como una **función
+continua** del tiempo:
+
+```
+Var(residuo) = σ² × |time|^(2δ)
+```
+
+donde `δ` es la **potencia** — un solo parámetro. Si
+`δ=0.252` (como estima el modelo), la varianza aumenta con
+el tiempo siguiendo una función de potencia.
+
+**AIC: fm9.1=6740.29 vs fm9.2=6738.13 — fm9.2 gana**
+
+```
+fm9.1: AIC=6740.29  df=13  (4 parámetros de varianza)
+fm9.2: AIC=6738.13  df=11  (1 parámetro de varianza)
+```
+
+fm9.2 tiene **menor AIC** con **2 parámetros menos** — es
+más parsimonioso Y tiene mejor ajuste. Esto confirma que la
+relación entre tiempo y varianza sigue aproximadamente una
+función de potencia, no necesita estimarse visita por visita.
+
+**La ganancia en parsimonia**
+
+```
+fm9.1: σ₄wks, σ₁₂wks, σ₂₄wks, σ₅₂wks  (4 parámetros)
+fm9.2: δ (potencia)                       (1 parámetro)
+```
+
+Con `varPower`, los 4 parámetros de varianza de fm9.1 se
+reemplazan por **1 solo** — sin costo en ajuste (AIC mejora
+levemente). Este tipo de parsimonia es exactamente lo que
+Galecki busca en la secuencia de modelos.
+
+**fm9.2 = punto de partida del Bloque 2**
+
+Una vez elegida la estructura de varianza más parsimoniosa
+(fm9.2 con `varPower`), el Bloque 2 parte de aquí para
+agregar **estructuras de correlación** — las dos dimensiones
+de la varianza-covarianza se trabajan de forma **secuencial**,
+no simultánea.
+:::
+
+### Resumen Bloque 1
+
+```{r resumen_bloque1, echo=FALSE}
+data.frame(
+  Modelo = c("fm6.1", "fm9.1", "fm9.2"),
+  Estructura = c("Homocedástico (OLS ≈ GLS)",
+                 "varIdent por time.f (varianza por visita)",
+                 "varPower (1 parámetro)"),
+  AIC = round(c(AIC(fm6.1), AIC(fm9.1), AIC(fm9.2)), 2),
+  Decision = c("Punto de partida — asume independencia y homocedasticidad",
+               "Mejora vs fm6.1 (p<0.0001)",
+               "Más parsimonioso que fm9.1, AIC similar")
+) |>
+  knitr::kable(caption = "Bloque 1 — varianza heterogénea")
+```
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume las **3 decisiones del Bloque 1** — la
+progresión desde un modelo homocedástico hasta una
+representación parsimoniosa de la heterogeneidad de varianza.
+
+**El patrón de AIC en el Bloque 1**
+
+```
+fm6.1:  6821.62  (punto de partida)
+fm9.1:  6740.29  (↓ 81 puntos — mejora grande)
+fm9.2:  6738.13  (↓ 2 puntos — mejora marginal pero con
+                   2 parámetros menos)
+```
+
+La mayor ganancia ocurre en el **primer paso** (fm6.1 →
+fm9.1) — simplemente reconocer que la varianza no es
+constante ya mejora enormemente el ajuste. El segundo paso
+(fm9.1 → fm9.2) es una mejora de parsimonia, no de ajuste.
+
+**Lo que el Bloque 1 NO resuelve**
+
+El Bloque 1 modela la **varianza** (diagonal de la matriz
+de varianza-covarianza) pero ignora la **correlación** entre
+mediciones del mismo paciente (fuera de la diagonal). Dos
+observaciones del mismo paciente en distintas visitas podrían
+estar correlacionadas — fm9.2 aún asume que son
+**independientes** (condicional en los efectos fijos), lo
+cual probablemente no es cierto para datos longitudinales.
+
+Esto es exactamente lo que el **Bloque 2** abordará — la
+pregunta ya no es "¿cuánta varianza hay en cada visita?"
+sino "¿cómo están relacionadas las mediciones del mismo
+paciente a lo largo del tiempo?".
+
+**Conexión con dental veneer**
+
+En dental veneer, H7.2 evaluó si `varIdent(~1|time.f)` era
+necesaria — y resultó **no significativa** (p=0.33). En ARMD,
+el resultado es el opuesto: la heterogeneidad de varianza es
+**altamente significativa** (p<0.0001, LRT≈87). Esto muestra
+que la necesidad de modelar varianza heterogénea **depende
+de los datos** — no es algo que se asuma automáticamente en
+cualquier modelo longitudinal.
+:::
+
+## 👁 Bloque 2: GLS con estructuras de correlación (Cap. 12)
+
+A partir de `fm9.2` (varianza residual ya modelada mediante
+`varPower`), se evalúan distintas estructuras de **correlación**
+entre las mediciones repetidas del mismo paciente.
+
+### M12.1 — Simetría compuesta (Compound Symmetry)
+
+```{r m121}
+fm12.1 <- update(
+  fm9.2,
+  correlation = corCompSymm(form = ~ 1 | subject))
+
+anova(fm9.2, fm12.1)
+```
+
+> `corCompSymm` asume una **correlación constante** entre
+> cualquier par de mediciones del mismo paciente,
+> independientemente de qué tan separadas estén en el
+> tiempo. El LRT es muy significativo (p<0.0001) — modelar
+> la correlación intra-paciente es claramente necesario.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm12.1** es el primer modelo que reconoce la **correlación**
+entre mediciones del mismo paciente — y produce la mejora de
+ajuste más grande de todo el análisis.
+
+**`corCompSymm(form = ~ 1 | subject)` — ¿qué hace?**
+
+Asume que la correlación entre **cualquier par** de
+mediciones del mismo paciente es la **misma**, sin importar
+qué tan separadas estén en el tiempo:
+
+```
+Corr(visual_t1, visual_t2) = ρ   para cualquier t1, t2
+```
+
+Un solo parámetro `ρ` (estimado en ≈0.573) resume toda la
+correlación intra-paciente. Es la estructura de correlación
+más **simple** posible — y también la más restrictiva: asume
+que las semanas 4 y 12 están igual de correlacionadas que
+las semanas 4 y 52.
+
+**El LRT — la mejora más grande del análisis**
+
+```
+fm9.2:  AIC=6738.13  logLik=-3358.06
+fm12.1: AIC=6456.92  logLik=-3216.46
+L.Ratio=283.21  p<0.0001
+```
+
+Una mejora de **~281 puntos de AIC** — mucho mayor que
+cualquier otro paso en el análisis (fm6.1→fm9.1 era ~81
+puntos). Esto confirma que la **correlación intra-paciente**
+es la fuente de variabilidad más importante que el modelo
+necesitaba capturar — más que la heterogeneidad de varianza
+del Bloque 1.
+
+**¿Por qué la correlación importa tanto?**
+
+Sin `corCompSymm`, el modelo asume que las 4 mediciones de
+un paciente son **independientes** dado su `visual0` y
+`treat.f` — pero un paciente que tiene alta agudeza visual
+en la semana 4 tiende a tenerla alta en la semana 12, 24 y
+52 también (independientemente del tratamiento). Ignorar esa
+correlación lleva a **errores estándar incorrectos** y
+potencialmente a conclusiones erróneas sobre los efectos
+del tratamiento.
+
+**Conexión con los modelos mixtos del Bloque 3**
+
+`corCompSymm` con `ρ=0.573` es matemáticamente **equivalente**
+a un modelo con intercepto aleatorio de paciente (como
+`fm16.1`) — ambos inducen la misma estructura de correlación
+(constante entre visitas). La diferencia es de
+**interpretación**: `corCompSymm` es un parámetro de
+"correlación residual", mientras que el intercepto aleatorio
+es una fuente explícita de variabilidad entre pacientes.
+:::
+
+### M12.2 — Autorregresivo de orden 1 (AR1)
+
+```{r m122}
+fm12.2 <- update(
+  fm9.2,
+  correlation = corAR1(form = ~ tp | subject))
+
+AIC(fm12.1, fm12.2)
+```
+
+> `corAR1` asume que la correlación **decae** entre
+> mediciones más separadas en el tiempo (usando `tp`, la
+> posición de la visita). El AIC mejora notablemente
+> respecto a Compound Symmetry (6396.91 vs 6456.92) — la
+> correlación sí decrece con la distancia temporal.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm12.2** reemplaza la correlación **constante** de
+fm12.1 por una que **decrece** con la distancia temporal —
+la estructura AR(1).
+
+**`corAR1(form = ~ tp | subject)` — ¿qué hace?**
+
+Asume que la correlación entre dos mediciones del mismo
+paciente **disminuye** con la distancia entre visitas:
+
+```
+Corr(visual_tp1, visual_tp2) = φ^|tp1-tp2|
+```
+
+Con `φ=0.657` (estimado por el modelo):
+
+```
+Visitas adyacentes (|tp1-tp2|=1): Corr = 0.657
+Separadas por 2 visitas:          Corr = 0.657² = 0.432
+Separadas por 3 visitas:          Corr = 0.657³ = 0.284
+```
+
+La correlación entre la semana 4 y la semana 52 (máxima
+distancia, `|tp1-tp2|=3`) es ~0.28 — mucho menor que la
+correlación entre semanas 4 y 12 (`|tp1-tp2|=1`, ~0.66).
+Esto tiene más sentido sustantivo que asumir la misma
+correlación para todas las distancias.
+
+**¿Por qué `tp` y no `time`?**
+
+`corAR1` asume que la correlación depende de la **posición
+secuencial** de la visita (1, 2, 3, 4) — no de las semanas
+reales (4, 12, 24, 52). Usando `tp`, se asume que la
+"distancia" entre visita 1 y 2 es igual a la distancia entre
+visita 2 y 3 (aunque en semanas reales sean 4→12 y 12→24,
+ambas separadas por períodos distintos).
+
+**AIC: fm12.1=6456.92 vs fm12.2=6396.91**
+
+```
+fm12.1 (CompSymm): AIC=6456.92  (ρ constante)
+fm12.2 (AR1):      AIC=6396.91  (φ que decrece)
+Mejora: ~60 puntos de AIC
+```
+
+Con el **mismo número de parámetros** (df=12), fm12.2 logra
+un AIC mucho mejor — AR(1) es una mejor descripción de la
+correlación intra-paciente que la simetría compuesta. Esto
+confirma que la correlación **sí decrece** con la distancia
+temporal (no es constante como asumía fm12.1).
+
+**Conexión con los modelos mixtos del Bloque 3**
+
+A diferencia de CompSymm (equivalente a intercepto
+aleatorio), AR(1) **no tiene un equivalente directo** en
+términos de efectos aleatorios simples — requeriría
+estructuras de correlación explícitas en `lme()`. Por eso,
+el Bloque 3 (LME) usa una estrategia distinta: efectos
+aleatorios de intercepto **y** pendiente, que inducen una
+estructura de covarianza diferente a AR(1) pero igualmente
+flexible.
+:::
+
+### M12.3 — Matriz general de correlación
+
+```{r m123}
+fm12.3 <- update(
+  fm9.2,
+  correlation = corSymm(form = ~ tp | subject))
+
+anova(fm12.2, fm12.3)
+```
+
+> `corSymm` permite una correlación **distinta para cada
+> par** de visitas, sin imponer ninguna estructura. El LRT
+> vs AR(1) es significativo (p=0.0014) — hay patrones de
+> correlación que AR(1) no captura completamente. Este es
+> el **modelo marginal de covarianza preferido**.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm12.3** es el modelo de correlación **más flexible** del
+Bloque 2 — permite una correlación distinta para cada par
+de visitas, sin imponer ninguna estructura.
+
+**`corSymm(form = ~ tp | subject)` — ¿qué hace?**
+
+Estima una matriz de correlación **completamente libre**
+entre las 4 visitas:
+
+```
+Correlaciones estimadas:
+  tp1-tp2: 0.582
+  tp1-tp3: 0.448
+  tp1-tp4: 0.301
+  tp2-tp3: 0.651
+  tp2-tp4: 0.531
+  tp3-tp4: 0.766
+```
+
+Son **6 parámetros** de correlación (para 4 visitas:
+4×3/2=6) en vez de 1 (`corCompSymm`) o 1 (`corAR1`).
+
+**Lo que revelan las correlaciones**
+
+- Las correlaciones **no decrecen monotónicamente** con la
+  distancia — `tp3-tp4` (0.766) es mayor que `tp2-tp3`
+  (0.651), lo que no es consistente con AR(1) (que asume
+  decrecimiento monótono)
+- Las visitas **tardías** (24 y 52 semanas) están más
+  correlacionadas entre sí que las tempranas — sugiere que
+  los pacientes que se deterioran lo hacen de forma
+  consistente en el tiempo, creando mayor "memoria" en las
+  últimas visitas
+
+**LRT vs fm12.2: p=0.0014**
+
+```
+fm12.2 (AR1):     AIC=6396.91  df=12
+fm12.3 (General): AIC=6387.20  df=17
+L.Ratio=19.71  p=0.0014
+```
+
+La estructura general mejora significativamente sobre AR(1)
+— 5 parámetros adicionales (6 correlaciones libres vs 1
+parámetro φ) que justifican su inclusión. Esto confirma que
+AR(1) **no captura completamente** la estructura de
+correlación real — las correlaciones entre visitas no siguen
+un patrón perfectamente decreciente.
+
+**fm12.3 = modelo de covarianza preferido del Bloque 2**
+
+Con esta estructura ya "cerrada", el siguiente paso
+(fm12.5) simplificará los **efectos fijos**, manteniendo
+esta estructura de covarianza — el mismo principio que
+vimos en dental veneer y classroom: primero decidir la
+estructura aleatoria/covarianza, luego simplificar los
+efectos fijos.
+:::
+
+### M12.5 — Simplificación de efectos fijos
+
+Como ahora se comparan modelos con distinta estructura de efectos fijos, 
+ambos modelos se ajustan mediante ML.
+
+```{r m125}
+fm12.3.ml <- update(fm12.3, method = "ML")
+
+fm12.5 <- update(
+  fm12.3.ml,
+  visual ~ visual0 + time + treat.f
+)
+
+anova(fm12.3.ml, fm12.5)
+
+AIC(fm12.3.ml, fm12.5)
+```
+
+> Con la estructura de varianza-covarianza ya decidida
+> (`corSymm` + `varPower`), se simplifican los **efectos
+> fijos**: en vez de `time.f` (factor con 4 niveles) +
+> interacción con tratamiento (8 parámetros), se usa `time`
+> continuo + `treat.f` (3 parámetros) — una tendencia
+> lineal en el tiempo. El LRT no es significativo (p=0.66)
+> — la simplificación es válida. **fm12.5 = modelo marginal
+> final**.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm12.5** cierra el Bloque 2 — simplifica los efectos fijos
+manteniendo la estructura de covarianza ya decidida (corSymm
++ varPower).
+
+**¿Qué se simplifica?**
+
+```
+fm12.3: visual ~ -1 + visual0 + time.f + treat.f:time.f
+        (8 parámetros fijos: 4 niveles de time.f + 4
+        interacciones treat.f:time.f)
+
+fm12.5: visual ~ visual0 + time + treat.f
+        (4 parámetros fijos: intercepto, visual0, time, treat.f)
+```
+
+Se pasa de modelar el tiempo como **factor** (8 parámetros)
+a modelarlo como **tendencia lineal continua** (1 parámetro),
+y de una **interacción tratamiento×tiempo** (4 parámetros) a
+un **efecto principal de tratamiento** (1 parámetro) — de 8
+a 4 parámetros fijos.
+
+**LRT: p=0.66 — simplificación válida**
+
+```
+fm12.3.ml: AIC=6395.73  df=17  logLik=-3180.87
+fm12.5:    AIC=6388.98  df=12  logLik=-3182.49
+L.Ratio=3.25  p=0.66
+```
+
+No significativo — la simplificación **no empeora** el
+modelo. Además, fm12.5 tiene **menor AIC** con 5 parámetros
+menos — es preferible por parsimonia.
+
+**¿Por qué ML y no REML?**
+
+Igual que en classroom (H4.2), dental veneer (H7.3) y autism
+(H6.2/H6.3): los modelos que se comparan tienen **distintos
+efectos fijos** — fm12.3 (con `time.f` categórico y
+`treat.f:time.f`) vs fm12.5 (con `time` continuo y `treat.f`
+sin interacción). REML no es apropiado para comparar modelos
+con distintos efectos fijos — se requiere ML.
+
+**fm12.5 = modelo marginal final**
+
+```
+visual ~ visual0 + time + treat.f
+corSymm(~tp|subject) + varPower(~time)
+```
+
+Esta es la conclusión del paradigma **marginal** (GLS): la
+agudeza visual decrece linealmente con el tiempo, el
+tratamiento activo tiene un efecto negativo, y las
+mediciones del mismo paciente siguen una estructura de
+correlación general (no estructurada) con varianza que
+aumenta con el tiempo. El Bloque 3 abordará el mismo
+problema desde el ángulo de **efectos mixtos**.
+:::
+
+### Resumen Bloque 2
+
+```{r resumen_bloque2, echo=FALSE}
+data.frame(
+  Modelo = c("fm9.2", "fm12.1", "fm12.2", "fm12.3"),
+  Estructura = c("Sin correlación (varPower)",
+                 "Compound Symmetry",
+                 "AR(1)",
+                 "General/no estructurada"),
+  AIC_REML = round(c(AIC(fm9.2), AIC(fm12.1), AIC(fm12.2),
+                     AIC(fm12.3)), 2),
+  Decision = c("Punto de partida del bloque",
+               "Mejora vs fm9.2",
+               "Mejora vs fm12.1",
+               "Mejora vs fm12.2")
+) |>
+  knitr::kable(caption = "Bloque 2 — estructuras de correlación")
+```
+
+> **Modelo marginal final: `fm12.5`** — `visual ~ visual0 +
+> time + treat.f`, con `varPower(~time)` y `corSymm(~tp |
+> subject)`, ajustado mediante ML para comparar efectos fijos.
+> Este es el modelo "poblacional": describe el patrón promedio
+> y la estructura de covarianza, sin efectos aleatorios explícitos
+> por paciente.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm12.5** cierra el Bloque 2 — simplifica los efectos fijos
+manteniendo la estructura de covarianza ya decidida (corSymm
++ varPower).
+
+**¿Qué se simplifica?**
+
+```
+fm12.3: visual ~ -1 + visual0 + time.f + treat.f:time.f
+        (8 parámetros fijos: 4 niveles de time.f + 4
+        interacciones treat.f:time.f)
+
+fm12.5: visual ~ visual0 + time + treat.f
+        (4 parámetros fijos: intercepto, visual0, time, treat.f)
+```
+
+Se pasa de modelar el tiempo como **factor** (8 parámetros)
+a modelarlo como **tendencia lineal continua** (1 parámetro),
+y de una **interacción tratamiento×tiempo** (4 parámetros) a
+un **efecto principal de tratamiento** (1 parámetro) — de 8
+a 4 parámetros fijos.
+
+**LRT: p=0.66 — simplificación válida**
+
+```
+fm12.3.ml: AIC=6395.73  df=17  logLik=-3180.87
+fm12.5:    AIC=6388.98  df=12  logLik=-3182.49
+L.Ratio=3.25  p=0.66
+```
+
+No significativo — la simplificación **no empeora** el
+modelo. Además, fm12.5 tiene **menor AIC** con 5 parámetros
+menos — es preferible por parsimonia.
+
+**¿Por qué ML y no REML?**
+
+Igual que en classroom (H4.2), dental veneer (H7.3) y autism
+(H6.2/H6.3): los modelos que se comparan tienen **distintos
+efectos fijos** — fm12.3 (con `time.f` categórico y
+`treat.f:time.f`) vs fm12.5 (con `time` continuo y `treat.f`
+sin interacción). REML no es apropiado para comparar modelos
+con distintos efectos fijos — se requiere ML.
+
+**fm12.5 = modelo marginal final**
+
+```
+visual ~ visual0 + time + treat.f
+corSymm(~tp|subject) + varPower(~time)
+```
+
+Esta es la conclusión del paradigma **marginal** (GLS): la
+agudeza visual decrece linealmente con el tiempo, el
+tratamiento activo tiene un efecto negativo, y las
+mediciones del mismo paciente siguen una estructura de
+correlación general (no estructurada) con varianza que
+aumenta con el tiempo. El Bloque 3 abordará el mismo
+problema desde el ángulo de **efectos mixtos**.
+:::
+
+## 👁 Bloque 3: Modelos mixtos con efectos aleatorios (Cap. 16)
+
+A partir de aquí, Galecki cambia de enfoque: en vez de
+modelar la covarianza directamente (GLS), introduce
+**efectos aleatorios de paciente** (LME) — un enfoque
+equivalente conceptualmente, pero que permite interpretar
+la variabilidad **entre pacientes** explícitamente.
+
+### M16.1 — Intercepto aleatorio
+
+```{r m161}
+fm16.1 <- lme(
+  visual ~ visual0 + time * treat.f,
+  random = ~ 1 | subject,
+  data = armd)
+```
+
+> Cada paciente tiene su propio nivel individual de agudeza 
+> visual post-baseline (`b_0i`), alrededor de la tendencia 
+> poblacional.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume las **4 estructuras de correlación**
+evaluadas en el Bloque 2 — la progresión desde "sin
+correlación" hasta la matriz más flexible posible.
+
+**El patrón de AIC en el Bloque 2**
+
+```
+fm9.2  (sin correlación): 6738.13
+fm12.1 (CompSymm):        6456.92  (↓ 281 puntos)
+fm12.2 (AR1):             6396.91  (↓ 60 puntos)
+fm12.3 (General):         6387.20  (↓ 10 puntos)
+```
+
+Las mejoras **decrecen** con cada paso — la mayor ganancia
+es simplemente reconocer que hay correlación (fm9.2→fm12.1).
+Después, el tipo de correlación importa pero cada vez menos:
+CompSymm→AR(1) da ~60 puntos, AR(1)→General da ~10 puntos.
+
+**¿Por qué no se muestra fm12.5 aquí?**
+
+fm12.5 usa **ML** (no REML) — los AIC no son directamente
+comparables con los modelos REML de esta tabla. Por eso la
+tabla muestra solo los modelos ajustados con REML, y fm12.5
+se presenta por separado como "modelo marginal final".
+
+**Comparando las 3 estructuras de correlación**
+
+| Estructura | Parámetros | Supuesto | ¿Cumple datos? |
+|---|---|---|---|
+| CompSymm | 1 (ρ) | Correlación igual entre todas las visitas | No (fm12.2 lo mejora) |
+| AR(1) | 1 (φ) | Correlación decrece con distancia | No completamente (fm12.3 lo mejora) |
+| General | 6 | Sin supuesto de estructura | Sí (modelo preferido) |
+
+**¿Por qué no quedarse siempre con la más flexible (General)?**
+
+Porque con pocos pacientes o pocas visitas, estimar 6
+parámetros de correlación puede ser **inestable**. En ARMD
+(234 pacientes, 4 visitas), hay suficiente información para
+estimarlos — pero en un estudio con 20 pacientes y 4 visitas,
+`corSymm` podría ser problemático y AR(1) sería preferible
+aunque no sea "perfecto".
+
+**La pregunta que abre el Bloque 3**
+
+Toda la complejidad del Bloque 2 (6 parámetros de
+correlación + 1 de varianza) se reduce a una pregunta: ¿se
+puede representar esa misma covarianza de forma más
+**interpretable** usando efectos aleatorios? El Bloque 3
+responde que sí — y con menos parámetros en la estructura
+aleatoria.
+:::
+
+### M16.2 — + Heterocedasticidad residual (varPower)
+
+```{r m162}
+fm16.2 <- update(
+  fm16.1,
+  weights = varPower(form = ~ time))
+
+AIC(fm16.1, fm16.2)
+```
+
+> Igual que en el Bloque 1, la varianza **residual**
+> (dentro del paciente) aumenta con el tiempo. AIC mejora
+> de 6591.97 a 6537.13.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm16.2** replica en el paradigma LME lo que fm9.2 hizo en
+el paradigma GLS — agrega `varPower(~time)` para capturar
+que la varianza **residual** aumenta con el tiempo.
+
+**¿Por qué "residual" y no simplemente "varianza"?**
+
+En un modelo mixto, hay **dos fuentes** de variabilidad:
+
+```
+Varianza entre pacientes: σ²_b0  (intercepto aleatorio)
+Varianza residual:        σ²_ε   (dentro de cada paciente)
+```
+
+`varPower(~time)` modela la **varianza residual** — la
+variabilidad que queda **dentro** de cada paciente entre
+sus mediciones, una vez descontado su intercepto aleatorio.
+Es una heterogeneidad de varianza "dentro de sujeto".
+
+**AIC: fm16.1=6591.97 vs fm16.2=6537.13**
+
+```
+fm16.1: AIC=6591.97  (sin varPower)
+fm16.2: AIC=6537.13  (con varPower)
+Mejora: ~55 puntos de AIC
+```
+
+Una mejora sustancial — la varianza residual **no es
+constante** tampoco en el paradigma LME. Esto es el mismo
+hallazgo que en el Bloque 1 (fm6.1→fm9.2), pero ahora
+dentro del marco de efectos mixtos.
+
+**Conexión con el Bloque 1**
+
+```
+Bloque 1: fm6.1 → fm9.2  (GLS, sin efectos aleatorios)
+           AIC: 6821 → 6738  (mejora ~83 puntos)
+
+Bloque 3: fm16.1 → fm16.2  (LME, con intercepto aleatorio)
+           AIC: 6592 → 6537  (mejora ~55 puntos)
+```
+
+La mejora es menor en el Bloque 3 porque el intercepto
+aleatorio ya absorbe parte de la variabilidad entre
+pacientes — queda menos varianza residual "heterogénea"
+por modelar.
+:::
+
+### M16.3 — + Pendiente aleatoria de tiempo
+
+```{r m163}
+fm16.3 <- update(
+  fm16.2,
+  random = ~ 1 + time | subject)
+
+AIC(fm16.2, fm16.3)
+```
+
+> Permite que **cada paciente** tenga su propia pendiente
+> de progreso (`b_1i`), correlacionada con su intercepto.
+> El AIC mejora notablemente (6537.13 → 6450.60) — el
+> **progreso de la enfermedad varía entre pacientes**, no
+> solo el nivel basal.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm16.3** es el modelo más importante del Bloque 3 — agrega
+una **pendiente aleatoria de tiempo** por paciente, permitiendo
+que cada paciente tenga su propia **tasa de deterioro**.
+
+**`random = ~ 1 + time | subject` — ¿qué significa?**
+
+Ahora cada paciente tiene **dos** efectos aleatorios:
+
+```
+b_0i: intercepto aleatorio (nivel basal propio)
+b_1i: pendiente aleatoria  (tasa de cambio propia)
+```
+
+El modelo para el paciente `i` en la visita `j` es:
+
+```
+visual_ij = (β₀ + b_0i) + (β₁ + b_1i)·time_j +
+            β₂·visual0_i + β₃·treat.f_i + ...
+```
+
+Cada paciente puede deteriorarse **más rápido o más lento**
+que el promedio poblacional — lo que vimos en fig1
+(trayectorias con pendientes muy distintas entre pacientes)
+queda ahora capturado explícitamente.
+
+**AIC: fm16.2=6537.13 vs fm16.3=6450.60**
+
+```
+fm16.2: AIC=6537.13  (solo intercepto aleatorio)
+fm16.3: AIC=6450.60  (intercepto + pendiente aleatoria)
+Mejora: ~87 puntos de AIC
+```
+
+Esta es la **mayor mejora** del Bloque 3 — incluso mayor que
+agregar `varPower` (fm16.1→fm16.2, ~55 puntos). Esto
+confirma que la variabilidad entre pacientes en la **tasa de
+deterioro** es la fuente de variabilidad más importante que
+faltaba modelar.
+
+**Conexión con autism**
+
+En autism, H6.1 evaluó si la **pendiente cuadrática
+aleatoria** era necesaria (además de la lineal). Aquí, la
+pregunta es si la **pendiente lineal de tiempo** varía entre
+pacientes — y la respuesta es claramente sí (~87 puntos de
+AIC). La siguiente pregunta (fm16.4) será si la correlación
+entre intercepto y pendiente es necesaria.
+
+**La matriz D — 3 parámetros nuevos**
+
+Al agregar la pendiente aleatoria, la **matriz D** de
+covarianzas de efectos aleatorios pasa de:
+
+```
+fm16.2: D = [σ²_b0]              (1 parámetro)
+fm16.3: D = [σ²_b0  σ_b0b1]     (3 parámetros:
+             [σ_b0b1  σ²_b1]      varianza intercepto,
+                                   varianza pendiente,
+                                   covarianza entre ambos)
+```
+
+La pregunta de fm16.4 será si `σ_b0b1 = 0` (matriz diagonal)
+es suficiente — es decir, si el intercepto y la pendiente
+aleatorios son **independientes**.
+:::
+
+### M16.4 — Matriz D diagonal (independencia int.-pendiente)
+
+```{r m164}
+fm16.4 <- update(
+  fm16.3,
+  random = list(subject = pdDiag(~ time)))
+
+anova(fm16.4, fm16.3)
+```
+
+> `pdDiag` asume que el intercepto aleatorio y la pendiente
+> aleatoria son **independientes** (correlación=0), en vez
+> de estimarla libremente. El LRT no es significativo
+> (p=0.27) — la estructura diagonal (más simple) es
+> preferida por parsimonia.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm16.4** evalúa si la **correlación** entre intercepto y
+pendiente aleatoria es necesaria — usando `pdDiag` para
+imponer una matriz D diagonal (correlación=0).
+
+**`pdDiag(~ time)` — ¿qué hace?**
+
+```
+fm16.3 (pdLogChol): D = [σ²_b0  σ_b0b1]  (3 parámetros)
+                        [σ_b0b1  σ²_b1]
+
+fm16.4 (pdDiag):    D = [σ²_b0  0     ]  (2 parámetros)
+                        [0       σ²_b1]
+```
+
+`pdDiag` fija `σ_b0b1=0` — asume que el nivel basal del
+paciente (`b_0i`) y su tasa de deterioro (`b_1i`) son
+**independientes** entre sí.
+
+**LRT: p=0.2745 — la correlación no es necesaria**
+
+```
+fm16.4: AIC=6449.79  df=9   logLik=-3215.90
+fm16.3: AIC=6450.60  df=10  logLik=-3215.30
+L.Ratio=1.194  p=0.2745
+```
+
+No significativo — la correlación entre intercepto y
+pendiente no mejora el modelo. Además, fm16.4 tiene
+**menor AIC** con un parámetro menos → se prefiere por
+parsimonia.
+
+**Comparando con autism (fm16.3 vs fm16.4)**
+
+En autism (West Cap.6), la decisión equivalente fue si
+la pendiente cuadrática aleatoria necesitaba estar
+correlacionada con la lineal — y también resultó
+**no necesaria** (se prefirió la estructura sin
+correlación). ARMD llega a la misma conclusión: los
+efectos aleatorios de intercepto y pendiente son
+independientes.
+
+**¿Qué significa sustantivamente que la correlación sea 0?**
+
+Que los pacientes que parten con **mayor** agudeza visual
+(intercepto alto) no tienden sistemáticamente a deteriorarse
+más rápido o más lento que los que parten bajo — el nivel
+basal y la tasa de cambio son **propiedades independientes**
+de cada paciente. No hay un patrón de "quienes ven mejor al
+inicio se deterioran más/menos rápido".
+
+**fm16.4 = estructura aleatoria final**
+
+```
+random = list(subject = pdDiag(~time))
+```
+
+Con esta decisión tomada, fm16.5 solo necesita simplificar
+los **efectos fijos** — manteniendo exactamente esta
+estructura aleatoria.
+:::
+
+### M16.5 — Modelo mixto final (efectos fijos simplificados)
+
+```{r m165}
+# Para comparar modelos con distintos efectos fijos se usa ML
+fm16.4.ml <- update(fm16.4, method = "ML")
+
+fm16.5.ml <- update(
+  fm16.4.ml,
+  visual ~ visual0 + time + treat.f
+)
+
+anova(fm16.4.ml, fm16.5.ml)
+
+# Modelo final reportado con REML
+fm16.5 <- update(fm16.5.ml, method = "REML")
+summary(fm16.5)
+```
+
+> Igual que en el Bloque 2 (`fm12.5`), se evalúa si puede eliminarse la interacción `time:treat.f`. Como se comparan modelos con distinta estructura de efectos fijos, ambos se ajustan mediante ML. El LRT no es significativo (p≈0.24), por lo que se prefiere el modelo más parsimonioso sin interacción. Luego, el modelo final (`fm16.5`) se reajusta con REML para reportar los resultados.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**fm16.5** cierra el Bloque 3 — simplifica los efectos fijos
+manteniendo la estructura aleatoria ya decidida en fm16.4.
+
+**¿Qué se simplifica?**
+
+```
+fm16.4: visual ~ visual0 + time * treat.f
+        (5 parámetros fijos: intercepto, visual0, time,
+         treat.fActive, time:treat.fActive)
+
+fm16.5: visual ~ visual0 + time + treat.f
+        (4 parámetros fijos: intercepto, visual0, time,
+         treat.fActive)
+        → se elimina la interacción time:treat.f
+```
+
+La eliminación de `time:treat.f` implica que el deterioro
+en el tiempo ocurre a la **misma tasa** en ambos grupos —
+la diferencia entre grupos es solo en el **nivel** de
+agudeza visual, no en su velocidad de cambio.
+
+**LRT: p=0.2372 — simplificación válida**
+
+```
+fm16.4.ml: AIC=6437.97  df=9  logLik=-3209.99
+fm16.5.ml: AIC=6437.37  df=8  logLik=-3210.69
+L.Ratio=1.397  p=0.2372
+```
+
+No significativo — eliminar `time:treat.f` no empeora el
+modelo. fm16.5 tiene menor AIC con 1 parámetro menos.
+
+**El modelo final con REML — efectos fijos**
+
+```
+(Intercept)    =  5.44   p=0.016
+visual0        =  0.90   p<0.0001  ***
+time           = -0.24   p<0.0001  ***
+treat.fActive  = -2.66   p=0.020   *
+```
+
+- **`visual0`** (≈0.90) — el predictor más fuerte: por cada
+  punto de agudeza visual basal, se espera ≈0.90 puntos más
+  de agudeza visual post-baseline
+- **`time`** (≈-0.24) — deterioro de ~0.24 puntos por semana
+  en ambos grupos
+- **`treat.fActive`** (≈-2.66) — el grupo Active tiene, en
+  promedio, ~2.66 puntos **menos** de agudeza visual que
+  Placebo — un efecto negativo del tratamiento activo
+
+**Random effects — estructura diagonal final**
+
+```
+(Intercept): SD=7.24  (variabilidad de nivel basal entre pacientes)
+time:        SD=0.28  (variabilidad de tasa de deterioro)
+Residual:    SD=5.04  (con power=0.11)
+```
+
+La correlación entre intercepto y pendiente es **0** (por
+`pdDiag`) — los pacientes que parten con mayor agudeza
+visual no tienden sistemáticamente a deteriorarse más rápido
+o más lento.
+
+**Comparación con fm12.5 (modelo marginal final del Bloque 2)**
+
+Ambos modelos finales tienen **los mismos efectos fijos**
+(`visual0 + time + treat.f`) — la diferencia está en cómo
+representan la covarianza:
+
+```
+fm12.5: corSymm + varPower → covarianza modelada directamente
+fm16.5: pdDiag + varPower  → covarianza a través de efectos
+                              aleatorios (intercepto + pendiente)
+```
+
+Esto se discutirá en la sección de comparación entre
+enfoques.
+:::
+
+### Resumen Bloque 3
+
+```{r resumen_bloque3, echo=FALSE}
+data.frame(
+  Modelo = c("fm16.1", "fm16.2", "fm16.3", "fm16.4"),
+  Estructura = c("Intercepto aleatorio",
+                 "+ varPower residual",
+                 "+ pendiente aleatoria correlacionada",
+                 "Pendiente aleatoria con matriz D diagonal"),
+  AIC_REML = round(c(AIC(fm16.1), AIC(fm16.2), AIC(fm16.3),
+                     AIC(fm16.4)), 2),
+  Decision = c("Punto de partida del bloque LME",
+               "Mejora respecto a fm16.1",
+               "Mejora notable respecto a fm16.2",
+               "No empeora vs fm16.3 (p≈0.27) — preferido")
+) |>
+  knitr::kable(caption = "Bloque 3 — modelos mixtos con misma estructura de efectos fijos")
+```
+
+> Luego, la simplificación de efectos fijos se evalúa aparte con ML (`fm16.4.ml` vs `fm16.5.ml`). Como la interacción `time:treat.f` no mejora significativamente el ajuste, se prefiere `fm16.5` como modelo mixto final.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume la construcción incremental del Bloque 3
+— desde el modelo LME más simple hasta la estructura
+aleatoria final.
+
+**El patrón de AIC en el Bloque 3**
+
+```
+fm16.1 (intercepto):          6591.97
+fm16.2 (+ varPower):          6537.13  (↓ 55 puntos)
+fm16.3 (+ pendiente correl.): 6450.60  (↓ 87 puntos)
+fm16.4 (pendiente diagonal):  6449.79  (↓ 0.8 puntos, pero
+                                         con 1 parámetro menos)
+```
+
+La mayor mejora viene de **agregar la pendiente aleatoria**
+(fm16.2→fm16.3, ~87 puntos) — más que agregar `varPower`
+(fm16.1→fm16.2, ~55 puntos). Esto confirma que la
+variabilidad entre pacientes en la **tasa de deterioro**
+es la fuente más importante de variabilidad no capturada por
+un simple intercepto aleatorio.
+
+**¿Por qué fm16.5 no aparece en esta tabla?**
+
+Por la misma razón que fm12.5 no aparecía en la tabla del
+Bloque 2: fm16.5 usa **ML** (para comparar efectos fijos)
+y tiene **distintos efectos fijos** que fm16.1-fm16.4 (sin
+`time:treat.f`). Los AIC de ML no son comparables con los
+de REML.
+
+**La decisión fm16.3 → fm16.4 — parsimonia sobre ajuste**
+
+```
+fm16.3: 3 parámetros en D (σ²_b0, σ²_b1, σ_b0b1)
+fm16.4: 2 parámetros en D (σ²_b0, σ²_b1)
+AIC fm16.4 < AIC fm16.3 (6449.79 < 6450.60)
+```
+
+La correlación entre efectos aleatorios (σ_b0b1) no aportó
+— y su eliminación incluso **mejora** el AIC levemente. Esta
+es una decisión de parsimonia respaldada por el LRT (p=0.27)
+Y por el AIC.
+
+**Comparando los 3 bloques en términos de mejora de AIC**
+
+```
+Bloque 1 (fm6.1 → fm9.2):    6821 → 6738  (↓ 83 puntos)
+Bloque 2 (fm9.2 → fm12.3):   6738 → 6387  (↓ 351 puntos)
+Bloque 3 (fm16.1 → fm16.4):  6592 → 6450  (↓ 142 puntos)
+```
+
+El Bloque 2 (correlación) produjo la mayor mejora total —
+modelar la correlación intra-paciente fue la decisión más
+importante de todo el análisis.
+:::
+
+## 👁 Modelo final — Interpretación de fm16.5
+
+```{r tabla_final, echo=FALSE}
+coefs <- summary(fm16.5)$tTable
+
+data.frame(
+  Efecto    = rownames(coefs),
+  Estimacion = round(coefs[, "Value"], 4),
+  EE         = round(coefs[, "Std.Error"], 4),
+  t          = round(coefs[, "t-value"], 3),
+  p          = round(coefs[, "p-value"], 4)
+) |>
+  knitr::kable(caption = "Efectos fijos — fm16.5 (modelo mixto final)")
+```
+
+> - **`visual0`** (≈0.90, p<0.0001) — por cada punto de
+>   agudeza visual basal, se espera ≈0.90 puntos más de
+>   agudeza visual post-baseline. Es, por mucho, el
+>   predictor más fuerte — el punto de partida del paciente
+>   determina en gran medida su trayectoria.
+> - **`time`** (≈-0.24, p<0.0001) — la agudeza visual
+>   **disminuye** con el tiempo, en promedio, para ambos
+>   grupos — consistente con la progresión natural de la
+>   degeneración macular.
+> - **`treat.fActive`** (≈-2.66, p=0.019) — el grupo con
+>   tratamiento activo tiene, en promedio, **≈2.66 puntos
+>   menos** de agudeza visual que el placebo — un efecto
+>   negativo del tratamiento (a diferencia de lo que se
+>   esperaría de un tratamiento beneficioso).
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla presenta los 4 efectos fijos del modelo final
+en formato limpio — la respuesta directa a los objetivos
+del análisis.
+
+**Leyendo cada coeficiente**
+
+**`(Intercept)` = 5.44 (p=0.016)**
+
+El nivel esperado de `visual` para un paciente con
+`visual0=0`, `time=0` y en grupo Placebo. Como `visual0=0`
+está fuera del rango real de datos, este intercepto no tiene
+interpretación sustantiva directa — es un artefacto de la
+escala de `visual0`.
+
+**`visual0` = 0.90 (p<0.0001) — el predictor más fuerte**
+
+Por cada punto adicional de agudeza visual **basal**, se
+espera 0.90 puntos más de agudeza visual post-baseline. Una
+relación casi **1 a 1** — los pacientes que ven bien al
+inicio tienden a seguir viendo bien después. Esto es
+consistente con fig3 (scatter `visual0` vs `visual`) donde
+las líneas de regresión tenían pendiente cercana a 1.
+
+**`time` = -0.24 (p<0.0001) — deterioro constante**
+
+Por cada semana adicional de seguimiento, la agudeza visual
+disminuye en promedio ~0.24 puntos (en ambos grupos por
+igual, ya que se eliminó la interacción en fm16.5). En 52
+semanas, el deterioro esperado es `52 × 0.24 ≈ 12.5 puntos`
+— consistente con la diferencia entre semana 4 y semana 52
+que vimos en fig2.
+
+**`treat.fActive` = -2.66 (p=0.020) — efecto negativo**
+
+El grupo Active tiene, en promedio, ~2.66 puntos **menos**
+de agudeza visual que Placebo, ajustando por `visual0` y
+`time`. Este es un **resultado inesperado** desde el punto
+de vista clínico — el tratamiento activo se asocia con
+**peor** agudeza visual, no mejor. Esto fue uno de los
+hallazgos controvertidos del ARMD Trial original.
+
+**Comparando con fm12.5 (modelo marginal)**
+
+Los efectos fijos son **casi idénticos** en ambos modelos
+finales:
+
+```
+              fm12.5    fm16.5
+visual0        0.891     0.900
+time          -0.233    -0.242
+treat.fActive -2.608    -2.655
+```
+
+Las pequeñas diferencias (≤0.05) son esperables — ambos
+modelos estiman los mismos efectos fijos pero con distintas
+estructuras de covarianza. La **conclusión sustantiva**
+(visual0 fuerte predictor, time negativo, treat.fActive
+negativo) es la misma en ambos paradigmas.
+:::
+
+### Componentes de varianza
+
+```{r varianza_final, echo=FALSE}
+vc <- VarCorr(fm16.5)
+print(vc)
+```
+
+> La estructura diagonal (`pdDiag`) muestra **dos fuentes
+> de variabilidad entre pacientes**: en su nivel basal
+> (intercepto) y en su tasa de progresión (pendiente de
+> `time`) — independientes entre sí. Además, la función
+> `varPower(~time)` captura que la variabilidad **residual**
+> (dentro de cada paciente) también aumenta con el tiempo.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla muestra las **3 fuentes de variabilidad** del
+modelo final fm16.5 — la descomposición de toda la
+variabilidad de `visual` en sus componentes.
+
+**Leyendo la tabla**
+
+```
+subject (Intercepto): Var=52.36  SD=7.24
+subject (time):       Var=0.079  SD=0.28
+Residual:             Var=25.39  SD=5.04
+```
+
+**Las 3 fuentes, en orden de magnitud**
+
+1. **Intercepto aleatorio (52.36)** — la mayor fuente de
+   variabilidad. Los pacientes difieren sustancialmente en
+   su **nivel basal** de agudeza visual post-baseline —
+   incluso después de controlar por `visual0`, `time` y
+   `treat.f`
+
+2. **Residual (25.39)** — variabilidad **dentro** de cada
+   paciente entre sus mediciones (con `varPower(~time)`,
+   esta varianza residual aumenta con el tiempo)
+
+3. **Pendiente de tiempo (0.079)** — la menor en magnitud,
+   pero significativa: los pacientes difieren en su **tasa
+   de deterioro** individual
+
+**La proporción de varianza total**
+
+```
+Total ≈ 52.36 + 0.079 + 25.39 = 77.83
+ICC (intercepto):  52.36/77.83 ≈ 0.67
+```
+
+~67% de la variabilidad total se debe a diferencias
+**entre pacientes** en su nivel basal — los pacientes
+difieren mucho más entre sí de lo que varía un mismo
+paciente a lo largo del tiempo.
+
+**`pdDiag` confirma correlación=0**
+
+```
+subject = pdDiag(time)
+```
+
+La estructura diagonal significa que la covarianza entre
+intercepto y pendiente aleatorios es **exactamente 0** —
+confirmando la decisión de fm16.4 (p=0.27 para esa
+correlación).
+
+**Comparando con el Bloque 2 (fm12.3/fm12.5)**
+
+En fm12.3/fm12.5, la covarianza se representaba con **6
+parámetros de correlación** + **1 de varianza** (varPower).
+En fm16.5, la misma covarianza se representa con **3
+parámetros** (2 varianzas + 1 varPower) — el modelo LME
+es más **parsimonioso** en su representación de la
+covarianza, aunque ambos lleguen a las mismas conclusiones
+sobre los efectos fijos.
+
+La varianza del intercepto aleatorio (52.36) es mucho mayor
+que la de la pendiente (0.079) — esto explica por qué en
+fig1 las trayectorias individuales tenían niveles muy
+distintos pero pendientes relativamente similares entre sí:
+los pacientes difieren más en **cuánto ven** que en
+**cuán rápido se deterioran**.
+:::
+
+## 👁 Modelo marginal (GLS) vs modelo mixto (LME)
+
+```{r comparacion_enfoques, echo=FALSE}
+data.frame(
+  Aspecto = c("Enfoque", "Qué modela",
+              "Efectos fijos finales",
+              "AIC", "Interpretación de variabilidad"),
+  GLS_fm12.5 = c("Marginal (poblacional)",
+                  "Covarianza directa (varPower + corSymm)",
+                  "visual0 + time + treat.f",
+                  round(AIC(fm12.5), 2),
+                  "Correlación entre pares de visitas"),
+  LME_fm16.5 = c("Condicional (por paciente)",
+                  "Efectos aleatorios (intercepto + pendiente)",
+                  "visual0 + time + treat.f",
+                  round(AIC(fm16.5), 2),
+                  "Variación de nivel basal y progresión entre pacientes")
+) |>
+  knitr::kable(caption = "Comparación de enfoques: GLS marginal vs LME")
+```
+
+> Ambos modelos llegan a los **mismos efectos fijos**
+> (`visual0 + time + treat.f`), pero con interpretaciones
+> distintas:
+>
+> - **fm12.5 (GLS)** describe la covarianza **entre
+>   observaciones** directamente — útil para inferencia
+>   poblacional/marginal
+> - **fm16.5 (LME)** describe la covarianza a través de
+>   **efectos aleatorios de paciente** — permite hablar de
+>   "este paciente progresa más rápido que el promedio",
+>   y es la base para predicciones específicas por paciente
+>   (EBLUPs)
+>
+> Los AIC de `fm12.5` y `fm16.5` se muestran solo como 
+> referencia descriptiva. La selección principal se realiza 
+> dentro de cada enfoque: en GLS se compara la estructura 
+> marginal de covarianza, mientras que en LME se compara la 
+> estructura de efectos aleatorios y la simplificación de 
+> efectos fijos.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla es el corazón conceptual del ejemplo ARMD —
+compara los **2 enfoques** que Galecki desarrolla en
+paralelo a lo largo de los capítulos 6-16.
+
+**La fila más importante: "Efectos fijos finales"**
+
+```
+fm12.5: visual0 + time + treat.f
+fm16.5: visual0 + time + treat.f
+```
+
+**Idénticos** — ambos enfoques llegan a la **misma
+conclusión sustantiva** sobre qué variables importan y
+en qué dirección. La diferencia entre los enfoques no está
+en los efectos fijos, sino en cómo representan la
+varianza-covarianza.
+
+**La fila "AIC": fm12.5=6388.98 vs fm16.5=6444.94**
+
+fm12.5 tiene **menor AIC** — pero esta comparación
+**no es directa**: los dos modelos usan distintos métodos
+de estimación (ML para fm12.5, REML para fm16.5) y
+parametrizan la covarianza de formas fundamentalmente
+distintas. No significa que GLS sea "mejor" que LME —
+significa que los AICs de paradigmas distintos no deben
+compararse directamente.
+
+**"Qué modela" — la diferencia clave**
+
+```
+GLS (fm12.5): corSymm + varPower
+              → 6 parámetros de correlación + 1 de varianza
+              → "las visitas 4 y 12 de un paciente tienen
+                 correlación 0.582"
+
+LME (fm16.5): pdDiag(~time) + varPower
+              → 2 varianzas (intercepto, pendiente) + 1 varPower
+              → "cada paciente tiene su propio nivel basal
+                 (SD=7.24) y su propia tasa de deterioro
+                 (SD=0.28)"
+```
+
+**Marginal vs condicional — ¿cuál usar?**
+
+| Pregunta | Enfoque preferido |
+|---|---|
+| "¿Cuál es la probabilidad promedio para un paciente típico?" | GLS (marginal) |
+| "¿Cuál es la predicción para **este** paciente específico?" | LME (condicional) |
+| "¿Cuánto varía el deterioro entre pacientes?" | LME (efectos aleatorios) |
+| "¿Cuál es la correlación entre la visita 4 y la 52?" | GLS (corSymm) |
+
+Puedes resumir esta tabla con una frase: *"GLS y LME son
+dos formas de contar la misma historia — que la agudeza
+visual basal es el predictor más fuerte, que el deterioro
+es gradual y lineal, y que el tratamiento activo se
+asocia paradójicamente con peor agudeza visual — pero
+desde perspectivas distintas: GLS describe la correlación
+directamente, LME la explica a través de diferencias entre
+pacientes."*
+:::
+
+## 👁 Conclusiones
+
+- La preparación de datos (`armd`) separa correctamente las
+  mediciones post-baseline (outcome longitudinal) de la
+  medición basal (`visual0`, covariable fija)
+- La variabilidad de `visual` **aumenta con el tiempo** —
+  capturado de forma parsimoniosa con `varPower(~time)`
+  (Bloque 1)
+- Las mediciones repetidas del mismo paciente están
+  **correlacionadas**, y esa correlación decae con la
+  distancia temporal pero no sigue exactamente un patrón
+  AR(1) simple — se necesita una estructura general
+  (Bloque 2)
+- El modelo marginal final (**fm12.5**) y el modelo mixto
+  final (**fm16.5**) coinciden en los efectos fijos:
+  `visual0 + time + treat.f`
+- El enfoque de efectos mixtos (Bloque 3) revela que tanto
+  el **nivel basal** como la **tasa de progresión** varían
+  entre pacientes — información que el enfoque marginal no
+  hace explícita
+- El tratamiento activo se asocia con **menor** agudeza
+  visual que el placebo, ajustando por `visual0` y `time`
+
+> Galecki usa el ARMD Trial como hilo conductor para mostrar
+> que un mismo problema (datos longitudinales con
+> heterocedasticidad y correlación intra-sujeto) puede
+> abordarse desde dos perspectivas equivalentes: modelar la
+> **covarianza directamente** (GLS marginal) o modelar la
+> **fuente de esa covarianza** mediante efectos aleatorios
+> (LME). Ambos caminos convergen en los mismos efectos
+> fijos, pero el enfoque LME ofrece, además, una
+> descomposición interpretable de la variabilidad entre
+> pacientes.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Estas conclusiones cierran el ejemplo más extenso del sitio
+— 12 modelos en 3 bloques, 2 paradigmas, 5 capítulos de
+Galecki resumidos en un solo documento.
+
+**El recorrido completo en una tabla**
+
+| Bloque | Pregunta | Respuesta | Modelo final |
+|---|---|---|---|
+| 1 (Cap 6,9) | ¿Varianza homogénea? | No, aumenta con el tiempo | fm9.2 (varPower) |
+| 2 (Cap 12) | ¿Correlación intra-paciente? | Sí, estructura general | fm12.5 (corSymm + varPower) |
+| 3 (Cap 16) | ¿Efectos aleatorios de paciente? | Sí, intercepto y pendiente | fm16.5 (pdDiag + varPower) |
+
+**Lo que ARMD enseña que los otros 8 ejemplos no muestran**
+
+1. **GLS como alternativa al LME** — los otros 8 ejemplos
+   usan directamente `lme()`/`lmer()`/`glmer()`. ARMD es
+   el único que muestra el paradigma GLS (`gls()`) como
+   una alternativa válida y equivalente para datos
+   longitudinales
+
+2. **La secuencia varianza → correlación → efectos
+   aleatorios** — en dental veneer o autism se trabajó
+   directamente con efectos aleatorios. ARMD muestra que
+   la estructura de varianza-covarianza puede construirse
+   **incrementalmente**, separando la varianza (Bloque 1)
+   de la correlación (Bloque 2) antes de pasar a efectos
+   mixtos (Bloque 3)
+
+3. **Que 2 paradigmas pueden dar el mismo resultado** — la
+   frase del blockquote es la conclusión pedagógica central
+   del ejemplo: GLS y LME son "dos formas de contar la
+   misma historia" — la elección depende de qué preguntas
+   se quieren responder, no de cuál es "más correcto"
+
+**El hallazgo más sorprendente**
+
+El coeficiente `treat.fActive ≈ -2.66` — el tratamiento
+activo se asocia con **peor** agudeza visual. Esto no
+significa necesariamente que el tratamiento sea perjudicial
+(podría haber sesgos de selección, dropout diferencial, u
+otras explicaciones), pero es el resultado que el modelo
+estima y que Galecki reporta fielmente.
+
+*"Galecki usa
+este ensayo clínico para mostrar que modelar datos
+longitudinales correctamente requiere atender a 3 cosas:
+cómo varía la varianza en el tiempo, cómo se correlacionan
+las mediciones repetidas, y cómo varía la trayectoria de
+cada paciente. El resultado — con cualquiera de los dos
+enfoques — es que la agudeza visual basal predice fuertemente
+la futura, que hay deterioro progresivo, y que el tratamiento
+activo no mejoró la visión en este ensayo."*
+:::

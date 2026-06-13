@@ -5,6 +5,7 @@ author: "Elena Lazo"
 date: today
 ---
 
+
 ```{r setup, include=FALSE}
 library(WWGbook)
 library(nlme)
@@ -17,11 +18,13 @@ veneer_data <- veneer |>
   mutate(
     patient = factor(patient),
     tooth   = factor(tooth),
-    tooth2  = interaction(patient, tooth, drop = TRUE),
-    time = as.numeric(as.character(time)))
+    time    = as.numeric(as.character(time)),
+    time.f  = factor(time),
+    tooth2  = interaction(patient, tooth, drop = TRUE))
 ```
 
-## 🦷Problema de investigación
+
+## 🦷 Problema de investigación
 
 Se estudia el efecto de una restauración dental (veneer) sobre
 el **índice de fluido crevicular gingival** (`gcf`) medido a los
@@ -32,7 +35,44 @@ el **índice de fluido crevicular gingival** (`gcf`) medido a los
 > paciente y el diente, considerando la estructura jerárquica
 > de tres niveles?
 
-## 🦷Diseño clustered longitudinal
+::: {.callout-note collapse="true"}
+## 🖊
+El **Dental Veneer Example** combina dos ideas que ya viste
+por separado: la estructura **longitudinal** (como en ARMD —
+mediciones repetidas en el tiempo) y la estructura de
+**clusters anidados** (como en classroom — unidades dentro
+de unidades).
+
+| Concepto | Rat Pup / Classroom | Dental Veneer |
+|---|---|---|
+| Agrupación | Crías en camadas / estudiantes en salones-escuelas | Mediciones en dientes, dientes en pacientes |
+| Tiempo | No aplica | Sí — 3 y 6 meses |
+| Niveles | 2 o 3 | 3 (tiempo, diente, paciente) |
+
+**¿Qué es el GCF?**
+
+El **fluido crevicular gingival (GCF)** es un indicador de
+inflamación/salud de la encía alrededor del diente — mayor
+GCF generalmente indica más inflamación.
+
+**La pregunta de investigación tiene dos partes:**
+
+1. **¿Cambia el GCF en el tiempo?** (3 → 6 meses) — esto es
+   la parte longitudinal
+2. **¿Ese cambio depende de características basales del
+   paciente y del diente?** — esto es la parte de
+   predictores en distintos niveles (`age` a nivel paciente;
+   `base.gcf`, `cda` a nivel diente)
+
+La frase "considerando la estructura jerárquica de tres
+niveles" anticipa que el modelo necesitará **dos efectos
+aleatorios anidados** (diente dentro de paciente), similar
+a `schoolid/classid` en classroom — pero aquí la "unidad
+intermedia" (diente) es la que recibe el tratamiento
+(veneer) y se mide repetidamente en el tiempo.
+:::
+
+## 🦷 Diseño clustered longitudinal
 
 Este es un diseño de **tres niveles longitudinal**:
 
@@ -51,36 +91,219 @@ flowchart TD
     C --> H[GCF 6 meses]
 ```
 
-## 🦷Estructura de los datos
+::: {.callout-note collapse="true"}
+## 🖊
+Este diagrama muestra la estructura de anidamiento — pero
+a diferencia de classroom (donde el "nivel 1" eran
+estudiantes individuales), aquí el **nivel 1 es una
+medición en el tiempo**, no un individuo.
 
-```{r estructura}
-nrow(veneer_data)
-n_distinct(veneer_data$patient)
+**Leyendo la jerarquía de abajo hacia arriba:**
 
-veneer_data |>
-  distinct(patient, tooth2) |>
-  count(patient, name = "dientes_por_paciente") |>
-  summarise(
-    min   = min(dientes_por_paciente),
-    max   = max(dientes_por_paciente),
-    media = round(mean(dientes_por_paciente), 1))
+- **Nivel 1 — tiempo dentro de diente:** cada diente se mide
+  **dos veces** (3 y 6 meses) — son las filas más "internas"
+  de los datos
+- **Nivel 2 — diente dentro de paciente:** cada paciente
+  tiene **varios dientes** tratados con el veneer — el
+  número varía por paciente (desbalanceado)
+- **Nivel 3 — paciente:** la unidad de muestreo original del
+  estudio
 
-table(veneer_data$time)
+**¿Por qué el diente es "nivel 2" y no "nivel 1"?**
+
+Porque las **covariables del diente** (`base.gcf`, `cda`)
+son fijas en el tiempo — no cambian entre los 3 y 6 meses
+para un mismo diente. Son análogas a `treatment` en rat pup
+(variable de camada) o `yearstea` en classroom (variable de
+salón): se miden a un nivel "más alto" que las observaciones
+individuales (las mediciones de tiempo).
+
+**Comparando con ARMD (Galecki)**
+
+| | ARMD | Dental Veneer |
+|---|---|---|
+| Unidad longitudinal | Paciente | Diente |
+| Niveles de agrupación | 1 (paciente) | 2 (diente dentro de paciente) |
+| Tiempos | 4 (4, 12, 24, 52 sem) | 2 (3, 6 meses) |
+
+En ARMD, cada **paciente** era la unidad que se medía
+repetidamente. Aquí, son los **dientes** — y como un mismo
+paciente puede tener varios dientes con veneer, se agrega
+un nivel extra de agrupación (paciente) por encima del
+diente.
+
+**Implicación para el modelo**
+
+```r
+random = list(
+  patient = ~ time,
+  tooth   = ~ 1)
 ```
 
-## 🦷Variables
+- `patient = ~ time` — cada **paciente** tiene su propio
+  intercepto Y su propia pendiente de tiempo (como `fm16.3`
+  en ARMD)
+- `tooth = ~ 1` — cada **diente** (dentro de su paciente)
+  tiene su propio intercepto adicional — reconoce que los
+  dientes de un mismo paciente también difieren entre sí,
+  más allá de la tendencia general del paciente
+:::
+
+## 🦷 Estructura de los datos
+
+```{r estructura_tabla, echo=FALSE}
+dientes_pac <- veneer_data |>
+  distinct(patient, tooth2) |>
+  count(patient, name = "n")
+
+data.frame(
+  Nivel = c(
+    "Observaciones (Nivel 1)",
+    "Pacientes (Nivel 3)",
+    "Dientes por paciente",
+    "Mediciones por diente (tiempos)"),
+  Resultado = c(
+    nrow(veneer_data),
+    n_distinct(veneer_data$patient),
+    paste0(min(dientes_pac$n), "–", max(dientes_pac$n),
+           " (media ", round(mean(dientes_pac$n), 1), ")"),
+    paste(sort(unique(veneer_data$time)), collapse = ", "))) |>
+  knitr::kable(caption = "Estructura jerárquica del Dental Veneer Example")
+```
+
+> Estructura de **3 niveles**: mediciones (tiempo) dentro de
+> dientes, dientes dentro de pacientes — diseño desbalanceado
+> en el número de dientes por paciente.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume la estructura jerárquica usando los mismos
+4 indicadores que vimos en classroom y rat pup — pero
+adaptados a que aquí el "nivel 1" es **tiempo**, no individuo.
+
+**Leyendo la tabla:**
+
+- **Observaciones (Nivel 1)** — el total de filas en
+  `veneer_data`. Cada fila es **una medición de GCF en un
+  diente, en un momento del tiempo** (3 o 6 meses)
+- **Pacientes (Nivel 3)** — el número de pacientes en el
+  estudio
+- **Dientes por paciente** — cuántos dientes con veneer tiene
+  cada paciente (rango y promedio). Si varía (por ejemplo
+  1 a 4), confirma que el diseño está **desbalanceado** —
+  igual que en rat pup (camadas de distinto tamaño) o
+  classroom (salones con distinto número de estudiantes)
+- **Mediciones por diente (tiempos)** — confirma que cada
+  diente se mide en **2 momentos**: 3 y 6 meses
+
+**¿Por qué `nrow(veneer_data)` no es directamente
+interpretable sin esta tabla?**
+
+Si solo vieras "nrow = X", no sabrías si X es número de
+pacientes, de dientes, o de mediciones — porque las tres
+cosas son distintas aquí. La tabla **desagrega** ese número
+total en sus componentes: cuántos pacientes, cuántos dientes
+por paciente, y cuántas mediciones por diente. Multiplicando
+aproximadamente: pacientes × dientes/paciente × 2 tiempos ≈
+nrow total (no es exacto por el desbalance, pero da la idea).
+
+**Conexión con el modelo**
+
+Esta tabla justifica por qué se necesitan **2 efectos
+aleatorios anidados**: si cada paciente tuviera exactamente
+1 diente y cada diente 1 medición, no habría estructura de
+clusters que modelar — sería un dato transversal simple. Es
+precisamente la repetición **dentro de diente** (2 tiempos)
+y **dentro de paciente** (varios dientes) lo que genera la
+necesidad del modelo mixto de 3 niveles.
+:::
+
+## 🦷 Variables
 
 | Variable | Nivel | Tipo | Rol |
 |----------|-------|------|-----|
 | `gcf` | 1 | Continua | **Outcome** |
 | `time` | 1 | Continua | Tiempo (3 o 6 meses) |
+| `time.f` | 1 | Factor | Tiempo como factor (para `varIdent`) |
 | `tooth` | 2 | Identificador | Diente |
 | `base.gcf` | 2 | Continua | Covariable — GCF basal |
 | `cda` | 2 | Continua | Covariable — diferencia de contorno |
 | `patient` | 3 | Identificador | Paciente |
 | `age` | 3 | Continua | Covariable — edad del paciente |
 
-## 🦷Exploración descriptiva
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla clasifica las 7 variables según su **nivel
+jerárquico** — igual que hicimos en classroom, pero aquí los
+niveles son tiempo → diente → paciente (en vez de estudiante
+→ salón → escuela).
+
+**Nivel 1 — Tiempo (dentro de diente)**
+
+| Variable | Qué es |
+|---|---|
+| `gcf` | **Outcome** — el GCF medido en ese diente, en ese momento |
+| `time` | El momento de la medición: 3 o 6 meses |
+| `time.f` | Versión factor de `time` (para `varIdent`, si fuera necesario) |
+
+Estas son las variables que **cambian** entre las dos
+mediciones de un mismo diente.
+
+**Nivel 2 — Diente (dentro de paciente)**
+
+| Variable | Qué es |
+|---|---|
+| `tooth` | Identificador del diente |
+| `base.gcf` | GCF **basal** del diente (antes del veneer) |
+| `cda` | Diferencia de contorno — característica de la restauración |
+
+Estas son **fijas en el tiempo** para un diente dado — un
+diente tiene un único `base.gcf` y un único `cda`, sin
+importar si se mide a los 3 o 6 meses. Son análogas a
+`treatment`/`litsize` en rat pup (variables de camada).
+
+**Nivel 3 — Paciente**
+
+| Variable | Qué es |
+|---|---|
+| `patient` | Identificador del paciente |
+| `age` | Edad del paciente |
+
+`age` es igual para **todos los dientes** de un mismo
+paciente — es una característica del individuo, no del
+diente específico.
+
+**El patrón que se repite en todos los ejemplos**
+
+```
+Nivel 1 (lo que se repite/varía más) → outcome + tiempo
+Nivel 2 (unidad intermedia)          → covariables fijas en el tiempo
+Nivel 3 (unidad más alta)            → covariables del individuo/contexto
+```
+
+Este patrón es el mismo que en classroom (estudiante→salón→
+escuela) y conceptualmente similar a rat pup (cría→camada) —
+solo que aquí el "nivel más bajo" no es un individuo sino una
+**medición repetida en el tiempo**, lo que añade la dimensión
+longitudinal.
+
+**Para el modelo final (Model 7.3)**
+
+```
+gcf ~ time + base.gcf + cda + age
+random = list(patient = ~time, tooth = ~1)
+```
+
+Cada variable de la tabla aparece en la fórmula — `time`
+(nivel 1, efecto fijo + parte de la estructura aleatoria de
+paciente), `base.gcf` y `cda` (nivel 2, efectos fijos), `age`
+(nivel 3, efecto fijo). La estructura aleatoria refleja los
+niveles 2 y 3 (diente y paciente), mientras que nivel 1
+(tiempo) aparece como efecto fijo Y como parte de la pendiente
+aleatoria de paciente.
+:::
+
+## 🦷 Exploración descriptiva
 
 ```{r fig1, echo=FALSE}
 ggplot(veneer_data,
@@ -95,6 +318,35 @@ ggplot(veneer_data,
   theme(legend.position = "none")
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Cada línea conecta el GCF de **un diente** a los 3 meses
+(izquierda) con su GCF a los 6 meses (derecha). El color es
+por paciente (sin leyenda, porque con muchos pacientes sería
+ilegible).
+
+**Lo que se observa**
+
+- **Mucha variabilidad de pendientes** — algunas líneas suben,
+  otras bajan, otras se mantienen casi planas. No hay un
+  patrón uniforme de "todos mejoran" o "todos empeoran"
+- **Un caso extremo** — una línea sube de ~55 a ~88, el valor
+  más alto del gráfico a los 6 meses
+- **La mayoría de los valores están concentrados entre 0 y
+  35** — solo unos pocos dientes tienen GCF alto (>40)
+- **Cruces frecuentes** — muchas líneas se cruzan entre sí,
+  indicando que el **orden relativo** de los dientes cambia
+  entre los dos tiempos
+
+**¿Por qué esto importa para el modelo?**
+
+Esta alta variabilidad de **pendientes individuales** (algunas
+positivas, otras negativas, otras planas) es justo lo que
+justifica considerar una **pendiente aleatoria de tiempo a
+nivel de paciente** (`random = list(patient = ~time, ...)`)
+— el cambio de GCF en el tiempo no es igual para todos.
+:::
+
 ```{r fig2, echo=FALSE}
 ggplot(veneer_data,
        aes(x = factor(time), y = gcf)) +
@@ -104,17 +356,81 @@ ggplot(veneer_data,
   theme_minimal()
 ```
 
-## 🦷Estrategia top-down
+::: {.callout-note collapse="true"}
+## 🖊
+Este boxplot resume la misma información sin distinguir
+dientes individuales — solo la distribución global en cada
+momento.
+
+**Lo que se observa**
+
+- **La mediana es similar** entre 3 y 6 meses (~17-19) — no
+  hay un cambio dramático en el "centro" de la distribución
+- **A los 6 meses, la caja (IQR) es más ancha** — mayor
+  dispersión entre el percentil 25 y 75
+- **Ambos tiempos tienen un valor atípico** — el de 3 meses
+  (~67) y el de 6 meses (~88, el mismo diente que sube en el
+  gráfico anterior)
+- **El bigote superior es más largo a los 6 meses** (~70 vs
+  ~55) — sugiere que la variabilidad aumenta con el tiempo
+
+**¿Por qué esto importa para el modelo?**
+
+Que la dispersión parezca aumentar ligeramente con el tiempo
+es justo lo que **H7.2** evalúa formalmente
+(`varIdent(form=~1|time.f)`) — aunque recuerda que en este
+ejemplo el resultado fue que **no era necesario** modelar esa
+heterogeneidad (no significativo), a pesar de esta sugerencia
+visual. Es un buen ejemplo de cómo la exploración visual puede
+sugerir un patrón que, al probarse formalmente, no resulta
+estadísticamente necesario.
+:::
+
+## 🦷 Estrategia top-down
 
 ```{mermaid}
 flowchart TD
-    A[Model 7.1\nMedia cargada\nPaciente + diente aleatorios] --> B{H7.1\n¿Intercepto aleatorio de diente?}
-    B -->|Sí| C{H7.2\n¿Varianza residual heterogénea?}
-    C -->|No| D{H7.3\n¿Interacciones con el tiempo?}
-    D -->|No| E[Model 7.3 — Modelo Final]
+    A[Model 7.1<br/>Media cargada<br/>Paciente + diente aleatorios] --> B{H7.1<br/>¿Intercepto aleatorio de diente?}
+    B -->|Sí| C{H7.2<br/>¿Varianza residual heterogénea?}
+    C -->|No| D{H7.3<br/>¿Interacciones con el tiempo?}
+    D -->|No| E[Model 7.3<br/>Modelo final]
 ```
 
-## 🦷Model 7.1: Modelo cargado
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el mismo enfoque **top-down** que usamos en rat pup:
+empezar con un modelo "cargado" (con todas las interacciones
+posibles) y simplificarlo según lo que las pruebas indiquen.
+
+**Las 3 preguntas, en orden:**
+
+1. **H7.1 — ¿Necesito el intercepto aleatorio de diente?**
+   Model 7.1 ya incluye `tooth = ~1` como efecto aleatorio.
+   H7.1 pregunta si **quitarlo** empeora el modelo
+   significativamente — si sí, se mantiene.
+
+2. **H7.2 — ¿La varianza residual es distinta entre 3 y 6
+   meses?** Pregunta si agregar `varIdent(~1|time.f)` mejora
+   el ajuste — recuerda que el boxplot sugería esto
+   visualmente.
+
+3. **H7.3 — ¿Son necesarias las 3 interacciones con tiempo**
+   (`time:base.gcf`, `time:cda`, `time:age`)**?** Estas
+   interacciones responden: *"¿el efecto de `base.gcf`/`cda`/
+   `age` sobre el GCF cambia entre los 3 y 6 meses?"*
+
+**Por qué el orden importa**
+
+Primero se decide la **estructura aleatoria** (H7.1, H7.2) —
+intercepto de diente y forma de la varianza — y solo *después*
+se simplifican los **efectos fijos** (H7.3). Esto es la misma
+lógica top-down de rat pup: la estructura de varianza-
+covarianza se "fija" antes de tocar los efectos fijos, para
+que las comparaciones de efectos fijos (con ML) sean válidas
+sobre una base estable.
+:::
+
+## 🦷 Model 7.1: Modelo cargado
 
 ```{r model71}
 model7.1.fit <- lme(
@@ -128,7 +444,58 @@ model7.1.fit <- lme(
 summary(model7.1.fit)
 ```
 
-## 🦷H7.1: ¿Es necesario el intercepto aleatorio de diente?
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el **modelo más complejo** del análisis — el punto de
+partida del proceso top-down. Incluye:
+
+- **Efectos fijos**: `time`, `base.gcf`, `cda`, `age`, y las
+  3 interacciones de cada covariable con `time`
+- **Efectos aleatorios**: intercepto y pendiente de tiempo
+  por **paciente** (`~time | patient`), e intercepto por
+  **diente** (`~1 | tooth %in% patient`)
+
+**Leyendo el output**
+
+`Number of Groups: patient = 12, tooth %in% patient = 55` —
+confirma la estructura de 3 niveles: 12 pacientes, 55
+dientes en total (Nivel 1 = 110 observaciones = 55 dientes ×
+2 tiempos).
+
+**Lo que ya se puede notar (aunque no es una prueba formal
+todavía)**
+
+Ninguno de los coeficientes individuales (`p-value`) es
+significativo al 0.05 — ni los efectos principales ni las
+interacciones con tiempo. Esto **anticipa** lo que H7.3
+confirmará formalmente: las interacciones con tiempo
+probablemente no sean necesarias.
+
+**Correlaciones altas en la tabla de correlación**
+
+Nota las correlaciones altas entre `time` y `time:age`
+(-0.934), o entre `base.gcf` y `time:base.gcf` (-0.871).
+Esto es **esperable** y no es un problema de colinealidad de
+los predictores originales — es una consecuencia matemática
+de construir interacciones a partir de las mismas variables
+(`time × age` comparte información con `time` y con `age`).
+Es la misma lógica que ya vimos en rat pup con varIdent.
+
+**Random effects — primera pista de la estructura final**
+
+```
+(Intercept) 23.566684    StdDev a nivel paciente
+time         6.687548    StdDev de la pendiente de tiempo
+(Intercept)  6.852759    StdDev a nivel diente
+Residual     7.049071    StdDev residual
+```
+
+Las 4 fuentes de variabilidad ya están presentes en Model 7.1
+— las hipótesis (H7.1-H7.3) decidirán si se **simplifican**
+(quitando alguna) o se **mantienen todas** en el modelo final.
+:::
+
+## 🦷 H7.1: ¿Es necesario el intercepto aleatorio de diente?
 
 ```{r h71}
 model7.1A.fit <- lme(
@@ -138,14 +505,70 @@ model7.1A.fit <- lme(
   data = veneer_data,
   method = "REML")
 
-anova(model7.1.fit, model7.1A.fit)
+comp_h71 <- anova(model7.1A.fit, model7.1.fit)
+comp_h71
+
+lrt_h71 <- comp_h71$L.Ratio[2]
+
+p_h71 <- 0.5 * (1 - pchisq(lrt_h71, df = 1))
+
+cat("p-value corregido H7.1:", p_h71, "\n")
 ```
 
 > West divide el valor p por 2 porque se evalúa un componente
 > de varianza en el límite del espacio paramétrico.
 > Si es significativo → se retiene el intercepto aleatorio de diente.
 
-## 🦷H7.2: ¿Varianza residual heterogénea por tiempo?
+::: {.callout-note collapse="true"}
+## 🖊
+**H7.1** compara dos versiones de Model 7.1: una **sin**
+intercepto aleatorio de diente (`model7.1A.fit`, solo
+`patient = ~time`) y la versión completa **con** ese
+intercepto (`model7.1.fit`, agregando `tooth = ~1`).
+
+**Leyendo la tabla de `anova()`**
+
+```
+model7.1A.fit  AIC=882.28  logLik=-429.14
+model7.1.fit   AIC=873.12  logLik=-423.56
+L.Ratio = 11.17    p = 8e-04
+```
+
+`model7.1.fit` (con intercepto de diente) tiene **menor AIC**
+y **mayor log-verosimilitud** — un primer indicio de que es
+preferible.
+
+**¿Por qué dividir el p-value entre 2?**
+
+Igual que en H4.1 (classroom) y H6.1 (autism), aquí se está
+probando si una **varianza** (la del intercepto de diente) es
+igual a cero. Como una varianza no puede ser negativa, la
+distribución del estadístico LRT bajo H0 no es la chi-cuadrado
+estándar, sino una **mezcla 50/50** entre una masa puntual en
+0 y una chi-cuadrado con 1 grado de libertad. Dividir el
+p-value original entre 2 corrige por esto.
+
+**Resultado**
+
+```
+p original  ≈ 0.0008
+p corregido ≈ 0.00042
+```
+
+Ambos son **muy significativos** — el intercepto aleatorio de
+diente **se mantiene**. Esto confirma lo que sugería la
+estructura de los datos: los dientes dentro de un mismo
+paciente **sí difieren** en su nivel de GCF, más allá de la
+tendencia del paciente.
+
+**Nota:** en este caso, dividir entre 2 no cambia la
+conclusión (ambos p-values están muy por debajo de 0.05) —
+pero es importante aplicar la corrección de todas formas,
+porque en casos límite (p cercano a 0.05) sí podría cambiar
+la decisión.
+:::
+
+## 🦷 H7.2: ¿Varianza residual heterogénea por tiempo?
 
 ```{r h72}
 model7.2C.fit <- lme(
@@ -154,45 +577,171 @@ model7.2C.fit <- lme(
   random = list(
     patient = ~ time,
     tooth   = ~ 1),
-  weights = varIdent(form = ~ 1 | time),
+  weights = varIdent(form = ~ 1 | time.f),
   data = veneer_data,
   method = "REML")
 
 anova(model7.1.fit, model7.2C.fit)
 ```
 
+> Ambos modelos tienen la misma estructura de efectos fijos,
+> por lo que la comparación mediante REML es válida.
+>
 > Si no es significativo → se mantiene varianza residual homogénea.
 
-## 🦷H7.3: ¿Son necesarias las interacciones con el tiempo?
+::: {.callout-note collapse="true"}
+## 🖊
+**H7.2** compara Model 7.1 (varianza residual homogénea) con
+una versión que permite una varianza distinta para cada
+tiempo (`varIdent(form=~1|time.f)`), motivado por lo que
+sugería el boxplot de la exploración descriptiva (mayor
+dispersión a los 6 meses).
+
+**Leyendo la tabla de `anova()`**
+
+```
+model7.1.fit   AIC=873.12  logLik=-423.56
+model7.2C.fit  AIC=874.16  logLik=-423.08
+L.Ratio = 0.95    p = 0.329
+```
+
+**Resultado: no significativo (p=0.33)**
+
+A pesar de que el boxplot mostraba una caja más ancha y un
+bigote más largo a los 6 meses, esa diferencia **no es lo
+suficientemente grande** como para justificar un parámetro
+adicional de varianza. Además, `model7.2C.fit` tiene **mayor
+AIC** que `model7.1.fit` (873.12 vs 874.16) — el modelo más
+simple (varianza homogénea) es preferible tanto por el LRT
+como por parsimonia.
+
+**¿Por qué esto es un buen ejemplo?**
+
+Muestra que la exploración visual es útil para **generar
+hipótesis**, pero no reemplaza la **prueba formal**: un
+patrón que se ve en un gráfico puede no ser estadísticamente
+necesario de modelar. Aquí, la variabilidad adicional entre
+dientes y pacientes (ya capturada por los efectos aleatorios
+de Model 7.1) probablemente ya explica buena parte de la
+dispersión observada — no es necesario un componente extra de
+heterocedasticidad residual.
+
+**Decisión:** se mantiene varianza residual **homogénea** —
+Model 7.1 (sin `varIdent`) sigue siendo la base para evaluar
+H7.3.
+:::
+
+## 🦷 H7.3: ¿Son necesarias las interacciones con el tiempo?
 
 ```{r h73}
 model7.1.ml.fit <- update(
   model7.1.fit,
   method = "ML")
 
-model7.3.ml.fit <- lme(
-  gcf ~ time + base.gcf + cda + age,
-  random = list(
-    patient = ~ time,
-    tooth   = ~ 1),
-  data = veneer_data,
-  method = "ML")
+model7.3.ml.fit <- update(
+  model7.1.ml.fit,
+  fixed = gcf ~ time + base.gcf + cda + age)
 
-anova(model7.1.ml.fit, model7.3.ml.fit)
+anova(model7.3.ml.fit, model7.1.ml.fit)
 ```
 
 > Si no es significativo → se eliminan las interacciones.
 
-## 🦷Resumen de comparación de modelos
+::: {.callout-note collapse="true"}
+## 🖊
+**H7.2** compara Model 7.1 (varianza residual homogénea) con
+una versión que permite una varianza distinta para cada
+tiempo (`varIdent(form=~1|time.f)`), motivado por lo que
+sugería el boxplot de la exploración descriptiva (mayor
+dispersión a los 6 meses).
+
+**Leyendo la tabla de `anova()`**
+
+```
+model7.1.fit   AIC=873.12  logLik=-423.56
+model7.2C.fit  AIC=874.16  logLik=-423.08
+L.Ratio = 0.95    p = 0.329
+```
+
+**Resultado: no significativo (p=0.33)**
+
+A pesar de que el boxplot mostraba una caja más ancha y un
+bigote más largo a los 6 meses, esa diferencia **no es lo
+suficientemente grande** como para justificar un parámetro
+adicional de varianza. Además, `model7.2C.fit` tiene **mayor
+AIC** que `model7.1.fit` (873.12 vs 874.16) — el modelo más
+simple (varianza homogénea) es preferible tanto por el LRT
+como por parsimonia.
+
+**¿Por qué esto es un buen ejemplo?**
+
+Muestra que la exploración visual es útil para **generar
+hipótesis**, pero no reemplaza la **prueba formal**: un
+patrón que se ve en un gráfico puede no ser estadísticamente
+necesario de modelar. Aquí, la variabilidad adicional entre
+dientes y pacientes (ya capturada por los efectos aleatorios
+de Model 7.1) probablemente ya explica buena parte de la
+dispersión observada — no es necesario un componente extra de
+heterocedasticidad residual.
+
+**Decisión:** se mantiene varianza residual **homogénea** —
+Model 7.1 (sin `varIdent`) sigue siendo la base para evaluar
+H7.3.
+:::
+
+## 🦷 Resumen de comparación de modelos
 
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
-| 7.1 vs 7.1A | Intercepto aleatorio diente | Significativo | Mantener |
+| 7.1A vs 7.1 | Intercepto aleatorio diente | Significativo | Mantener |
 | 7.1 vs 7.2C | Varianza residual heterogénea | No significativo | No retener |
-| 7.1 vs 7.3 (ML) | Interacciones con tiempo | No significativo | Eliminar |
+| 7.3 vs 7.1 (ML) | Interacciones con tiempo | No significativo | Eliminar |
 | **Modelo final** | — | — | **Model 7.3** |
 
-## 🦷Modelo final — Model 7.3
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume las **3 decisiones** que llevaron de Model
+7.1 (cargado) a Model 7.3 (final) — el mismo tipo de "mapa"
+que vimos en rat pup y classroom.
+
+**Lo que cada fila significa para la estructura final**
+
+- **7.1A vs 7.1 → Mantener intercepto de diente**: la
+  estructura aleatoria conserva `tooth = ~1` — los dientes
+  dentro de un paciente difieren entre sí
+- **7.1 vs 7.2C → No retener varianza heterogénea**: la
+  estructura aleatoria **no** incluye `varIdent` — la
+  varianza residual es la misma a los 3 y 6 meses
+- **7.3 vs 7.1 (ML) → Eliminar interacciones con tiempo**:
+  los efectos fijos se simplifican a `time + base.gcf + cda +
+  age`, sin interacciones
+
+**El patrón: 2 decisiones sobre la estructura aleatoria,
+1 sobre los efectos fijos**
+
+A diferencia de classroom (donde todas las decisiones eran
+sobre efectos fijos) o rat pup (donde había una mezcla más
+distribuida), aquí el patrón es claro: primero se "cierra" la
+estructura de varianza-covarianza (H7.1 mantiene un
+componente, H7.2 descarta otro), y **solo después** se
+simplifican los efectos fijos (H7.3). Esto es el orden
+correcto en la lógica top-down: la estructura aleatoria debe
+estar decidida antes de comparar efectos fijos con ML.
+
+**Resultado neto: Model 7.3**
+
+```
+gcf ~ time + base.gcf + cda + age
+random = list(patient = ~time, tooth = ~1)
+```
+
+Más simple que Model 7.1 en los **efectos fijos** (4 términos
+en vez de 7), pero con la **misma estructura aleatoria**
+completa (intercepto y pendiente de paciente + intercepto de
+diente, varianza homogénea).
+:::
+
+## 🦷 Modelo final — Model 7.3
 
 ```{r modelo_final}
 model7.3.fit <- lme(
@@ -206,7 +755,73 @@ summary(model7.3.fit)
 intervals(model7.3.fit, which = "fixed")
 ```
 
-## 🦷Interpretación de efectos fijos
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el **modelo final**: efectos fijos simplificados a
+`time + base.gcf + cda + age`, pero con la misma estructura
+aleatoria de Model 7.1 (intercepto y pendiente de paciente +
+intercepto de diente, varianza homogénea).
+
+**Comparando AIC con Model 7.1**
+
+```
+Model 7.1:  AIC = 873.12
+Model 7.3:  AIC = 861.86
+```
+
+Model 7.3 tiene **menor AIC** con menos parámetros — confirma
+que la simplificación de H7.3 fue una buena decisión.
+
+**Random effects — sin cambios sustanciales respecto a Model 7.1**
+
+```
+Paciente:  (Intercept) SD=22.91   time SD=6.47   corr=-0.947
+Diente:    (Intercept) SD=6.89
+Residual:  SD=6.99
+```
+
+Estos valores son muy similares a los de Model 7.1 — quitar
+las interacciones con tiempo (efectos fijos) no cambió mucho
+la estructura aleatoria, lo cual es razonable.
+
+**Efectos fijos — usando los IC del 95%**
+
+```
+                lower       est.       upper
+(Intercept)   20.567     45.739      70.910
+time          -3.582      0.301       4.184
+base.gcf      -0.308     -0.018       0.271
+cda           -1.398     -0.329       0.740
+age           -1.054     -0.577      -0.101
+```
+
+**Lectura rápida — ¿el IC cruza el 0?**
+
+- **`(Intercept)`** — no cruza 0 (20.6 a 70.9) — el GCF
+  esperado para el grupo de referencia es claramente positivo
+- **`time`** — **cruza 0** (-3.58 a 4.18) — no hay evidencia
+  de que el GCF cambie, en promedio, entre 3 y 6 meses
+- **`base.gcf`** — **cruza 0** — el GCF basal del diente no
+  predice significativamente el GCF post-tratamiento, una vez
+  controlado por lo demás
+- **`cda`** — **cruza 0** — la diferencia de contorno no tiene
+  efecto significativo
+- **`age`** — **NO cruza 0** (-1.054 a -0.101, ambos
+  negativos) — es el **único efecto fijo significativo**: a
+  mayor edad del paciente, **menor** GCF esperado
+
+**El hallazgo principal**
+
+De las 4 covariables, solo `age` (a nivel **paciente**) tiene
+un efecto significativo — ni las características del diente
+(`base.gcf`, `cda`) ni el tiempo en sí mismo predicen el GCF
+de forma significativa en este modelo. Esto es interesante: la variable de **nivel más alto** (edad
+del paciente) es la que más importa, mientras que las
+variables específicas del diente no aportan tanto una vez
+que se considera la estructura aleatoria completa.
+:::
+
+## 🦷 Interpretación de efectos fijos
 
 ```{r tabla_efectos, echo=FALSE}
 coefs <- intervals(model7.3.fit, which = "fixed")$fixed
@@ -218,7 +833,40 @@ data.frame(
   knitr::kable(caption = "Efectos fijos — Model 7.3 (REML)")
 ```
 
-## 🦷Componentes de varianza
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla presenta los mismos efectos fijos de Model 7.3 que
+ya vimos en el `summary()`, pero en formato más limpio — con la columna `Efecto` duplicada por defecto
+de R (puedes ignorar la primera columna de nombres de fila).
+
+**Misma lectura: ¿el IC cruza el 0?**
+
+| Efecto | IC | ¿Cruza 0? | Conclusión |
+|---|---|---|---|
+| `(Intercept)` | [20.57, 70.91] | No | GCF basal del grupo de referencia es positivo |
+| `time` | [-3.58, 4.18] | Sí | Sin evidencia de cambio en el tiempo |
+| `base.gcf` | [-0.31, 0.27] | Sí | Sin efecto del GCF basal del diente |
+| `cda` | [-1.40, 0.74] | Sí | Sin efecto de la diferencia de contorno |
+| `age` | [-1.05, -0.10] | **No** | **Único efecto significativo** |
+
+**Interpretación de `age` (el único efecto significativo)**
+
+El intervalo de `age` es [-1.054, -0.101] — completamente
+negativo. Esto significa: por cada año adicional de edad del
+paciente, se espera que el GCF **disminuya** entre 0.10 y
+1.05 unidades (manteniendo las demás variables constantes).
+
+**Los resultados**: de las 4
+covariables del modelo final, solo la edad del paciente
+(`age`, variable de **nivel 3**) tiene un efecto significativo
+sobre el GCF. Ni el tiempo de seguimiento, ni las
+características específicas del diente (`base.gcf`, `cda`)
+muestran asociación significativa una vez que se considera la
+estructura aleatoria completa (variabilidad entre pacientes y
+entre dientes).
+:::
+
+## 🦷 Componentes de varianza
 
 ```{r varianza}
 VarCorr(model7.3.fit)
@@ -234,7 +882,69 @@ VarCorr(model7.3.fit)
 > - **Varianza residual homogénea** — no fue necesario
 >   permitir varianzas distintas entre 3 y 6 meses
 
-## 🦷Diagnósticos
+::: {.callout-note collapse="true"}
+## 🖊
+Esta salida muestra las **4 fuentes de variabilidad** del
+modelo final — la "descomposición" de toda la variabilidad
+de `gcf` en sus componentes.
+
+**Leyendo la tabla**
+
+```
+Paciente:
+  (Intercept)  Var=524.99   SD=22.91
+  time         Var=41.89    SD=6.47    corr=-0.947
+
+Diente (dentro de paciente):
+  (Intercept)  Var=47.46    SD=6.89
+
+Residual:
+  Var=48.87   SD=6.99
+```
+
+**Las 4 fuentes, en orden de magnitud (varianza):**
+
+1. **Intercepto de paciente (524.99)** — por mucho, la mayor
+   fuente de variabilidad. Los pacientes difieren **mucho**
+   entre sí en su nivel general de GCF
+2. **Residual (48.87)** y **Intercepto de diente (47.46)** —
+   similares entre sí, y mucho menores que la variabilidad
+   entre pacientes
+3. **Pendiente de tiempo (41.89)** — la menor, pero aún
+   relevante: los pacientes también difieren en *cómo
+   cambian* en el tiempo
+
+**La correlación negativa (-0.947) entre intercepto y
+pendiente de paciente**
+
+Una correlación tan fuerte y negativa sugiere: los pacientes
+que **empiezan** con GCF más alto tienden a **disminuir más**
+con el tiempo (pendiente más negativa), y viceversa — un
+patrón de "regresión hacia la media" a nivel de paciente,
+similar conceptualmente a lo que viste en classroom con
+`mathkind`.
+
+**Comparación con ARMD (Galecki)**
+
+En ARMD, la estructura final (`fm16.4`) usaba `pdDiag` —
+intercepto y pendiente **independientes** (correlación=0).
+Aquí, en cambio, la correlación es fuerte y se estima
+libremente (`pdLogChol`) — los pacientes con GCF inicial alto
+y su tasa de cambio están claramente relacionados, a
+diferencia de los pacientes de ARMD.
+
+**¿Por qué la variabilidad entre pacientes (524.99) es tanto
+mayor que las demás?**
+
+Esto es consistente con el hallazgo de la sección anterior:
+`age` (variable de **paciente**) fue el único efecto fijo
+significativo. La mayor parte de la "historia" sobre por qué
+varía el GCF está en **diferencias entre pacientes** — no
+entre dientes del mismo paciente, ni en el cambio temporal en
+sí.
+:::
+
+## 🦷 Diagnósticos
 
 ```{r diagnosticos, echo=FALSE}
 residuos_norm <- residuals(model7.3.fit, type = "normalized")
@@ -264,25 +974,122 @@ qqnorm(re_tooth[, 1], main = "Q-Q EBLUPs diente")
 qqline(re_tooth[, 1])
 ```
 
-## 🦷Conclusiones
+::: {.callout-note collapse="true"}
+## 🖊
+Estos 4 gráficos evalúan los supuestos de Model 7.3 — igual
+que en classroom, pero aquí hay **dos niveles** de efectos
+aleatorios (paciente y diente) que revisar por separado.
+
+**Gráfico 1: Residuos vs ajustados**
+
+Se observa que los residuos están **más dispersos hacia
+valores bajos** de los ajustados (entre 0 y 30) y más
+concentrados/escasos hacia valores altos (>50). No es un
+patrón de "embudo" clásico, pero la dispersión no es
+perfectamente uniforme — hay más variabilidad cuando el GCF
+predicho es bajo. Esto es consistente con que H7.2
+(heterocedasticidad) estuvo "cerca" pero no fue significativa.
+
+**Gráfico 2: Q-Q plot de residuos**
+
+Los puntos siguen razonablemente la diagonal en la parte
+central, pero se **desvían en ambas colas** — especialmente
+en la cola superior (residuos grandes positivos se alejan de
+la línea hacia arriba). Esto sugiere **colas más pesadas** que
+una normal — algunos dientes/mediciones tienen residuos más
+extremos de lo que una distribución normal predeciría.
+
+**Gráfico 3: Q-Q EBLUPs paciente**
+
+Los puntos siguen la diagonal **muy bien**, con la posible
+excepción del punto más extremo (inferior izquierda, ~-45).
+Esto respalda el supuesto de normalidad para los efectos
+aleatorios de **paciente** (intercepto).
+
+**Gráfico 4: Q-Q EBLUPs diente**
+
+Aquí la desviación es más notoria: varios puntos en la cola
+superior (derecha) se alejan claramente de la línea —
+indicando que algunos **dientes** tienen efectos aleatorios
+más grandes de lo esperado bajo normalidad. También hay 2
+puntos en la cola inferior izquierda algo alejados.
+
+Los supuestos se cumplen **razonablemente bien** para el
+componente de **paciente**, pero muestran cierta desviación
+en los **residuos** y en los efectos aleatorios de **diente**
+— ambos con colas más pesadas que la normal. Esto no invalida
+el modelo, pero sugiere que podría haber algunos
+dientes/mediciones con comportamiento atípico (similar al
+caso del diente que llegaba a GCF≈88 en la exploración
+descriptiva) que están generando esas desviaciones en las
+colas.
+:::
+
+## 🦷 Conclusiones
 
 - El GCF se modela longitudinalmente entre los 3 y 6 meses
-- Las interacciones con el tiempo no fueron necesarias en 
-  el modelo final
-- Los pacientes difieren en su nivel basal y en su tasa
-  de cambio en el tiempo
-- Los dientes dentro de un mismo paciente también difieren
-  entre sí
+- Los pacientes difieren en su nivel esperado de GCF y en su
+  tasa de cambio en el tiempo
+- Los dientes dentro de un mismo paciente también presentan
+  variabilidad adicional
 - No fue necesario permitir varianza residual heterogénea
   entre tiempos
-- Las interacciones con el tiempo no fueron significativas
-- El **Model 7.3** es el modelo final con solo efectos
-  principales fijos
+- Las interacciones con el tiempo no aportaron evidencia
+  suficiente, por lo que el modelo final conserva solo
+  efectos principales fijos
+- El **Model 7.3** es el modelo final seleccionado
 
 > El modelo final es un modelo lineal mixto longitudinal
 > agrupado de tres niveles, con interceptos y pendientes
 > aleatorias de tiempo a nivel de paciente e interceptos
 > aleatorios a nivel de diente.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Estas conclusiones cierran el recorrido del Dental Veneer
+Example — útil resumirlo como **"3 preguntas, 3 respuestas,
+1 modelo"**:
+
+| Pregunta | Respuesta | Efecto en el modelo final |
+|---|---|---|
+| H7.1: ¿Intercepto aleatorio de diente? | Sí, significativo | Se mantiene `tooth = ~1` |
+| H7.2: ¿Varianza heterogénea por tiempo? | No | Varianza residual homogénea |
+| H7.3: ¿Interacciones con tiempo? | No | Solo efectos principales |
+
+**Lo que NO se mencionó en conclusiones, pero es importante**
+
+Recuerda el hallazgo de "Interpretación de efectos fijos": de
+las 4 covariables (`time`, `base.gcf`, `cda`, `age`), **solo
+`age` fue significativa** (efecto negativo). Esto podría
+agregarse a las conclusiones como un punto adicional:
+
+```markdown
+- De las covariables consideradas, solo la edad del paciente
+  (`age`) mostró una asociación significativa con el GCF
+  (efecto negativo) — ni el tiempo de seguimiento ni las
+  características del diente (`base.gcf`, `cda`) resultaron
+  significativos en el modelo final.
+```
+
+**Comparando este ejemplo con los otros 8**
+
+Este es el único ejemplo que combina **longitudinal +
+clusters de 3 niveles** simultáneamente — un punto de
+diferenciación útil para explicar por
+qué este caso es más complejo que rat pup (clusters sin
+tiempo) o ARMD (longitudinal sin clusters anidados de
+"unidad de tratamiento").
+
+**Conexión con los anexos técnicos**
+
+Los dos anexos que siguen (estructura residual con
+correlación explícita, y comparación con `lmer()`) no son
+parte del flujo de decisión — son material **complementario**
+para quien quiera explorar alternativas técnicas (por qué
+`corCompSymm` no es identificable con solo 2 tiempos, y cómo
+se vería el mismo modelo final con `lme4::lmer()` en vez de
+`nlme::lme()`).
+:::
 
 ---
 
@@ -310,6 +1117,60 @@ model7.2A.fit <- lme(
 summary(model7.2A.fit)
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este modelo intenta agregar una estructura de correlación
+**explícita** (`corCompSymm`) entre las dos mediciones (3 y
+6 meses) del mismo diente — además de los efectos aleatorios
+que ya capturan correlación implícitamente.
+
+**Lo que muestra el output**
+
+```
+Rho ≈ 0.0016   (prácticamente cero)
+AIC = 875.12   (vs 873.12 de Model 7.1, sin corCompSymm)
+```
+
+Los **coeficientes fijos son prácticamente idénticos** a
+Model 7.1 (compara `(Intercept)=69.92`, `time=-6.02`, etc. —
+son los mismos valores). El parámetro de correlación `Rho`
+es esencialmente **cero**, y el AIC es **peor** (875.12 vs
+873.12) — agregar 1 parámetro más sin mejorar el ajuste.
+
+**¿Por qué pasa esto? — el problema de "aliasing"**
+
+Como explica la introducción de este anexo, con solo **2
+tiempos por diente**, la correlación entre esas 2 mediciones
+ya está **completamente capturada** por el intercepto
+aleatorio de diente (`tooth = ~1`). Agregar `corCompSymm`
+intenta modelar la *misma* fuente de correlación dos veces —
+una vez mediante el efecto aleatorio, y otra vez mediante la
+estructura de correlación explícita. El modelo "no tiene
+dónde poner" la correlación adicional, por lo que `Rho`
+converge a ≈0.
+
+**La lección conceptual**
+
+Cuando hay **solo 2 mediciones por unidad** (como aquí, 3 y
+6 meses por diente), un intercepto aleatorio por unidad y una
+estructura `corCompSymm` para esa misma unidad son
+**equivalentes** — son dos formas de expresar "estas 2
+observaciones están correlacionadas". Con más de 2 tiempos
+(como en ARMD, con 4 visitas), estas dos aproximaciones
+**sí pueden diferir** y `corCompSymm`/`corAR1`/`corSymm`
+aportan información adicional que un simple intercepto
+aleatorio no captura.
+
+**Por qué este anexo es útil**
+
+No es un error tuyo ni del modelo — es una **propiedad
+matemática** de la combinación "2 tiempos + intercepto
+aleatorio + correlación explícita". Entenderlo ayuda a
+explicar por qué, en este ejemplo particular, no se necesitó
+una estructura de correlación tipo Galecki (ARMD) — la
+estructura aleatoria de 3 niveles ya es suficiente.
+:::
+
 ## Anexo técnico — Comparación con lmer()
 
 | Capacidad | lme() | lmer() |
@@ -323,7 +1184,7 @@ library(lme4)
 
 model7.3.lmer <- lmer(
   gcf ~ time + base.gcf + cda + age +
-    (time | patient) + (1 | patient:tooth),
+    (time | patient) + (1 | tooth2),
   data = veneer_data,
   REML = TRUE
 )
@@ -338,3 +1199,66 @@ cat("\n=== lmer() ===\n")
 round(fixef(model7.3.lmer), 4)
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este anexo confirma que `lme()` (paquete `nlme`) y `lmer()`
+(paquete `lme4`) llegan al **mismo modelo**, expresado con
+sintaxis distinta.
+
+**Equivalencia de la estructura aleatoria**
+
+```
+lme():  random = list(patient = ~time, tooth = ~1)
+lmer(): (time | patient) + (1 | tooth2)
+```
+
+`tooth2` (creado en el setup como
+`interaction(patient, tooth)`) es el identificador único de
+diente que `lmer()` necesita — porque `lmer()` no tiene una
+sintaxis nativa para "anidado dentro de" como `tooth %in%
+patient` de `lme()`. `tooth2` logra el mismo efecto: cada
+combinación paciente-diente es un grupo único.
+
+**Los coeficientes fijos son idénticos**
+
+```
+              lme()      lmer()
+(Intercept)   45.7386    45.7386
+time           0.3010     0.3010
+base.gcf      -0.0183    -0.0183
+cda           -0.3293    -0.3293
+age           -0.5774    -0.5774
+```
+
+Coinciden hasta el cuarto decimal — confirma que ambas
+funciones ajustan el **mismo modelo estadístico**.
+
+**Random effects también coinciden**
+
+```
+              lme()         lmer()
+Paciente Int  22.913 (SD)   22.913 (SD)
+Paciente time  6.472 (SD)    6.472 (SD)
+  corr        -0.947         -0.95
+Diente Int     6.889 (SD)    6.889 (SD)
+Residual       6.991 (SD)    6.991 (SD)
+```
+
+**¿Por qué entonces usar `lme()` y no `lmer()`?**
+
+La tabla de capacidades al inicio de este anexo lo resume:
+para **este** modelo final (Model 7.3), ambas funciones dan
+el mismo resultado porque no se necesita varianza residual
+heterogénea ni estructuras de correlación residual explícitas
+(de hecho, vimos en el anexo anterior que `corCompSymm` no
+aportaba nada). Pero si H7.2 hubiera sido significativo
+(varianza heterogénea por tiempo), `lme()` habría sido
+**necesario** — `lmer()` no tiene `weights = varIdent(...)`.
+
+Este anexo es útil si alguien pregunta "¿por qué usaste
+`nlme::lme()` y no el más común `lme4::lmer()`?" — la
+respuesta es que `lme()` ofrece más flexibilidad para la
+estructura de varianza-covarianza residual (relevante para
+H7.2), aunque en este caso particular el resultado final
+habría sido el mismo con cualquiera de los dos.
+:::

@@ -10,7 +10,6 @@ library(WWGbook)
 library(nlme)
 library(dplyr)
 library(ggplot2)
-library(lmerTest)
 
 data(autism)
 
@@ -18,7 +17,6 @@ autism_updated <- autism |>
   mutate(
     childid = factor(childid),
     age.2   = age - 2,
-    age.2sq = age.2 * age.2,
     sicdegp2 = case_when(
       sicdegp == 3 ~ 0,
       sicdegp == 1 ~ 1,
@@ -38,9 +36,63 @@ Se estudia el desarrollo de la socialización (`vsae`)
 en niños con autismo a lo largo del tiempo. Los niños fueron
 medidos a los 2, 3, 5, 9 y 13 años.
 
-> **Pregunta central:** ¿Cómo evoluciona el desarrollo de la socialización con la edad,
-y difiere esta trayectoria según el grupo de competencia lingüística
-inicial (`sicdegp`)?
+> **Pregunta central:** ¿Cómo evoluciona el desarrollo de la
+> socialización con la edad, y difiere esta trayectoria según
+> el grupo de competencia lingüística inicial (`sicdegp`)?
+
+::: {.callout-note collapse="true"}
+## 🖊
+El **Autism Example** introduce un tipo de modelo distinto a
+los anteriores: **coeficientes aleatorios** (random
+coefficients) — donde lo que varía entre sujetos no es solo
+el "nivel" (intercepto), sino la **forma de la trayectoria**
+en el tiempo (pendientes lineal y cuadrática).
+
+**¿Qué es `vsae`?**
+
+Es la edad equivalente de socialización Vineland (Vineland
+Socialization Age Equivalent) — una medida estandarizada del
+desarrollo de habilidades sociales. Como es una "edad
+equivalente", se espera que **aumente con la edad real** del
+niño (un niño de 9 años debería tener un `vsae` más alto que
+cuando tenía 2 años) — la pregunta es **cómo** aumenta, y si
+ese patrón difiere por grupo.
+
+**La pregunta tiene dos partes, igual que en otros ejemplos:**
+
+1. **¿Cómo evoluciona `vsae` con la edad?** — esto sugiere
+   una trayectoria que podría no ser lineal (de ahí el uso de
+   `age.2sq` / `I(age.2^2)` en los modelos)
+2. **¿Esa trayectoria difiere según `sicdegp`?** — el grupo de
+   competencia lingüística **inicial** (medido al comienzo
+   del estudio) podría predecir **no solo** el nivel de
+   partida, sino también la **velocidad y forma** del
+   desarrollo posterior
+
+**Las edades de medición: 2, 3, 5, 9, 13 años**
+
+Nota que los intervalos **no son uniformes** (1, 2, 4, 4
+años entre mediciones) — a diferencia de ARMD (4, 12, 24, 52
+semanas, también no uniforme pero más regular) o rat pup
+(una sola medición). Esto es parte de por qué se necesita
+una trayectoria **cuadrática**: con solo mediciones
+equiespaciadas, sería más difícil distinguir una curva de
+una línea recta, pero con edades muy distintas (2 a 13 años)
+la curvatura del desarrollo se hace más visible.
+
+**Comparando con los ejemplos anteriores**
+
+| | Rat Pup / Classroom | ARMD / Dental Veneer | Autism |
+|---|---|---|---|
+| Estructura | Clusters (sin tiempo) | Longitudinal | Longitudinal |
+| Qué varía entre sujetos | Nivel (intercepto) | Nivel y/o pendiente lineal | Pendiente **lineal y cuadrática** |
+| Forma de la trayectoria | No aplica | Lineal | Cuadrática |
+
+Autism es el ejemplo donde la **forma misma de la curva**
+(no solo su nivel o su pendiente) puede variar entre
+individuos — el nivel de complejidad más alto en términos de
+estructura de efectos aleatorios.
+:::
 
 ## 🚸Diseño longitudinal
 
@@ -63,14 +115,59 @@ autism_updated |>
 table(autism_updated$age, autism_updated$sicdegp2.f)
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Esta sección confirma numéricamente lo que la lista de
+arriba describe — es el mismo tipo de "tabla de estructura"
+que vimos en otros ejemplos, pero aquí en formato de
+verificación directa con `table()` y `count()`.
+
+**Leyendo cada salida**
+
+- **`nrow(autism_updated)`** — número total de observaciones
+  (mediciones), igual que "Observaciones (Nivel 1)" en otros
+  ejemplos
+- **`n_distinct(autism_updated$childid)`** — número de niños
+  (Nivel 2)
+- **`count(childid) |> count(n_mediciones)`** — esta es la
+  pieza clave para confirmar el **desbalance**: muestra
+  cuántos niños tienen 1 medición, cuántos tienen 2, ..., 
+  hasta 5. Si todos los niños tuvieran exactamente 5
+  mediciones, esta tabla tendría una sola fila (`5 → 158`,
+  por ejemplo). En cambio, verás varias filas — confirmando
+  que **no todos los niños llegaron a las 5 mediciones**
+- **`table(age, sicdegp2.f)`** — cruza edad con grupo SICD;
+  permite ver si la distribución de niños por grupo es similar
+  en cada momento del tiempo, o si hay patrones de pérdida de
+  seguimiento (`dropout`) diferenciales por grupo
+
+**¿Por qué el desbalance es importante aquí específicamente?**
+
+A diferencia de classroom (desbalance en *cuántos* estudiantes
+por salón, pero cada estudiante se mide **una sola vez**),
+aquí el desbalance es en **cuántas veces se mide el mismo
+niño**. Esto es exactamente el tipo de dato para el que
+`lme()`/`groupedData()` están diseñados — a diferencia de
+métodos que requieren mediciones completas y equiespaciadas
+(como ANOVA de medidas repetidas clásico).
+
+**Conexión con `groupedData()`**
+
+El objeto `autism.grouped` (creado en el setup con
+`groupedData(vsae ~ age.2 | childid, ...)`) es la estructura
+que `nlme::lme()` espera para datos longitudinales
+desbalanceados — declara explícitamente "estas filas
+pertenecen al mismo niño" sin requerir que todos los niños
+tengan el mismo número de filas.
+:::
+
 ## 🚸Variables
 
 | Variable | Nivel | Tipo | Rol | Codificación |
 |----------|-------|------|-----|--------------|
-| `vsae` | 1 | Continua | **Outcome** | Habilidades sociales verbales |
+| `vsae` | 1 | Continua | **Outcome** | Edad equivalente de socialización Vineland (Vineland Socialization Age Equivalent) |
 | `age` | 1 | Continua | Tiempo | 2, 3, 5, 9, 13 años |
 | `age.2` | 1 | Continua | Tiempo centrado | age − 2 |
-| `age.2sq` | 1 | Continua | Curvatura | age.2² |
 | `childid` | 2 | Identificador | Sujeto | Niño |
 | `sicdegp` | 2 | Categórica | Predictor | Grupo de competencia lingüística inicial |
 | `sicdegp2.f` | 2 | Categórica | Predictor recodificado | Grupo 3 = ref (0), Grupo 1 = 1, Grupo 2 = 2 |
@@ -78,6 +175,66 @@ table(autism_updated$age, autism_updated$sicdegp2.f)
 > **¿Por qué centrar la edad en 2?** Porque los niños tienen
 > 2 años en la primera medición. Así el intercepto representa
 > el VSAE esperado **al inicio del seguimiento**, no al año 0.
+> La curvatura de la trayectoria se modela con `I(age.2^2)`
+> directamente en las fórmulas de los modelos.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla tiene una diferencia importante respecto a las de
+classroom y dental veneer: aquí **no hay variables de nivel 1
+"covariables"** además del tiempo — solo `vsae` (outcome) y
+las variables de tiempo (`age`, `age.2`). Todas las
+covariables sustantivas (`sicdegp`/`sicdegp2.f`) están en
+**nivel 2** (niño).
+
+**¿Por qué `age.2` y no solo `age`?**
+
+`age.2 = age - 2` es un **centrado**, no una transformación
+de escala. El intercepto de cualquier modelo con `age.2`
+representa el VSAE esperado cuando `age.2=0`, es decir,
+cuando `age=2` — la **primera medición**. Si se usara `age`
+sin centrar, el intercepto representaría el VSAE esperado a
+los **0 años**, una edad que **no existe en los datos** —
+una extrapolación sin sentido sustantivo.
+
+**La recodificación `sicdegp` → `sicdegp2.f`**
+
+```
+sicdegp = 3  →  sicdegp2.f = 0  (referencia)
+sicdegp = 1  →  sicdegp2.f = 1
+sicdegp = 2  →  sicdegp2.f = 2
+```
+
+Esto **no es una simplificación** — es elegir cuál grupo es
+la **referencia** en los contrastes. Al hacer que el grupo 3
+sea la referencia (0), los coeficientes `sicdegp2.f1` y
+`sicdegp2.f2` se interpretan como "diferencia respecto al
+grupo 3" — una decisión sustantiva sobre cómo se presentan
+los resultados, similar a cómo `treat.f` en ARMD tenía
+"Placebo" como referencia.
+
+**`I(age.2^2)` — la curvatura, no una variable separada**
+
+A diferencia de `age.2`, que aparece como columna en los
+datos, la curvatura se construye **dentro de la fórmula** con
+`I(age.2^2)`. Esto evita crear y mantener una columna
+redundante (`age.2sq`) que duplicaría información ya
+disponible — R calcula `age.2^2` al momento de ajustar el
+modelo.
+
+**El patrón de niveles aquí, comparado con classroom**
+
+| | Classroom | Autism |
+|---|---|---|
+| Nivel 1 | Estudiante (mathkind, sex, etc.) | Tiempo (age, age.2) |
+| Nivel 2 | Salón/Escuela (yearstea, housepov) | Niño (sicdegp2.f) |
+| Nivel 3 | Escuela | — (solo 2 niveles) |
+
+Autism tiene **menos niveles** que classroom (2 vs 3), pero
+**más complejidad en la estructura aleatoria** dentro del
+nivel 2 — no solo un intercepto, sino también pendientes
+lineal y cuadrática aleatorias por niño.
+:::
 
 ## 🚸Exploración descriptiva
 
@@ -97,6 +254,48 @@ ggplot(autism_updated,
   theme_minimal()
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Cada línea conecta las mediciones de **un niño** a lo largo
+del tiempo (2, 3, 5, 9, 13 años), coloreada por su grupo SICD
+inicial.
+
+**Lo que se observa**
+
+- **Todas las trayectorias son crecientes** — el VSAE aumenta
+  con la edad para prácticamente todos los niños, como se
+  esperaría de una "edad equivalente" de desarrollo
+- **Mucha variabilidad en la pendiente** — algunas líneas
+  suben muy poco (quedan cerca de 0-20 incluso a los 13 años),
+  mientras otras suben dramáticamente (hasta 150-200)
+- **El Grupo 3 (morado, referencia)** tiene varias de las
+  trayectorias **más altas** — incluyendo la línea que llega
+  a ~170 a los 9 años y ~190 a los 13
+- **Los Grupos 1 (verde) y 2 (naranja)** tienden a
+  concentrarse más en la zona baja (0-50), aunque también
+  tienen algunas trayectorias altas
+
+**¿Por qué esto sugiere pendientes Y curvaturas aleatorias?**
+
+No solo varía **cuánto** sube cada niño (pendiente), sino que
+algunas trayectorias parecen **acelerarse** más hacia el final
+(curvatura positiva) mientras otras se mantienen casi
+**lineales** o incluso **se aplanan**. Esta variabilidad en la
+*forma* de la curva, no solo en su nivel, es lo que motiva
+incluir tanto pendiente lineal como cuadrática como efectos
+aleatorios en Model 6.1/6.2.
+
+**Conexión con Model 6.1 (no converge)**
+
+La gran dispersión de valores **iniciales** (a los 2 años, ya
+hay niños entre ~2 y ~20) podría sugerir que también se
+necesita un intercepto aleatorio — pero recuerda que Model
+6.1 (que sí lo incluía) tuvo problemas de convergencia,
+sugiriendo que esa variabilidad inicial, una vez consideradas
+las pendientes aleatorias, no aporta un componente adicional
+distinto.
+:::
+
 ```{r fig2, echo=FALSE}
 ggplot(autism_updated,
        aes(x = age, y = vsae,
@@ -111,39 +310,196 @@ ggplot(autism_updated,
   theme_minimal()
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este gráfico resume la información del anterior, mostrando
+solo la **trayectoria promedio** (curva suavizada con
+`loess`) y su intervalo de confianza (banda gris) para cada
+grupo SICD.
+
+**Lo que se observa**
+
+- **El Grupo 3 (morado, referencia) tiene la trayectoria más
+  alta en todo el rango de edades** — empieza más alto (~13 a
+  los 2 años) y termina más alto (~88 a los 13 años)
+- **Los Grupos 1 y 2 parten de niveles similares** (~7-10 a
+  los 2 años) y se mantienen relativamente cercanos entre sí
+  durante buena parte del seguimiento, aunque el Grupo 2
+  (naranja) termina algo por encima del Grupo 1 (verde) hacia
+  los 13 años (~58 vs ~37)
+- **Las tres curvas tienen una forma similar** — crecimiento
+  que se acentúa con la edad, consistente con la trayectoria
+  cuadrática común (`I(age.2^2)`) que el modelo final asume
+  para **todos los grupos**
+- **Las bandas de confianza se ensanchan hacia edades
+  mayores** — hay menos certeza sobre la trayectoria promedio
+  a los 13 años que a los 2, probablemente por menos datos
+  (recuerda el desbalance: no todos los niños llegan a la
+  última medición)
+
+**Conexión directa con el modelo final (Model 6.3)**
+
+Este gráfico **anticipa visualmente** los dos resultados
+principales de H6.2 y H6.3:
+
+- **H6.3 (interacción lineal × grupo, retenida)**: las 3
+  curvas tienen **pendientes generales distintas** — el Grupo
+  3 sube más rápido que los otros dos, especialmente en los
+  primeros años
+- **H6.2 (interacción cuadrática × grupo, no retenida)**: a
+  pesar de las diferencias de nivel y pendiente, la **forma**
+  de las 3 curvas (cuán "curvas" son) parece similar — ninguna
+  parece tener una curvatura marcadamente distinta de las
+  otras
+
+Esto es exactamente lo que el Model 6.3 final captura: una
+curvatura **común** (`I(age.2^2)` sin interacción con grupo)
+pero pendientes lineales **distintas** por grupo
+(`age.2:sicdegp2.f`).
+:::
+
 ## 🚸Estrategia top-down
 
 ```{mermaid}
 flowchart TD
-    A[Model 6.1\nIntercepto + pendiente lineal\n+ pendiente cuadrática aleatorias] --> B{Problema\nMatriz D mal condicionada}
-    B --> C[Model 6.2\nSin intercepto aleatorio]
-    C --> D{H6.1\n¿Pendiente cuadrática aleatoria?}
-    D -->|Sí p<0.001| E{H6.2\n¿Interacción grupo x edad cuadrática?}
-    E -->|No p=0.39| F[Model 6.3\nSin interacción cuadrática]
-    F --> G{H6.3\n¿Interacción grupo x edad lineal?}
+    A[Model 6.1<br/>Intercepto + pendiente lineal<br/>+ pendiente cuadrática aleatorias] --> B{Problema<br/>Matriz D mal condicionada}
+    B --> C[Model 6.2<br/>Sin intercepto aleatorio]
+    C --> D{H6.1<br/>¿Pendiente cuadrática aleatoria?}
+    D -->|Sí p<0.001| E{H6.2<br/>¿Interacción grupo x edad cuadrática?}
+    E -->|No p=0.39| F[Model 6.3<br/>Sin interacción cuadrática]
+    F --> G{H6.3<br/>¿Interacción grupo x edad lineal?}
     G -->|Sí p<0.001| H[Model 6.3 — Modelo Final]
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Esta estrategia top-down tiene una diferencia importante
+respecto a las de rat pup y classroom: **empieza con un
+problema de convergencia real**, no solo con una pregunta
+sobre qué simplificar.
+
+**El camino, paso a paso**
+
+**Model 6.1 → Problema**
+El modelo "completo" (intercepto + pendiente lineal +
+pendiente cuadrática, todos aleatorios) no converge — la
+matriz D (de covarianzas de efectos aleatorios) queda mal
+condicionada. Esto **no es una hipótesis a probar**, es un
+**problema técnico** que obliga a simplificar antes de poder
+continuar.
+
+**Model 6.2 — Sin intercepto aleatorio**
+La solución es quitar el intercepto aleatorio (`-1` en la
+fórmula de `random`). Esto es una decisión **motivada por la
+falla de convergencia**, no por una prueba de hipótesis
+formal — aunque retrospectivamente es consistente con que la
+varianza del intercepto resultaba prácticamente cero.
+
+**H6.1 — ¿Pendiente cuadrática aleatoria?**
+Aquí empieza la secuencia de hipótesis "normales": ¿es
+necesaria la pendiente cuadrática aleatoria? Resultado:
+**sí** (p<0.001, con corrección por mezcla de chi-cuadrados).
+
+**H6.2 — ¿Interacción grupo × edad cuadrática?**
+¿La **curvatura** difiere entre los 3 grupos SICD? Resultado:
+**no** (p=0.39) — la curvatura es **común** para todos los
+grupos → Model 6.3.
+
+**H6.3 — ¿Interacción grupo × edad lineal?**
+¿La **pendiente lineal** difiere entre grupos? Resultado:
+**sí** (p<0.001) — se retiene → **Model 6.3 = modelo final**.
+
+**Comparando las 3 estrategias top-down del sitio**
+
+| | Rat Pup | Classroom (step-up) | Autism |
+|---|---|---|---|
+| Punto de partida | Modelo cargado | Modelo vacío | Modelo cargado, **no converge** |
+| Primer paso | Prueba de hipótesis | Agregar componente | **Resolver problema técnico** |
+| Tipo de decisiones | Solo hipótesis | Solo hipótesis | 1 técnica + 3 hipótesis |
+
+Autism es el único de los 9 ejemplos donde el **primer paso**
+no es una prueba de hipótesis, sino una **respuesta a un
+problema de estimación** — un recordatorio de que, en la
+práctica, los modelos mixtos complejos a veces requieren
+ajustes pragmáticos antes de poder aplicar la lógica de
+comparación de hipótesis.
+:::
+
 ## 🚸Model 6.1 — Modelo cargado
 
-Este modelo incluye intercepto, pendiente lineal y cuadrática
-como efectos aleatorios. West lo ajusta primero pero encuentra
-problemas de convergencia — la varianza del intercepto aleatorio
-es prácticamente nula.
+West intenta ajustar primero este modelo, que incluye
+intercepto, pendiente lineal y cuadrática como efectos
+aleatorios — pero reporta problemas de convergencia.
 
 ```{r model61, error=TRUE}
-model6.1.fit <- lme(
-  vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
-    age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,
-  random = ~ age.2 + I(age.2^2),
-  method = "REML",
-  data = autism.grouped)
-summary(model6.1.fit)
+model6.1.fit <- try(
+  lme(
+    vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+      age.2:sicdegp2.f + I(age.2^2):sicdegp2.f,
+    random = ~ age.2 + I(age.2^2),
+    method = "REML",
+    data = autism.grouped),
+  silent = TRUE)
+
+model6.1.fit
 ```
 
-> La varianza del intercepto aleatorio es prácticamente cero,
-> lo que indica que los niños no difieren significativamente
-> en su VSAE inicial a los 2 años — solo en sus trayectorias.
+> El problema de convergencia es consistente con que la
+> varianza del intercepto aleatorio resulta prácticamente
+> cero — es decir, no hay evidencia de variabilidad
+> adicional relevante en el VSAE inicial a los 2 años, una
+> vez considerados los efectos fijos del modelo. Esto motiva
+> ajustar Model 6.2, sin intercepto aleatorio.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Este chunk usa `try(..., silent=TRUE)` — una técnica que vale
+la pena explicar, porque es distinta a cómo se manejaron los
+demás modelos del sitio.
+
+**¿Por qué `try()` y no simplemente `lme(...)`?**
+
+Si `lme()` falla (no converge) y se llama directamente, R
+detiene la ejecución del documento completo con un error —
+el render de Quarto se rompería en este punto. `try(...,
+silent=TRUE)` le dice a R: "intenta ejecutar esto; si falla,
+no detengas todo el programa — guarda el mensaje de error en
+el objeto y continúa".
+
+**¿Qué contiene `model6.1.fit` después de esto?**
+
+Si el modelo falla, `model6.1.fit` será un objeto de clase
+`"try-error"` que, al imprimirse (`model6.1.fit` al final del
+chunk), muestra el **mensaje de error de convergencia** —
+permitiendo documentar el problema sin romper el documento.
+
+**¿Por qué `error=TRUE` en las opciones del chunk?**
+
+Es una capa adicional de seguridad: incluso si `try()` no
+capturara todo, `error=TRUE` le dice a Quarto "si este chunk
+genera un error, muéstralo en el documento en vez de detener
+el render".
+
+**La interpretación: "varianza ≈ 0" como explicación del
+fallo**
+
+La nota conecta el problema técnico con su interpretación
+sustantiva: cuando un modelo mixto no converge porque un
+componente de varianza intenta ser **negativo** o
+**colapsa a 0**, una explicación común es que ese efecto
+aleatorio **no es necesario** — los datos no muestran
+evidencia de esa fuente de variabilidad. Por eso, la solución
+(Model 6.2: quitar el intercepto aleatorio) no es solo un
+"parche técnico", sino que tiene sentido sustantivo: si la
+varianza del intercepto ya "quería" ser cero, quitarlo
+explícitamente es razonable.
+
+Este es un buen ejemplo de **transparencia metodológica**: en
+vez de "ocultar" que el primer modelo falló y solo mostrar el
+que funcionó, el documento **muestra el problema** y explica
+por qué la solución (Model 6.2) es la decisión correcta —
+tanto técnica como sustantivamente.
+:::
 
 ## 🚸Model 6.2: Sin intercepto aleatorio
 
@@ -160,6 +516,56 @@ model6.2.fit <- lme(
 summary(model6.2.fit)
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este chunk usa `try(..., silent=TRUE)` — una técnica que vale
+la pena explicar, porque es distinta a cómo se manejaron los
+demás modelos del sitio.
+
+**¿Por qué `try()` y no simplemente `lme(...)`?**
+
+Si `lme()` falla (no converge) y se llama directamente, R
+detiene la ejecución del documento completo con un error —
+el render de Quarto se rompería en este punto. `try(...,
+silent=TRUE)` le dice a R: "intenta ejecutar esto; si falla,
+no detengas todo el programa — guarda el mensaje de error en
+el objeto y continúa".
+
+**¿Qué contiene `model6.1.fit` después de esto?**
+
+Si el modelo falla, `model6.1.fit` será un objeto de clase
+`"try-error"` que, al imprimirse (`model6.1.fit` al final del
+chunk), muestra el **mensaje de error de convergencia** —
+permitiendo documentar el problema sin romper el documento.
+
+**¿Por qué `error=TRUE` en las opciones del chunk?**
+
+Es una capa adicional de seguridad: incluso si `try()` no
+capturara todo, `error=TRUE` le dice a Quarto "si este chunk
+genera un error, muéstralo en el documento en vez de detener
+el render".
+
+**La interpretación: "varianza ≈ 0" como explicación del
+fallo**
+
+La nota conecta el problema técnico con su interpretación
+sustantiva: cuando un modelo mixto no converge porque un
+componente de varianza intenta ser **negativo** o
+**colapsa a 0**, una explicación común es que ese efecto
+aleatorio **no es necesario** — los datos no muestran
+evidencia de esa fuente de variabilidad. Por eso, la solución
+(Model 6.2: quitar el intercepto aleatorio) no es solo un
+"parche técnico", sino que tiene sentido sustantivo: si la
+varianza del intercepto ya "quería" ser cero, quitarlo
+explícitamente es razonable.
+
+Este es un buen ejemplo de **transparencia metodológica**: en
+vez de "ocultar" que el primer modelo falló y solo mostrar el
+que funcionó, el documento **muestra el problema** y explica
+por qué la solución (Model 6.2) es la decisión correcta —
+tanto técnica como sustantivamente.
+:::
+
 ## 🚸H6.1: ¿Es necesaria la pendiente cuadrática aleatoria?
 
 ```{r h61}
@@ -167,12 +573,14 @@ model6.2a.fit <- update(
   model6.2.fit,
   random = ~ age.2 - 1)
 
-anova(model6.2a.fit, model6.2.fit)
+comp_h61 <- anova(model6.2a.fit, model6.2.fit)
+comp_h61
 
-# p-value corregido por mezcla de chi-cuadrados
-lrt_h61 <- 83.9
+lrt_h61 <- comp_h61$L.Ratio[2]
+
 h6.1.pvalue <- 0.5 * (1 - pchisq(lrt_h61, 1)) +
                0.5 * (1 - pchisq(lrt_h61, 2))
+
 cat("p-value corregido H6.1:", h6.1.pvalue, "\n")
 ```
 
@@ -181,6 +589,65 @@ cat("p-value corregido H6.1:", h6.1.pvalue, "\n")
 > de varianza en el límite del espacio paramétrico.
 > Resultado: **p < 0.001** → se retiene la pendiente
 > cuadrática aleatoria.
+
+::: {.callout-note collapse="true"}
+## 🖊
+**H6.1** compara Model 6.2 (pendientes lineal **y**
+cuadrática aleatorias) con `model6.2a.fit` (solo pendiente
+**lineal** aleatoria, sin cuadrática).
+
+**Leyendo la tabla de `anova()`**
+
+```
+model6.2a.fit  AIC=4721.20  logLik=-2349.60  (11 parámetros)
+model6.2.fit   AIC=4641.28  logLik=-2307.64  (13 parámetros)
+L.Ratio = 83.93    p < 0.0001
+```
+
+La diferencia de AIC es **enorme** (4721 vs 4641, ≈80
+puntos) — Model 6.2 (con pendiente cuadrática aleatoria) es
+claramente preferible.
+
+**¿Por qué corregir el p-value aquí también?**
+
+Igual que en H4.1 (classroom) y H7.1 (dental veneer), se
+está probando si una **varianza** (la de la pendiente
+cuadrática aleatoria) es cero. La distribución del LRT bajo
+H0 es una **mezcla de chi-cuadrados** — pero aquí hay un
+matiz adicional.
+
+**La particularidad de H6.1: 2 grados de libertad, no 1**
+
+```r
+h6.1.pvalue <- 0.5 * (1 - pchisq(lrt_h61, 1)) +
+               0.5 * (1 - pchisq(lrt_h61, 2))
+```
+
+A diferencia de H4.1/H7.1 (donde la mezcla era entre 0 y
+χ²₁), aquí la mezcla es entre **χ²₁ y χ²₂** — porque al
+agregar la pendiente cuadrática aleatoria, no solo se agrega
+**su propia varianza**, sino también **su covarianza** con la
+pendiente lineal ya existente (recuerda el `corr=-0.317` en
+Model 6.2). Por eso se prueban **2 parámetros nuevos** a la
+vez (varianza + covarianza), y la mezcla refleja esa
+diferencia de 1 vs 2 grados de libertad.
+
+**Resultado: p≈0**
+
+Con un LRT de 83.93, tanto la versión χ²₁ como χ²₂ dan
+p-values prácticamente 0 — la corrección no cambia la
+conclusión en absoluto (a diferencia de H7.1 en dental
+veneer, donde los valores eran más moderados). **Se retiene**
+la pendiente cuadrática aleatoria.
+
+Esta es la hipótesis con la evidencia más contundente de los
+9 ejemplos — un LRT de ~84 es enorme. Vale la pena mencionar
+que, aunque la corrección por mezcla de chi-cuadrados es
+metodológicamente correcta, en este caso **no era
+"necesaria"** en la práctica — la diferencia entre modelos es
+tan grande que cualquier ajuste razonable del p-value llega a
+la misma conclusión.
+:::
 
 ## 🚸H6.2: ¿Es necesaria la interacción grupo × edad cuadrática?
 
@@ -201,13 +668,55 @@ anova(model6.2.ml.fit, model6.3.ml.fit)
 > entre grupos. Se elimina la interacción cuadrática →
 > **Model 6.3**.
 
+::: {.callout-note collapse="true"}
+## 🖊
+**H6.2** compara Model 6.2 (con las 2 interacciones
+cuadráticas `I(age.2^2):sicdegp2.f1` e `I(age.2^2):sicdegp2.f2`)
+contra `model6.3.ml.fit` (sin ellas), usando **ML** porque
+cambian los efectos fijos.
+
+**Leyendo la tabla de `anova()`**
+
+```
+model6.2.ml.fit  AIC=4636.44  logLik=-2305.22  (13 parámetros)
+model6.3.ml.fit  AIC=4634.31  logLik=-2306.16  (11 parámetros)
+L.Ratio = 1.87    p = 0.393
+```
+
+**Resultado: no significativo (p=0.39)**
+
+Quitar las 2 interacciones cuadráticas **no empeora**
+significativamente el modelo. Además, `model6.3.ml.fit`
+tiene **menor AIC** (4634.31 vs 4636.44) — el modelo más
+simple, con 2 parámetros menos, es preferible.
+
+**Conexión con Model 6.2 (anticipación)**
+
+Esto confirma lo que ya anticipaban los p-values individuales
+de Model 6.2: `I(age.2^2):sicdegp2.f1` (p=0.236) e
+`I(age.2^2):sicdegp2.f2` (p=0.220) — ninguno significativo
+individualmente, y tampoco lo son **conjuntamente** (H6.2).
+
+**Interpretación sustantiva**
+
+La **curvatura** de la trayectoria de VSAE (cuán pronunciada
+es la aceleración del desarrollo con la edad) es
+**estadísticamente la misma** para los 3 grupos SICD. Las
+diferencias entre grupos están en **otro lugar** — el nivel
+inicial y/o la pendiente lineal, que se evalúan en H6.3.
+
+**Decisión:** se eliminan las 2 interacciones cuadráticas →
+**Model 6.3**, que retiene `I(age.2^2)` como término **común**
+(sin interacción con grupo) pero mantiene
+`age.2:sicdegp2.f1`/`f2` para evaluar en H6.3.
+:::
+
 ## 🚸H6.3: ¿Es necesaria la interacción grupo × edad lineal?
 
 ```{r h63}
 model6.4.ml.fit <- update(
   model6.3.ml.fit,
-  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f
-)
+  fixed = vsae ~ age.2 + I(age.2^2) + sicdegp2.f)
 
 anova(model6.3.ml.fit, model6.4.ml.fit)
 ```
@@ -215,15 +724,118 @@ anova(model6.3.ml.fit, model6.4.ml.fit)
 > **p < 0.001** → la trayectoria lineal difiere entre grupos.
 > Se retiene la interacción lineal.
 
+::: {.callout-note collapse="true"}
+## 🖊
+**H6.3** compara `model6.3.ml.fit` (con las 2 interacciones
+lineales `age.2:sicdegp2.f1` y `age.2:sicdegp2.f2`) contra
+`model6.4.ml.fit` (sin ellas) — la última prueba de la
+secuencia.
+
+**Leyendo la tabla de `anova()`**
+
+```
+model6.3.ml.fit  AIC=4634.31  logLik=-2306.16  (11 parámetros)
+model6.4.ml.fit  AIC=4653.70  logLik=-2317.85  (9 parámetros)
+L.Ratio = 23.38    p < 0.0001
+```
+
+**Resultado: muy significativo (p<0.0001)**
+
+A diferencia de H6.2, aquí la diferencia es **grande**: quitar
+las interacciones lineales **empeora considerablemente** el
+modelo (AIC sube de 4634 a 4654, ≈20 puntos). `model6.3.ml.fit`
+(**con** las interacciones lineales) es claramente preferido.
+
+**Importante: el orden de los modelos en esta tabla**
+
+A diferencia de H6.2 (donde `model6.3.ml.fit` era el modelo
+"reducido" candidato), aquí `model6.3.ml.fit` es el modelo
+**más complejo** de los dos que se comparan — y es el que
+**gana**. Esto es coherente: H6.3 prueba si se puede simplificar
+**aún más** que Model 6.3, y la respuesta es **no** — Model
+6.3 ya es el punto de parada.
+
+**Conexión con Model 6.2 (anticipación)**
+
+Esto confirma `age.2:sicdegp2.f1` (p=0.0027) y
+`age.2:sicdegp2.f2` (p=0.0078) de Model 6.2 — ambos
+significativos individualmente, y ahora confirmados
+**conjuntamente** con un LRT mucho mayor que H6.2.
+
+**Interpretación sustantiva**
+
+La **pendiente lineal** (velocidad de crecimiento del VSAE)
+**sí difiere** entre al menos uno de los grupos 1/2 y el
+grupo 3 (referencia). Combinado con H6.2 (curvatura común),
+el panorama es: los 3 grupos comparten la misma **forma**
+general de aceleración, pero **parten** de niveles distintos
+y **crecen** a velocidades distintas.
+
+**Decisión: se retienen las interacciones lineales → Model
+6.3 es el modelo final.** Esta es la última hipótesis de la
+secuencia — con H6.1 (sí), H6.2 (no) y H6.3 (sí) ya se llega
+a la estructura final del modelo.
+:::
+
 ## 🚸Resumen de comparación de modelos
 
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
-| 6.1 | Intercepto aleatorio | Varianza ≈ 0 | Eliminar |
+| 6.1 | Intercepto aleatorio | No converge / varianza ≈ 0 | Eliminar |
 | 6.2A vs 6.2 | Pendiente cuadrática aleatoria | p < 0.001 | Mantener |
 | 6.2 vs 6.3 (ML) | Interacción cuadrática grupo×edad | p = 0.39 | Eliminar |
 | 6.3 vs 6.4 (ML) | Interacción lineal grupo×edad | p < 0.001 | Mantener |
 | **Modelo final** | — | — | **Model 6.3** |
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla resume las **4 decisiones** del recorrido —
+incluyendo, por primera vez en el sitio, una decisión **no
+basada en una prueba de hipótesis** (la fila 6.1).
+
+**Las 4 filas, traducidas a la estructura final**
+
+- **6.1 (no converge)** → la estructura aleatoria **no**
+  incluye intercepto — solo pendientes lineal y cuadrática
+- **6.2A vs 6.2 (H6.1, p<0.001)** → la estructura aleatoria
+  **sí** incluye la pendiente cuadrática (además de la
+  lineal)
+- **6.2 vs 6.3 (H6.2, p=0.39)** → los efectos fijos **no**
+  incluyen interacción cuadrática × grupo — la curvatura es
+  común
+- **6.3 vs 6.4 (H6.3, p<0.001)** → los efectos fijos **sí**
+  incluyen interacción lineal × grupo — la pendiente difiere
+  por grupo
+
+**Patrón: 2 decisiones sobre estructura aleatoria, 2 sobre
+efectos fijos**
+
+A diferencia de dental veneer (2 aleatorias + 1 fija) o
+classroom (todas fijas), aquí el balance es 50/50 — pero con
+la peculiaridad de que la **primera** decisión sobre
+estructura aleatoria no fue una prueba formal, sino una
+respuesta a un problema de convergencia.
+
+**Comparando "número de decisiones" entre los 3 ejemplos
+longitudinales**
+
+| Ejemplo | Decisiones | Sobre estructura aleatoria | Sobre efectos fijos |
+|---|---|---|---|
+| ARMD (Galecki) | 12 modelos, varios LRT | Varianza, correlación, pendientes | Simplificación final (×2: GLS y LME) |
+| Dental Veneer | 3 (H7.1-H7.3) | 2 (H7.1, H7.2) | 1 (H7.3) |
+| Autism | 4 (incluyendo 6.1) | 2 (6.1, H6.1) | 2 (H6.2, H6.3) |
+
+**Resultado neto: Model 6.3**
+
+```
+vsae ~ age.2 + I(age.2^2) + sicdegp2.f + age.2:sicdegp2.f
+random = ~ age.2 + I(age.2^2) - 1 | childid
+```
+
+Sin intercepto aleatorio, sin interacción cuadrática × grupo
+— pero con pendiente lineal Y cuadrática aleatorias, y con
+interacción lineal × grupo en los efectos fijos.
+:::
 
 ## 🚸Modelo final: Model 6.3
 
@@ -236,6 +848,50 @@ model6.3.fit <- update(
 summary(model6.3.fit)
 intervals(model6.3.fit, which = "fixed")
 ```
+
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el ajuste final con **REML** (para inferencia
+correcta sobre los componentes de varianza) — los efectos
+fijos se interpretarán en la siguiente sección.
+
+**Comparando AIC con Model 6.2**
+
+```
+Model 6.2:  AIC = 4641.28
+Model 6.3:  AIC = 4633.57
+```
+
+Model 6.3 tiene **menor AIC** con menos parámetros (7 efectos
+fijos vs 9) — confirma que las 2 simplificaciones (H6.2: sin
+interacción cuadrática; conservando H6.1: con pendiente
+cuadrática aleatoria) llevaron a un mejor modelo.
+
+**Random effects — sin cambios sustanciales respecto a Model
+6.2**
+
+```
+age.2       SD=3.81   (vs 3.83 en Model 6.2)
+I(age.2^2)  SD=0.36   (vs 0.36 en Model 6.2)
+corr        -0.306    (vs -0.317 en Model 6.2)
+Residual    SD=6.23   (vs 6.20 en Model 6.2)
+```
+
+Estos valores son casi idénticos a Model 6.2 — quitar las 2
+interacciones cuadráticas (efectos fijos) no cambió de forma
+relevante la estructura aleatoria, igual que vimos en dental
+veneer al pasar de Model 7.1 a 7.3.
+
+**7 efectos fijos — uno menos que H6.3, dos menos que Model
+6.2**
+
+La fórmula final (`vsae ~ age.2 + I(age.2^2) + sicdegp2.f +
+age.2:sicdegp2.f`) tiene 7 parámetros: intercepto, `age.2`,
+`I(age.2^2)`, 2 efectos de `sicdegp2.f` (niveles 1 y 2), y 2
+interacciones `age.2:sicdegp2.f` (niveles 1 y 2). Los
+intervalos de confianza al 95% de estos 7 coeficientes se
+interpretarán a continuación.
+:::
 
 ## 🚸Interpretación de efectos fijos
 
@@ -258,6 +914,65 @@ data.frame(
 > - `age.2:sicdegp2.f1` y `age.2:sicdegp2.f2` indican si los
 >   grupos 1 y 2 crecen más rápido o más lento que el grupo 3
 
+::: {.callout-note collapse="true"}
+## 🖊
+Los 7 coeficientes describen las trayectorias de VSAE para
+los 3 grupos SICD — usando el Grupo 3 como referencia
+(intercepto y pendiente "base").
+
+**Ningún IC cruza el 0 — todos son significativos**
+
+| Efecto | IC | Interpretación |
+|---|---|---|
+| `(Intercept)` | [11.93, 15.00] | VSAE esperado a los 2 años, Grupo 3 |
+| `age.2` | [4.80, 7.50] | Pendiente lineal del Grupo 3 (positiva) |
+| `I(age.2^2)` | [0.02, 0.19] | Curvatura **común** a los 3 grupos (positiva) |
+| `sicdegp2.f1` | [-7.04, -2.94] | Grupo 1 empieza más bajo que Grupo 3 |
+| `sicdegp2.f2` | [-5.55, -1.69] | Grupo 2 empieza más bajo que Grupo 3 |
+| `age.2:sicdegp2.f1` | [-5.80, -2.34] | Grupo 1 crece más lento que Grupo 3 |
+| `age.2:sicdegp2.f2` | [-5.12, -1.87] | Grupo 2 crece más lento que Grupo 3 |
+
+Este es el **único ejemplo del sitio** donde los 7 efectos
+fijos del modelo final son **todos significativos** — ningún
+intervalo cruza el 0.
+
+**Reconstruyendo las trayectorias de cada grupo**
+
+Para el Grupo 3 (referencia): `VSAE ≈ 13.46 + 6.15·age.2 +
+0.11·age.2²`
+
+Para los Grupos 1 y 2, se **suman** sus coeficientes
+correspondientes al intercepto y a la pendiente lineal del
+Grupo 3:
+
+```
+Grupo 1: intercepto ≈ 13.46 - 4.99 = 8.47
+         pendiente  ≈ 6.15 - 4.07 = 2.08
+
+Grupo 2: intercepto ≈ 13.46 - 3.62 = 9.84
+         pendiente  ≈ 6.15 - 3.50 = 2.65
+```
+
+La **curvatura** (`I(age.2^2)` ≈ 0.11) es la **misma** para
+los 3 grupos — esto es justo lo que H6.2 confirmó (no hay
+interacción cuadrática × grupo).
+
+**Conexión directa con fig2 (trayectoria media por grupo)**
+
+Estos números coinciden con lo que viste visualmente: el
+Grupo 3 parte de ~13 (vs ~8-10 para los otros grupos) y crece
+con pendiente ~6.15 (más del doble que los otros grupos,
+~2.1-2.7) — explicando por qué la curva morada se separa tanto
+de las otras dos en fig2.
+
+El resultado central es: **los 3 grupos comparten la forma de
+aceleración del desarrollo (misma curvatura), pero el Grupo 3
+parte de un nivel más alto Y crece más del doble de rápido**
+que los Grupos 1 y 2 — una diferencia que se **amplifica**
+con la edad (de ahí que la brecha en fig2 se haga más grande
+hacia los 13 años, no más pequeña).
+:::
+
 ## 🚸Efectos aleatorios y matriz D
 
 ```{r varianza}
@@ -270,8 +985,69 @@ VarCorr(model6.3.fit)
 >   su tasa de crecimiento lineal
 > - **Pendiente cuadrática aleatoria** — los niños difieren
 >   en la curvatura de su trayectoria
-> - **Sin intercepto aleatorio** — los niños no difieren
->   significativamente en su VSAE inicial a los 2 años
+> - **Sin intercepto aleatorio** — no hay evidencia de
+>   variabilidad adicional relevante en el VSAE esperado a
+>   los 2 años, una vez considerados los efectos fijos del
+>   modelo
+
+::: {.callout-note collapse="true"}
+## 🖊
+Esta tabla muestra las **3 fuentes de variabilidad** del
+modelo final — más simple que dental veneer (4 fuentes) o
+ARMD, porque aquí solo hay **un nivel** de agrupación
+(`childid`), pero con **2 efectos aleatorios correlacionados**
+dentro de ese nivel.
+
+**Leyendo la tabla**
+
+```
+age.2       Var=14.52   SD=3.81
+I(age.2^2)  Var=0.13    SD=0.36   corr(age.2, age.2²) = -0.306
+Residual    Var=38.79   SD=6.23
+```
+
+**Las 3 fuentes, en orden de magnitud (varianza)**
+
+1. **Residual (38.79)** — la mayor. La variabilidad **dentro**
+   de cada niño (entre lo observado y lo predicho por su
+   propia trayectoria) sigue siendo sustancial
+2. **Pendiente lineal — `age.2` (14.52)** — los niños difieren
+   considerablemente en **qué tan rápido** crece su VSAE
+3. **Pendiente cuadrática — `I(age.2^2)` (0.13)** — mucho
+   menor en magnitud, pero recuerda que H6.1 confirmó que es
+   significativamente distinta de cero
+
+**La correlación negativa (-0.306) entre pendientes lineal y
+cuadrática**
+
+Niños con pendiente lineal **más alta** (crecen más rápido al
+principio) tienden a tener pendiente cuadrática **más baja**
+(menos aceleración adicional) — es decir, los niños que ya
+"arrancan" creciendo rápido tienden a **mantener** un
+crecimiento más constante, mientras que los que arrancan más
+lento tienden a **acelerar** más con el tiempo. Es una
+correlación moderada (no tan fuerte como el -0.947 de dental
+veneer).
+
+**Lo que NO aparece aquí: variabilidad de intercepto**
+
+A diferencia de dental veneer (que tenía 4 fuentes incluyendo
+2 interceptos aleatorios), aquí **no hay** un componente de
+varianza para el intercepto — esto es la consecuencia directa
+de Model 6.1 (no convergía) y la decisión de Model 6.2 (sin
+intercepto aleatorio). Toda la variabilidad entre niños está
+en **cómo cambian** (pendientes), no en **dónde empiezan**.
+
+**Conexión con las conclusiones**
+
+Esto es exactamente lo que dice la nota de "Efectos aleatorios
+y matriz D": "no hay evidencia de variabilidad adicional
+relevante en el VSAE esperado a los 2 años" — confirmado
+numéricamente por la **ausencia** de un componente de
+intercepto en esta tabla, no porque se haya probado y
+descartado aquí, sino porque ya fue descartado en Model 6.1/
+6.2.
+:::
 
 ## 🚸Predicciones marginales
 
@@ -298,6 +1074,47 @@ ggplot(pred_marginal_df,
   theme_minimal()
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Este gráfico muestra las **3 curvas predichas por el modelo**
+(`level=0`, sin efectos aleatorios) — son las trayectorias
+"poblacionales" para un niño promedio de cada grupo SICD.
+
+**Lo que se observa**
+
+- **Curvas suaves y limpias** — a diferencia de las
+  trayectorias individuales (fig1), aquí cada grupo tiene
+  **una sola línea**, calculada con los coeficientes fijos
+  del Model 6.3
+- **El Grupo 3 (morado) se separa claramente** — termina cerca
+  de ~90 a los 13 años, mientras que Grupos 1 y 2 terminan
+  cerca de ~45-52
+- **Los Grupos 1 y 2 son muy similares** durante casi todo el
+  rango, con el Grupo 2 (naranja) ligeramente por encima del
+  Grupo 1 (verde) hacia el final
+- **Todas las curvas tienen forma similar** — crecimiento que
+  se acelera con la edad (curvatura positiva común,
+  `I(age.2^2)`)
+
+**Esta es la versión "limpia" de fig2**
+
+Compara con fig2 (trayectoria media con `loess` y bandas de
+confianza, basada en los datos crudos): aquí las 3 líneas son
+**exactamente** las predicciones del modelo final — sin
+suavizado exploratorio, sin bandas de incertidumbre. Es la
+traducción directa de los 7 coeficientes de Model 6.3 a
+curvas visuales.
+
+**¿Por qué "marginal" y no "condicional"?**
+
+`level=0` significa "ignora los efectos aleatorios de
+`childid`" — la predicción usa **solo los efectos fijos**.
+Es la predicción para un niño **hipotético** con efectos
+aleatorios iguales a su valor esperado (cero), representando
+la tendencia **poblacional** de cada grupo — no la trayectoria
+de ningún niño específico.
+:::
+
 ## 🚸Predicciones condicionales
 
 ```{r pred_condicional, echo=FALSE}
@@ -317,6 +1134,51 @@ ggplot(autism_updated,
        color = "Grupo SICD") +
   theme_minimal()
 ```
+
+::: {.callout-note collapse="true"}
+## 🖊
+Este gráfico muestra **una línea por niño** (`level=1`,
+incluyendo sus efectos aleatorios estimados) — la versión
+"predicha" de fig1 (trayectorias individuales observadas).
+
+**Lo que se observa**
+
+- **Patrón general similar a fig1** — mucha variabilidad de
+  pendientes, con el Grupo 3 (morado) teniendo varias de las
+  trayectorias más altas
+- **Las líneas son más "suaves"** que en fig1 — porque cada
+  línea ahora sigue la forma funcional del modelo
+  (intercepto común + pendiente individual + curvatura
+  individual), no los puntos observados con su ruido
+- **Algunas líneas terminan antes de los 13 años** — esto
+  refleja el **desbalance**: las predicciones solo se grafican
+  para las edades en que cada niño **tiene** observaciones
+
+**Diferencia clave con predicciones marginales**
+
+Mientras que fig anterior (marginal) mostraba **3 líneas**
+(una por grupo), aquí hay **~158 líneas** (una por niño) —
+cada una desviándose de la curva marginal de su grupo según
+los **EBLUPs** de ese niño (su pendiente lineal y cuadrática
+individuales, estimadas a partir de sus propias
+observaciones).
+
+**¿Por qué esto es útil?**
+
+Las predicciones condicionales muestran **cuánta variabilidad
+individual hay alrededor de la tendencia de grupo** — son
+útiles para responder "¿qué tan bien se ajusta el modelo a
+**este niño específico**?", mientras que las marginales
+responden "¿cuál es la tendencia **general** de este grupo?".
+
+**Conexión con los componentes de varianza**
+
+La amplia dispersión de líneas en este gráfico es la
+representación visual directa de las varianzas de pendiente
+lineal (14.52) y cuadrática (0.13) que vimos en "Efectos
+aleatorios y matriz D" — esos números **son** la magnitud de
+la dispersión que ves aquí.
+:::
 
 ## 🚸Diagnósticos
 
@@ -347,18 +1209,140 @@ qqnorm(re[, 2], main = "Q-Q EBLUPs pendiente cuadrática")
 qqline(re[, 2])
 ```
 
+::: {.callout-note collapse="true"}
+## 🖊
+Estos gráficos evalúan los supuestos de Model 6.3 — con una
+particularidad: **no hay Q-Q EBLUPs de intercepto** (porque
+Model 6.3 no tiene intercepto aleatorio), solo de las 2
+pendientes.
+
+**Gráfico 1: Residuos vs ajustados**
+
+Se observa un patrón de **embudo** bastante marcado: los
+residuos están muy concentrados cerca de 0 para valores
+ajustados bajos (0-50), pero se dispersan más — y aparecen
+algunos valores positivos grandes (hasta ~6.8) — en esa misma
+zona de valores bajos. Para valores ajustados altos (>100),
+los residuos son más pequeños y están más cerca de 0.
+
+**Esto es lo opuesto al patrón "clásico" de heterocedasticidad**
+— normalmente esperaríamos *más* dispersión en valores altos.
+Aquí, los residuos más extremos (incluyendo el máximo de
+~6.85 que vimos en el resumen de `Standardized Within-Group
+Residuals`) ocurren para **VSAE predichos bajos** — es decir,
+hay algunos niños con VSAE observado **mucho más alto** de lo
+que el modelo predice, cuando el modelo predice valores bajos.
+
+**Gráfico 2: Q-Q plot de residuos**
+
+Se observan **colas pesadas en ambos extremos** — los puntos
+se desvían de la diagonal tanto en la cola inferior como,
+más notoriamente, en la **cola superior** (varios puntos
+suben muy por encima de la línea, llegando a Sample
+Quantiles ≈ 6-7 cuando la línea predeciría ≈ 2-3). Esto
+confirma la presencia de **valores atípicos positivos** —
+consistente con el gráfico anterior.
+
+**Gráfico 3: Q-Q EBLUPs pendiente lineal**
+
+La mayoría de los puntos siguen razonablemente la diagonal en
+la zona central, pero hay una **desviación notoria en la cola
+superior derecha**: varios niños tienen una pendiente
+lineal aleatoria mucho más alta de lo que predeciría una
+normal (el punto más extremo llega a ~15, cuando la línea
+predeciría ~6). Esto sugiere que **algunos niños tienen un
+crecimiento de VSAE excepcionalmente rápido** — más de lo que
+una distribución normal de pendientes esperaría.
+
+**Síntesis**
+
+Los diagnósticos sugieren que el modelo se ajusta bien para
+la **mayoría** de los niños, pero hay un **subgrupo pequeño**
+con crecimiento de VSAE inusualmente acelerado (residuos
+positivos grandes + EBLUPs de pendiente en la cola superior).
+Esto no invalida el modelo —de hecho, es consistente con lo
+que viste en fig1: algunas trayectorias individuales subían
+muy por encima del resto (hasta VSAE≈190-200 a los 13 años).
+Podría valer la pena, en una extensión del análisis,
+investigar qué caracteriza a esos niños con crecimiento
+acelerado.
+:::
+
 ## 🚸Conclusiones
 
 - El VSAE crece con la edad siguiendo una **trayectoria cuadrática**
-- La **tasa de crecimiento lineal difiere entre grupos** —
-  los grupos 1 y 2 crecen a ritmos distintos que el grupo 3
+- Al menos una trayectoria lineal difiere respecto al grupo 3
+  — los grupos 1 y/o 2 muestran una tasa de crecimiento
+  lineal distinta a la del grupo de referencia
 - La **curvatura es común** para todos los grupos
-- Los niños no difieren en su VSAE inicial a los 2 años,
-  pero sí en cómo evolucionan
+- No hay evidencia de variabilidad adicional relevante en el
+  VSAE esperado a los 2 años, una vez considerados los
+  efectos fijos del modelo — pero sí hay variabilidad
+  importante en cómo evolucionan las trayectorias
 - El **Model 6.3** captura esta estructura con pendientes
   lineal y cuadrática aleatorias por niño
 
 > West selecciona un modelo sin intercepto aleatorio pero con
-> pendientes lineal y cuadrática aleatorias, porque la
-> variabilidad inicial era prácticamente nula, mientras que
-> las trayectorias posteriores sí variaban entre niños.
+> pendientes lineal y cuadrática aleatorias: el componente de
+> varianza del intercepto no aportaba al modelo (Model 6.1
+> presentó problemas de convergencia), mientras que las
+> trayectorias posteriores sí variaban entre niños.
+
+::: {.callout-note collapse="true"}
+## 🖊
+Estas conclusiones cierran el ejemplo de Autism — el más
+"técnico" de los 9 en términos de estructura de efectos
+aleatorios (coeficientes aleatorios múltiples y
+correlacionados, sin intercepto).
+
+**El recorrido completo, en una frase**
+
+*"Empezamos con un modelo que no converge, lo simplificamos
+quitando el intercepto aleatorio, confirmamos que sí se
+necesita pendiente cuadrática aleatoria (H6.1), descubrimos
+que la curvatura es común entre grupos (H6.2) pero la
+pendiente lineal no (H6.3)."*
+
+**Actualiza la conclusión sobre `sicdegp2.f1`/`f2` con un
+dato concreto**
+
+La conclusión dice "al menos una trayectoria lineal difiere
+respecto al grupo 3" — pero recuerda que en la sección de
+interpretación de efectos fijos vimos que **ambas**
+interacciones (`age.2:sicdegp2.f1` y `age.2:sicdegp2.f2`)
+tienen IC que no cruzan 0. Podrías ser más específica:
+
+```markdown
+- Tanto el Grupo 1 como el Grupo 2 muestran una tasa de
+  crecimiento lineal significativamente menor que el Grupo 3
+  (intervalos de confianza que no incluyen 0 para ambas
+  interacciones)
+```
+
+**Conectando con el diagnóstico (subgrupo de crecimiento
+acelerado)**
+
+Los diagnósticos mostraron un subgrupo de niños con
+crecimiento de VSAE inusualmente rápido (residuos y EBLUPs
+extremos en la cola superior). Esto **no contradice** las
+conclusiones — el modelo captura la **tendencia general** por
+grupo, mientras que esos casos extremos representan
+variabilidad individual adicional que el modelo, por diseño,
+**permite** (mediante las pendientes aleatorias) aunque no
+"explica" qué características tienen esos niños específicos.
+
+**El contraste entre los 3 ejemplos
+longitudinales**
+
+| | ARMD | Dental Veneer | Autism |
+|---|---|---|---|
+| ¿Qué varía entre sujetos? | Nivel y pendiente (independientes) | Nivel (2 niveles anidados) + pendiente | Pendiente lineal y cuadrática (correlacionadas) |
+| ¿Hubo problema de convergencia? | No | No | **Sí** (Model 6.1) |
+| Predictor de grupo retenido | `treat.f` (nivel) | — (ninguno significativo salvo `age`) | `sicdegp2.f` (nivel Y pendiente) |
+
+Autism es el ejemplo donde el **grupo** (`sicdegp`) tiene el
+efecto más completo: afecta tanto el **punto de partida**
+como la **velocidad de cambio** — a diferencia de ARMD (el
+tratamiento solo afectaba el nivel) o dental veneer (ninguna
+variable de grupo fue significativa).
+:::
