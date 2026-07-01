@@ -38,10 +38,9 @@ las crías de una misma camada comparten el mismo tratamiento.
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-**Lo que dice:**
-Se hizo un experimento con 30 ratas hembra (las madres), que fueron asignadas al azar a tres grupos según la dosis de un compuesto químico que recibieron: alta, baja, o ninguna (control).
+**30 ratas hembra (las madres)** → asignadas al azar a 3 grupos según la dosis de un compuesto químico que recibieron: alta, baja, o ninguna (control).
 
-El punto importante que destaca es: **el tratamiento se le da a la madre, no a las crías individualmente**. Entonces todas las crías que nacen de una misma madre/camada reciben automáticamente el mismo tratamiento — porque fue la madre quien lo recibió, no ellas.
+**el tratamiento se le da a la madre, no a las crías individualmente** → todas las crías que nacen de una misma madre/camada → reciben automáticamente el mismo tx - porque fue la madre quien lo recibió, no ellas.
 
 **¿Por qué esto importa?**
 Esto define la **estructura jerárquica** del estudio:
@@ -49,9 +48,11 @@ Esto define la **estructura jerárquica** del estudio:
 Nivel 2 (camada/madre) → recibe el tratamiento
     └── Nivel 1 (crías) → se mide el peso
 ```
-Es decir, el tratamiento es una variable de **nivel 2** (de la camada), mientras que el peso al nacer se mide a **nivel 1** (cada cría individual). Las crías "heredan" el tratamiento de su madre.
+**¿Por qué se necesita un modelo mixto?**
 
-Esta es la pieza clave para entender por qué se necesita un modelo mixto: tienes datos anidados (crías dentro de camadas) y una variable que actúa a un nivel distinto (camada) del nivel donde mides el outcome (cría).
+- El diseño del estudio genera datos anidados (crías dentro de camadas/madres)
+- Por diseño, las crías de la misma camada comparten madre, ambiente y tratamiento → no pueden asumirse independientes
+- El tratamiento actúa a nivel de camada/madre, pero el outcome se mide a nivel de cría individual
 :::
 
 ## 🐁Diseño del estudio
@@ -62,7 +63,7 @@ flowchart TD
     B --> C[Control\n10 camadas]
     B --> D[Dosis Baja\n10 camadas]
     B --> E[Dosis Alta\n7 camadas]
-    C --> F[322 crías - Level 1]
+    C --> F[322 crías - Nivel 1]
     D --> F
     E --> F
 ```
@@ -73,35 +74,13 @@ flowchart TD
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-```
-30 ratas hembra → Tratamiento asignado a nivel de madre
-                    ├── Control (10 camadas)
-                    ├── Dosis Baja (10 camadas)
-                    └── Dosis Alta (7 camadas)
-                          ↓
-                    322 crías (Level 1)
-```
-Esto representa el **flujo de la asignación**: primero se asignan las madres a un grupo de tratamiento, y de ahí "cuelgan" sus crías.
+**Nivel 2 - camada:** La camada es la **unidad de asignación del tratamiento**. 
+Cada camada tiene un identificador (`litter`) y pertenece a un grupo de tratamiento.
 
-**Nivel 2 — camada:** La camada es la **unidad de asignación del tratamiento**. Es decir, el experimento "actúa" sobre la camada (porque la madre recibió el compuesto). Cada camada tiene un identificador (`litter`) y pertenece a un grupo de tratamiento.
+**Nivel 1 - cría:** La cría es la **unidad de medición**. 
+Cada cría tiene su propio peso (`weight`), su sexo, y pertenece a una camada específica.
 
-**Nivel 1 — cría:** La cría es la **unidad de medición**. Cada cría tiene su propio peso (`weight`), su sexo, y pertenece a una camada específica.
-
-**Diseño desbalanceado:** Esto es clave estadísticamente: el tamaño de las camadas varía de **2 a 18 crías**. No todas las madres tuvieron el mismo número de hijos.
-
-¿Por qué importa? Porque:
-
-- Algunas camadas aportan mucha información (18 observaciones), otras poca (2)
-- Un modelo mixto puede manejar esto naturalmente — cada camada contribuye en proporción a su tamaño
-- Si usaras un análisis simple (como un ANOVA tradicional), tendrías problemas con este desbalance
-
-El ejemplo Rat Pup tiene una estructura jerárquica de dos niveles. El tratamiento se asigna a nivel de la madre o camada, porque la madre recibe el compuesto durante la gestación. Luego, el peso se mide individualmente en cada cría.
-
-En términos del modelo, la camada corresponde al nivel 2 y la cría corresponde al nivel 1. Esto significa que las crías de una misma camada no pueden considerarse completamente independientes entre sí: comparten la misma madre, el mismo ambiente intrauterino y el mismo grupo de tratamiento.
-
-El diseño también es desbalanceado, porque no todas las camadas tienen el mismo número de crías. Algunas camadas aportan muchas observaciones y otras pocas. Un modelo mixto permite usar todas las observaciones disponibles, pero incorporando un efecto aleatorio para litter, de modo que la correlación entre crías de la misma camada sea considerada explícitamente.
-
-Por eso, este ejemplo se analiza como un modelo lineal mixto de dos niveles: crías anidadas dentro de camadas, con un intercepto aleatorio para la camada.
+**Diseño desbalanceado:** el tamaño de las camadas varía de **2 a 18 crías**. No todas las madres tuvieron el mismo número de hijos.
 :::
 
 ## 🐁Variables
@@ -128,54 +107,6 @@ ratpup |>
   knitr::kable(caption = "Resumen por grupo de tratamiento")
 ```
 
-::: {.callout-note collapse="true"}
-## 🖊
-La tabla está bien pensada porque deja claro lo más importante del ejemplo **Rat Pup**: hay variables de **nivel cría** y variables de **nivel camada/madre**. Esta distinción justifica el uso de un modelo mixto.
-
-**Variables de nivel 1: cría**
-
-Estas variables cambian de una cría a otra dentro de la misma camada.
-
-| Variable       | Qué representa           | Cómo se usa                                                                         |
-| -------------- | ------------------------ | ----------------------------------------------------------------------------------- |
-| `weight`       | Peso de cada cría        | Es el **outcome** continuo. El modelo busca explicar diferencias en peso.           |
-| `sex`          | Sexo de la cría          | Covariable individual. `Male` es la referencia y `Female = 1`.                      |
-| `pup_id`       | Identificador de la cría | Sirve para identificar observaciones, pero **no es el efecto aleatorio principal**. |
-
-La idea clave es que, aunque cada cría tiene su propio peso, las crías de una misma camada se parecen entre sí. Por eso no se tratan como observaciones totalmente independientes.
-
-**Variables de nivel 2: camada / madre**
-
-Estas variables son iguales para todas las crías de una misma camada.
-
-| Variable    | Qué representa                   | Cómo se usa                                                                                       |
-| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `litter`    | Identificador de la camada/madre | Es el **factor de agrupación aleatoria**. Se usa como `(1 \| litter)` o `random = ~ 1 \| litter`. |
-| `treatment` | Grupo asignado a la madre        | Predictor principal. El tratamiento ocurre a nivel de madre/camada, no de cría.                   |
-| `litsize`   | Tamaño de la camada              | Covariable de nivel 2. Controla por el número de crías en la camada.                              |
-| `trtgrp`    | Agrupación Control vs. High_Low  | No es predictor sustantivo principal; se usa para modelar **varianza residual heterogénea**.      |
-
-La parte más importante es que el tratamiento se asigna a nivel de madre/camada, pero el outcome se mide a nivel de cría. Por eso necesitamos distinguir entre variables de nivel 1 y variables de nivel 2.
-
-**Resumen por grupo de tratamiento**
-
-La tabla descriptiva por grupo de tratamiento también ayuda a entender el diseño:
-
-| Grupo   | Camadas | Crías | Peso medio |
-| ------- | ------: | ----: | ---------: |
-| Control |      10 |   131 |       6.32 |
-| Low     |      10 |   126 |       5.93 |
-| High    |       7 |    65 |       5.89 |
-
-Esta tabla muestra dos cosas. Primero, el diseño está **desbalanceado**: no hay el mismo número de camadas ni de crías en cada grupo. En particular, `High` tiene solo 7 camadas y 65 crías.
-
-Segundo, el peso promedio parece menor en `Low` y `High` que en `Control`, pero esa comparación descriptiva todavía no basta, porque hay que considerar el sexo, el tamaño de camada y la correlación entre crías de la misma camada.
-
-Las variables de nivel 1 describen características de cada cría, mientras que las variables de nivel 2 describen características compartidas por todas las crías de una misma camada. Esta estructura jerárquica justifica el uso de un modelo lineal mixto con intercepto aleatorio para `litter`.
-
-El tratamiento se asigna a nivel de madre/camada, pero el outcome se mide a nivel de cría. Esta diferencia entre unidad de asignación y unidad de medición es una de las razones principales para usar un modelo mixto.
-:::
-
 ## 🐁Exploración descriptiva
 
 ### Peso según tratamiento y sexo
@@ -190,28 +121,12 @@ ggplot(ratpup, aes(x = treatment, y = weight, fill = sex)) +
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-La exploración descriptiva permite revisar la estructura de los datos antes de ajustar el modelo mixto. En el ejemplo **Rat Pup**, el outcome es `weight`, medido a nivel de cría, mientras que el predictor principal `treatment` se asigna a nivel de madre/camada.
-
-| Aspecto explorado | Qué muestra | Por qué importa |
-|---|---|---|
-| Peso por tratamiento | Compara el peso medio entre `Control`, `Low` y `High` | Permite observar diferencias descriptivas iniciales |
-| Número de camadas por tratamiento | Muestra cuántas camadas aporta cada grupo | Evalúa desbalance a nivel de agrupación |
-| Número de crías por tratamiento | Muestra cuántas observaciones individuales aporta cada grupo | Evalúa desbalance a nivel de medición |
-| Peso por camada | Muestra variación entre `litter` | Justifica el intercepto aleatorio |
-| Peso por sexo | Compara machos y hembras | Justifica incluir `sex1` como covariable |
-| Tamaño de camada | Resume `litsize` | Justifica ajustar por tamaño de camada |
-
 **peso por grupo de tratamiento**
 
-El primer gráfico muestra la distribución del peso de las crías (`weight`) según el grupo de tratamiento asignado a la madre/camada (`treatment`). Esta visualización permite comparar, de forma descriptiva, si el peso tiende a ser diferente entre `Control`, `Low` y `High`.
+La interpretación debe hacerse con cuidado por 2 razones⚠️
 
-A primera vista, el grupo `Control` parece presentar pesos más altos que los grupos tratados. En cambio, los grupos `Low` y `High` muestran pesos promedio más bajos. Esto sugiere un posible efecto del tratamiento sobre el peso de las crías, pero todavía no permite concluirlo formalmente.
-
-La interpretación debe hacerse con cuidado por dos razones. Primero, las observaciones del gráfico corresponden a crías individuales, pero las crías no son completamente independientes: varias pertenecen a la misma camada. Segundo, los grupos están desbalanceados, especialmente el grupo `High`, que tiene menos camadas y menos crías que los otros grupos.
-
-Por eso, el gráfico sirve como evidencia descriptiva inicial, pero no reemplaza el modelo mixto. Para evaluar el efecto del tratamiento se necesita ajustar por covariables como `sex1` y `litsize`, y además considerar la correlación entre crías de una misma camada mediante un intercepto aleatorio para `litter`.
-
--> el primer gráfico sugiere que el peso de las crías podría ser menor en los grupos tratados que en el grupo control, pero esta comparación debe confirmarse con un modelo lineal mixto que respete la estructura jerárquica de los datos.
+- las observaciones corresponden a crías individuales, pero las crías no son completamente independientes: varias pertenecen a la misma camada
+- los grupos están desbalanceados, especialmente el grupo `High`, que tiene menos camadas y menos crías que los otros grupos.
 :::
 
 ### Peso según tamaño de camada
@@ -229,27 +144,11 @@ ggplot(ratpup, aes(x = litsize, y = weight, color = treatment)) +
 ## 🖊
 **Relación entre tamaño de camada y peso**
 
-Este gráfico muestra la relación entre el **tamaño de camada** (`litsize`) y el **peso de la cría** (`weight`), separada por grupo de tratamiento. Cada punto representa una cría individual. La posición horizontal indica cuántas crías había en su camada, mientras que la posición vertical indica su peso.
+- **Relación decreciente**: a medida que aumenta el tamaño de la camada, el peso de las crías tiende a disminuir → sentido biológico
 
-Las líneas muestran tendencias lineales descriptivas por grupo de tratamiento. Estas líneas ayudan a visualizar la dirección general de la relación entre `litsize` y `weight`, pero no deben interpretarse como el modelo final, porque no consideran todavía la correlación entre crías de una misma camada.
+- Diferencias descriptivas entre grupos de tratamiento. El grupo `Control` tiende a presentar pesos más altos, mientras que los grupos `Low` y `High` muestran pesos menores → el peso también puede depender del sexo de la cría, del tamaño de la camada y de diferencias propias entre camadas.
 
-| Elemento del gráfico | Interpretación                                  |
-| -------------------- | ----------------------------------------------- |
-| Puntos               | Crías individuales                              |
-| Eje x                | Tamaño de camada (`litsize`)                    |
-| Eje y                | Peso de la cría (`weight`)                      |
-| Colores              | Grupo de tratamiento (`Control`, `Low`, `High`) |
-| Líneas               | Tendencia descriptiva por grupo                 |
-
-El patrón principal es una **relación decreciente**: a medida que aumenta el tamaño de la camada, el peso de las crías tiende a disminuir. Esto tiene sentido biológico, porque en camadas más grandes puede haber mayor competencia por recursos durante la gestación.
-
-También se observan diferencias descriptivas entre grupos de tratamiento. El grupo `Control` tiende a presentar pesos más altos, mientras que los grupos `Low` y `High` muestran pesos menores. Sin embargo, esta comparación todavía es descriptiva y debe interpretarse con cautela, porque el peso también puede depender del sexo de la cría, del tamaño de la camada y de diferencias propias entre camadas.
-
-La posible diferencia en las pendientes entre grupos sugiere que la asociación entre tamaño de camada y peso podría variar según el tratamiento. Sin embargo, esta interpretación debe ser cautelosa, especialmente porque los grupos están desbalanceados y algunas combinaciones de tratamiento y tamaño de camada tienen pocas observaciones.
-
-La idea más importante del gráfico es que `litsize` parece estar asociado con `weight`. Por eso, tiene sentido incluir el tamaño de camada como covariable en el modelo mixto. Si no se ajustara por `litsize`, parte de la diferencia observada entre tratamientos podría confundirse con diferencias en el tamaño de las camadas.
-
--> este gráfico justifica incluir `litsize` como covariable de nivel 2 y refuerza la necesidad de usar un modelo mixto, porque cada punto corresponde a una cría, pero varias crías comparten la misma camada.
+- La posible diferencia en las pendientes entre grupos sugiere que la asociación entre tamaño de camada y peso podría variar según el tratamiento.
 :::
 
 ## 🐁Objetivos e hipótesis
@@ -265,35 +164,6 @@ y el peso al nacer, considerando la agrupación dentro de camadas.
 4. Estimar el efecto ajustado del tratamiento sobre el peso
 5. Seleccionar el modelo que mejor represente los datos
 
-::: {.callout-note collapse="true"}
-## 🖊
-Esta sección define qué se va a hacer en el análisis y funciona como puente entre el problema de investigación y los modelos que se ajustan después.
-
-El objetivo general es evaluar si el tratamiento recibido por la madre se relaciona con el peso de sus crías, considerando que las crías están agrupadas dentro de camadas. Es decir, el análisis no puede ignorar que las crías de una misma madre no son completamente independientes entre sí.
-
-Los objetivos analíticos se traducen directamente en las hipótesis que se evalúan durante la estrategia de modelado.
-
-| Objetivo analítico                                                  | Hipótesis asociada  | Qué pregunta responde                                                               |
-| ------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
-| Determinar si existe variabilidad relevante entre camadas           | H3.1                | ¿Es necesario incluir un intercepto aleatorio para `litter`?                        |
-| Evaluar si la varianza residual difiere entre grupos de tratamiento | H3.2, H3.3, H3.4    | ¿La dispersión del peso es igual en `Control`, `Low` y `High`?                      |
-| Evaluar si el efecto del tratamiento varía según el sexo            | H3.5                | ¿La diferencia entre tratamientos es igual para machos y hembras?                   |
-| Estimar el efecto ajustado del tratamiento sobre el peso            | H3.6                | Después de ajustar por sexo y tamaño de camada, ¿cuál es el efecto del tratamiento? |
-| Seleccionar el modelo que mejor represente los datos                | Estrategia top-down | ¿Qué componentes del modelo deben mantenerse y cuáles pueden eliminarse?            |
-
-1er objetivo corresponde a evaluar si las camadas difieren entre sí. Si no existiera variabilidad relevante entre camadas, no sería necesario usar un modelo mixto; bastaría un modelo lineal sin efecto aleatorio. Sin embargo, si las camadas tienen niveles promedio de peso distintos, entonces se justifica incluir un intercepto aleatorio para `litter`.
-
-2do objetivo evalúa si la variabilidad residual del peso es igual en todos los grupos de tratamiento. Esto es importante porque el tratamiento podría no solo cambiar el peso promedio, sino también la dispersión de los pesos dentro de los grupos.
-
-3er objetivo examina si el efecto del tratamiento depende del sexo de la cría. Esto se evalúa mediante la interacción entre `treatment` y `sex`. Si la interacción fuera importante, significaría que el efecto del tratamiento no es el mismo para machos y hembras.
-
-4to objetivo busca estimar el efecto ajustado del tratamiento sobre el peso de las crías, controlando por covariables relevantes como el sexo de la cría y el tamaño de la camada.
-
-5to objetivo resume la estrategia completa de análisis. West sigue una estrategia **top-down**, comenzando con un modelo relativamente completo y luego evaluando qué componentes deben mantenerse o simplificarse hasta llegar al modelo final.
-
--> esta sección funciona como el plan de trabajo del análisis estadístico. Cada objetivo analítico corresponde a una comparación de modelos o a una hipótesis específica que se evalúa más adelante.
-:::
-
 ## 🐁Estrategia top-down
 
 ```{mermaid}
@@ -305,78 +175,9 @@ flowchart TD
     E --> F[Modelo final]
 ```
 
-::: {.callout-note collapse="true"}
-## 🖊
-La **estrategia top-down** consiste en comenzar con un modelo
-relativamente completo y luego simplificarlo progresivamente,
-eliminando solo los componentes que no aportan evidencia
-suficiente.
-
-| Paso | Pregunta analítica | Decisión |
-|------|---------------------|----------|
-| Model 3.1 | Modelo inicial con tratamiento, sexo, tamaño de camada, interacción tratamiento × sexo e intercepto aleatorio por camada | Punto de partida |
-| H3.1 | ¿Es necesario el intercepto aleatorio para `litter`? | Sí, se mantiene |
-| H3.2-H3.4 | ¿La varianza residual es homogénea o heterogénea entre grupos? | Se elige la estructura heterogénea Control vs. High_Low |
-| H3.5 | ¿Es necesaria la interacción `treatment × sex1`? | No, se elimina |
-| H3.6 | ¿El tratamiento tiene un efecto global sobre el peso? | Sí, se mantiene |
-| Model 3.3 | Modelo final | Tratamiento + sexo + tamaño de camada + intercepto aleatorio + varianza residual heterogénea |
-
-**Model 3.1 — punto de partida**
-
-Incluye los predictores que podrían ser relevantes: `treatment`,
-`sex1`, `litsize` y la interacción `treatment × sex1`, más un
-intercepto aleatorio para `litter`. Es deliberadamente más
-completo de lo necesario — la lógica top-down parte de aquí
-y evalúa qué puede eliminarse.
-
-**H3.1 — necesidad del intercepto aleatorio**
-
-Define si realmente se necesita un modelo mixto. Si las camadas
-no difirieran entre sí, bastaría un modelo lineal simple. La
-evidencia apoya mantener el intercepto aleatorio — las camadas
-sí aportan variabilidad relevante.
-
-**H3.2-H3.4 — estructura de varianza residual**
-
-No pregunta si el tratamiento cambia el peso promedio, sino si
-cambia la **dispersión residual**. West selecciona una varianza
-residual para Control y otra para los grupos tratados agrupados
-(High_Low).
-
-**H3.5 — interacción tratamiento por sexo**
-
-¿El efecto del tratamiento varía según el sexo de la cría? La
-interacción no aporta evidencia suficiente, por lo que se elimina.
-
-**H3.6 — efecto global del tratamiento**
-
-Después de eliminar la interacción, ¿el tratamiento sigue
-teniendo efecto sobre el peso, ajustando por sexo y tamaño de
-camada? La evidencia indica que sí — se mantiene en el modelo
-final.
-
-**Model 3.3 — modelo final**
-
-| Componente | Se mantiene | Justificación |
-|------------|-------------|---------------|
-| `treatment` | Sí | Predictor principal del estudio |
-| `sex` | Sí | Covariable individual de nivel cría |
-| `litsize` | Sí | Covariable de nivel camada |
-| `treatment × sex1` | No | No aporta evidencia suficiente |
-| Intercepto aleatorio `litter` | Sí | Hay variabilidad relevante entre camadas |
-| Varianza residual heterogénea | Sí | La dispersión difiere entre Control y High_Low |
-
-El orden importa: primero se decide la estructura del modelo
-(efectos aleatorios y varianza residual), y solo después se
-simplifican los efectos fijos — porque la estructura aleatoria
-y de varianza influye en los errores estándar usados para
-probar los efectos fijos.
-:::
-
 ## 🐁Ajuste y comparación de modelos
 
 ### Model 3.1: Modelo inicial
-
 ```{r model31, echo=TRUE}
 model3.1.fit <- lme(
   weight ~ treatment + sex1 + litsize + treatment:sex1,
@@ -385,68 +186,64 @@ model3.1.fit <- lme(
   method = "REML")
 ```
 
-### H3.1: ¿Es necesario el intercepto aleatorio?
+::: {.callout-note collapse="true"}
+## 🖊
+Este es el **modelo de partida** de la estrategia top-down —
+incluye todos los efectos fijos de interés (`treatment`,
+`sex1`, `litsize` y la interacción `treatment:sex1`) más
+un intercepto aleatorio por camada (`~1 | litter`).
 
+La lógica top-down es empezar con el modelo más complejo
+posible y simplificarlo según lo que indiquen las pruebas
+:::
+
+### H3.1: ¿Es necesario el intercepto aleatorio?
 ```{r h31, echo=TRUE}
 model3.1a.fit <- gls(
   weight ~ treatment + sex1 + litsize + treatment:sex1,
   data = ratpup,
   method = "REML")
-
 lrt_h31 <- anova(model3.1a.fit, model3.1.fit)
 lrt_h31
 ```
 
-> Como se contrasta un único componente de varianza contra cero, West
-> divide por dos el valor p del LRT. Resultado: **p < 0.001** →
-> se mantiene el intercepto aleatorio.
+> Como se contrasta un único componente de varianza contra
+> cero, West divide por dos el valor p del LRT.
+> Resultado: **p < 0.001** → se mantiene el intercepto
+> aleatorio.
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-H3.1: ¿Es necesario el intercepto aleatorio?
+**¿Qué se compara?**
 
-En esta etapa se evalúa si es necesario incluir un intercepto aleatorio para `litter`, es decir, si las camadas presentan variabilidad relevante entre sí.
-
-Primero se ajusta un modelo alternativo usando `gls()`:
-```r
-model3.1a.fit <- gls(
-  weight ~ treatment + sex1 + litsize + treatment:sex1,
-  data = ratpup,
-  method = "REML")
 ```
-Este modelo tiene los mismos efectos fijos que el `model3.1.fit`, pero no incluye el término aleatorio `random = ~ 1 | litter`. Por lo tanto, en esta especificación no se incorpora la correlación entre crías de una misma camada.
-
-Luego se compara este modelo con el modelo mixto que sí incluye el intercepto aleatorio para `litter`:
-
-```r
-lrt_h31 <- anova(model3.1a.fit, model3.1.fit)
-lrt_h31
+model3.1a.fit  AIC=506.51  (sin intercepto aleatorio, GLS)
+model3.1.fit   AIC=419.10  (con intercepto aleatorio, LME)
+LRT = 89.41    p < 0.001
 ```
 
-La comparación contrasta dos modelos:
+Una diferencia de **~87 puntos de AIC** — la mayor mejora
+de todo el análisis. El intercepto aleatorio de camada es
+**claramente necesario**.
 
-| Modelo          | Estructura                             | Interpretación                                     |
-| --------------- | -------------------------------------- | -------------------------------------------------- |
-| `model3.1a.fit` | Sin intercepto aleatorio               | No considera variabilidad entre camadas            |
-| `model3.1.fit`  | Con intercepto aleatorio para `litter` | Permite que cada camada tenga su propio intercepto |
+**¿Por qué se divide el p-value entre 2?**
 
-La tabla de resultados es:
+Se está probando si la varianza de camada (σ²_litter) es
+igual a cero. Como una varianza no puede ser negativa, está
+en el límite del espacio de parámetros válidos — la
+distribución del LRT bajo H0 es una mezcla 50/50 entre una
+masa puntual en 0 y una chi-cuadrado con 1 grado de
+libertad. Dividir entre 2 corrige por esto.
 
-```text
-              Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-model3.1a.fit     1  8 506.5099 536.5305 -245.2550                        
-model3.1.fit      2  9 419.1043 452.8775 -200.5522 1 vs 2 89.40562  <.0001
-```
+En este caso p<0.001 dividido entre 2 sigue siendo p<0.001
+— la corrección no cambia la conclusión, pero siempre debe
+aplicarse.
 
-Los criterios de información favorecen claramente al modelo mixto. El `AIC` y el `BIC` son menores en `model3.1.fit`, y la log-verosimilitud es mayor, es decir, menos negativa. Además, el Likelihood Ratio Test presenta un valor de `L.Ratio = 89.4` con un valor p menor a 0.0001.
-
-Como aquí se está evaluando un único componente de varianza contra cero, West divide por dos el valor p del LRT. Esto se debe a que una varianza no puede ser negativa, por lo que la hipótesis nula se encuentra en el límite del espacio de parámetros. En este caso, aunque se aplique esta corrección, el valor p sigue siendo menor a 0.0001.
-
-La conclusión es que existe variabilidad relevante entre camadas. Por lo tanto, el intercepto aleatorio para `litter` debe mantenerse en el modelo. Ignorar esta estructura implicaría no considerar una fuente importante de dependencia entre las crías de una misma camada.
+**Decisión:** el intercepto aleatorio de camada se mantiene
+en todos los modelos siguientes.
 :::
 
 ### H3.2: ¿Varianza residual heterogénea por tratamiento?
-
 ```{r h32, echo=TRUE}
 model3.2a.fit <- lme(
   weight ~ treatment + sex1 + litsize + treatment:sex1,
@@ -459,57 +256,34 @@ anova(model3.1.fit, model3.2a.fit)
 
 ::: {.callout-note collapse="true"}
 ## 🖊
+**¿Qué se compara?**
 
-**H3.2: ¿La varianza residual difiere entre grupos de tratamiento?**
-
-En esta comparación ya no se evalúa si las camadas difieren entre sí. Eso se decidió en H3.1, donde se concluyó que el intercepto aleatorio para `litter` debe mantenerse.
-
-Ahora la pregunta es distinta: se evalúa si la **varianza residual** es igual en todos los grupos de tratamiento o si difiere entre `Control`, `Low` y `High`.
-
-Para esto se comparan dos modelos:
-
-| Modelo          | Estructura de varianza residual               | Interpretación                                                        |
-| --------------- | --------------------------------------------- | --------------------------------------------------------------------- |
-| `model3.1.fit`  | Varianza residual homogénea                   | Asume la misma dispersión residual en `Control`, `Low` y `High`       |
-| `model3.2a.fit` | Varianza residual heterogénea por `treatment` | Permite una varianza residual distinta para cada grupo de tratamiento |
-
-El modelo `model3.1.fit` asume que, después de considerar los efectos fijos y el intercepto aleatorio de camada, la variabilidad residual de las crías es la misma en los tres grupos de tratamiento.
-
-En cambio, `model3.2a.fit` incorpora una estructura de varianza heterogénea mediante `varIdent()`:
-
-```r
-model3.2a.fit <- lme(
-  weight ~ treatment + sex1 + litsize + treatment:sex1,
-  random = ~ 1 | litter,
-  data = ratpup,
-  method = "REML",
-  weights = varIdent(form = ~ 1 | treatment)
-)
-
-anova(model3.1.fit, model3.2a.fit)
+```
+model3.1.fit   AIC=419.10  (varianza homogénea)
+model3.2a.fit  AIC=381.88  (varianza distinta por tratamiento)
+LRT = 41.22    p < 0.001
 ```
 
-Esta especificación permite que cada grupo de tratamiento tenga su propia varianza residual. Como hay tres grupos de tratamiento, el modelo necesita dos parámetros adicionales de varianza respecto al modelo con varianza residual única.
+`varIdent(form = ~1 | treatment)` permite estimar una
+varianza residual distinta para cada grupo:
 
-La comparación entre modelos muestra una mejora clara al permitir varianzas residuales distintas por tratamiento:
+```
+σ²_Control → su propio valor
+σ²_Low     → su propio valor
+σ²_High    → su propio valor
+```
 
-| Criterio | `model3.1.fit` | `model3.2a.fit` | Interpretación                            |
-| -------- | -------------: | --------------: | ----------------------------------------- |
-| AIC      |       419.1043 |        381.8847 | Disminuye, por lo tanto mejora            |
-| BIC      |       452.8775 |        423.1630 | Disminuye, por lo tanto mejora            |
-| logLik   |      -200.5522 |       -179.9423 | Aumenta, por lo tanto mejora              |
-| L.Ratio  |              — |        41.21964 | Evidencia de mejor ajuste                 |
-| p-value  |              — |         < .0001 | Diferencia estadísticamente significativa |
+La mejora de ~37 puntos de AIC confirma que la varianza
+residual **no es la misma** en los 3 grupos — el grupo
+Control muestra mayor dispersión dentro de las camadas que
+los grupos Low y High.
 
-La interpretación es que la varianza residual no parece ser igual entre los grupos de tratamiento. Es decir, después de considerar el tratamiento, el sexo, el tamaño de camada y el intercepto aleatorio para `litter`, todavía queda una dispersión residual que varía según el grupo de tratamiento.
-
-Esto es importante porque asumir una varianza residual homogénea cuando en realidad hay heterogeneidad puede afectar los errores estándar, los intervalos de confianza y las pruebas de hipótesis de los efectos fijos.
-
-Por lo tanto, H3.2 aporta evidencia a favor de una estructura de varianza residual heterogénea por grupo de tratamiento. Sin embargo, este modelo permite tres varianzas residuales distintas, una para cada grupo. El siguiente paso es evaluar si esta estructura puede simplificarse agrupando `Low` y `High` en una sola categoría de varianza residual, separada de `Control`.
+**Decisión:** se retiene la varianza heterogénea. El
+siguiente paso evalúa si los grupos Low y High pueden
+compartir una misma varianza (H3.3).
 :::
 
 ### H3.3: ¿Se pueden agrupar High y Low?
-
 ```{r h33, echo=TRUE}
 model3.2b.fit <- lme(
   weight ~ treatment + sex1 + litsize + treatment:sex1,
@@ -522,159 +296,106 @@ anova(model3.2a.fit, model3.2b.fit)
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-**H3.3: ¿Se puede simplificar la estructura de varianza residual?**
+**¿Qué se compara?**
 
-En H3.2 se concluyó que la varianza residual no era igual entre todos los grupos de tratamiento. Sin embargo, el modelo `model3.2a.fit` permite tres varianzas residuales distintas: una para `Control`, una para `Low` y una para `High`.
-
-En H3.3 la pregunta es si esa estructura puede simplificarse. Es decir, se evalúa si realmente es necesario estimar una varianza residual diferente para `Low` y otra para `High`, o si ambos grupos tratados pueden agruparse en una sola categoría de varianza residual.
-
-Para esto se comparan dos modelos:
-
-| Modelo          | Estructura de varianza residual | Interpretación                                       |
-| --------------- | ------------------------------- | ---------------------------------------------------- |
-| `model3.2a.fit` | Tres varianzas residuales       | Una para `Control`, una para `Low` y una para `High` |
-| `model3.2b.fit` | Dos varianzas residuales        | Una para `Control` y otra para `High_Low`            |
-
-El modelo `model3.2b.fit` usa la variable `trtgrp`, que agrupa los dos grupos tratados (`Low` y `High`) en una sola categoría:
-
-```r
-model3.2b.fit <- lme(
-  weight ~ treatment + sex1 + litsize + treatment:sex1,
-  random = ~ 1 | litter,
-  data = ratpup,
-  method = "REML",
-  weights = varIdent(form = ~ 1 | trtgrp))
-
-anova(model3.2b.fit, model3.2a.fit)
+```
+model3.2a.fit  AIC=381.88  (3 varianzas: Control, Low, High)
+model3.2b.fit  AIC=381.08  (2 varianzas: Control, High_Low)
+LRT = 1.20     p = 0.274
 ```
 
-Esta comparación evalúa si el modelo más complejo, con tres varianzas residuales, mejora significativamente el ajuste en comparación con el modelo más simple, que agrupa `Low` y `High`.
+`varIdent(form = ~1 | trtgrp)` agrupa Low y High en una
+sola varianza compartida (`High_Low`), reduciendo de 3 a
+2 parámetros de varianza.
 
-La comparación muestra que ambos modelos tienen un ajuste muy similar:
+**Resultado: no significativo (p=0.27)**
 
-| Criterio | `model3.2a.fit` | `model3.2b.fit` | Interpretación                                           |
-| -------- | --------------: | --------------: | -------------------------------------------------------- |
-| AIC      |          381.88 |          381.08 | Muy similar; favorece levemente al modelo más simple     |
-| BIC      |          423.16 |          418.61 | Favorece al modelo más simple                            |
-| L.Ratio  |           1.196 |               — | Diferencia pequeña entre modelos                         |
-| p-value  |          0.2741 |               — | No hay evidencia suficiente para mantener tres varianzas |
+Las varianzas de High y Low **pueden combinarse** sin
+perder ajuste significativo. Además, Model 3.2B tiene
+**menor AIC** con 1 parámetro menos — es más parsimonioso.
 
-El valor p no significativo indica que el modelo con tres varianzas residuales no mejora de manera relevante el ajuste respecto al modelo con dos varianzas. En otras palabras, no hay evidencia suficiente para afirmar que las varianzas residuales de `Low` y `High` deban modelarse por separado.
-
-Esto es útil porque permite simplificar el modelo sin perder capacidad explicativa. En lugar de estimar tres varianzas residuales, se estima una varianza para `Control` y otra para los grupos tratados agrupados como `High_Low`.
-
-Por principio de parsimonia, cuando dos modelos explican los datos de forma similar, se prefiere el modelo más simple. Por eso, en H3.3 se selecciona `model3.2b.fit`.
-
--> se mantiene una estructura de varianza residual heterogénea, pero simplificada: una varianza residual para `Control` y otra para `High_Low`. Este modelo corresponde al **Model 3.2B** y es el que continúa en la estrategia top-down.
+**Decisión:** se prefiere Model 3.2B (2 varianzas) sobre
+Model 3.2A (3 varianzas) por parsimonia.
 :::
 
 ### H3.4: ¿Model 3.2B mejor que varianza homogénea?
-
 ```{r h34, echo=FALSE}
 anova(model3.1.fit, model3.2b.fit)
 ```
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-**H3.4: Confirmación de la estructura de varianza residual**
+**¿Qué se compara?**
 
-H3.4 funciona como una comparación de cierre sobre la estructura de varianza residual. En H3.2 se observó que permitir varianzas residuales distintas por tratamiento mejoraba el ajuste del modelo. Luego, en H3.3, se mostró que esa estructura podía simplificarse agrupando `Low` y `High` en una sola categoría de varianza residual.
-
-Ahora se compara directamente el modelo con varianza residual homogénea contra el modelo con varianza residual heterogénea simplificada.
-
-Para esto se comparan dos modelos:
-
-| Modelo          | Estructura de varianza residual            | Interpretación                                     |
-| --------------- | ------------------------------------------ | -------------------------------------------------- |
-| `model3.1.fit`  | Varianza residual homogénea                | Una sola varianza residual para todos los grupos   |
-| `model3.2b.fit` | Varianza residual heterogénea simplificada | Una varianza para `Control` y otra para `High_Low` |
-
-El modelo `model3.1.fit` asume que la dispersión residual del peso es la misma para todas las crías, independientemente del grupo de tratamiento. En cambio, `model3.2b.fit` permite dos varianzas residuales: una para el grupo `Control` y otra para los grupos tratados agrupados como `High_Low`.
-
-```r
-anova(model3.1.fit, model3.2b.fit)
+```
+model3.1.fit   AIC=419.10  (varianza homogénea)
+model3.2b.fit  AIC=381.08  (2 varianzas: Control, High_Low)
+LRT = 40.02    p < 0.001
 ```
 
-La comparación muestra una mejora importante al usar la estructura de varianza residual heterogénea simplificada:
+Esta prueba confirma que Model 3.2B (con 2 varianzas) es
+**significativamente mejor** que el modelo homocedástico
+original — aun siendo más simple que Model 3.2A (3
+varianzas).
 
-| Criterio | `model3.1.fit` | `model3.2b.fit` | Interpretación                            |
-| -------- | -------------: | --------------: | ----------------------------------------- |
-| AIC      |         419.10 |          381.08 | Disminuye claramente                      |
-| BIC      |         452.88 |          418.61 | Disminuye claramente                      |
-| L.Ratio  |              — |           40.02 | Evidencia de mejor ajuste                 |
-| p-value  |              — |         < .0001 | Diferencia estadísticamente significativa |
+La secuencia H3.2 → H3.3 → H3.4 es la forma correcta de
+llegar a la estructura de varianza más parsimoniosa:
 
-El resultado del Likelihood Ratio Test indica que el modelo con dos varianzas residuales ajusta significativamente mejor que el modelo con una sola varianza residual. Por lo tanto, se rechaza la hipótesis de varianza residual homogénea.
+```
+H3.2: ¿hay heterogeneidad?        → Sí
+H3.3: ¿se pueden agrupar Low/High? → Sí
+H3.4: ¿la versión agrupada sigue   → Sí
+      siendo mejor que homogénea?
+```
 
-Esta comparación es importante porque cierra la decisión sobre la estructura de varianza. H3.2 mostró que una estructura heterogénea era necesaria; H3.3 mostró que podía simplificarse; y H3.4 confirma que la versión simplificada sigue siendo claramente mejor que la estructura homogénea inicial.
-
-En conclusión, se selecciona `model3.2b.fit` como la estructura adecuada de varianza residual. El modelo mantiene una varianza residual para `Control` y otra para `High_Low`. Con esto queda definida la parte técnica del modelo: intercepto aleatorio para `litter` y varianza residual heterogénea simplificada.
-
-A partir de este punto, la estrategia top-down pasa a evaluar los efectos fijos, comenzando por la interacción entre `treatment` y `sex1`.
+**Decisión:** Model 3.2B es la estructura de varianza
+final — se usa en todos los modelos siguientes.
 :::
 
 ### H3.5: ¿Es significativa la interacción tratamiento × sexo?
-
 ```{r h35, echo=TRUE}
 anova(model3.2b.fit)
 ```
 
-> No se encontró evidencia de que la diferencia de peso entre los
-> tratamientos cambie según el sexo de la cría (**p = 0.73**).
+> No se encontró evidencia de que la diferencia de peso
+> entre los tratamientos cambie según el sexo de la cría
+> (**p = 0.73**).
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-**H3.5: ¿El efecto del tratamiento varía según el sexo?**
+**Leyendo la tabla de `anova()`**
 
-H3.5 marca el paso desde la evaluación de la estructura del modelo hacia la evaluación de los efectos fijos. En las hipótesis anteriores se decidió mantener el intercepto aleatorio para `litter` y usar una estructura de varianza residual heterogénea simplificada (`Control` vs. `High_Low`).
-
-Ahora se evalúa si la interacción entre `treatment` y `sex1` debe mantenerse en el modelo.
-
-El modelo evaluado todavía incluye la interacción:
-
-```r
-anova(model3.2b.fit)
+```
+(Intercept)    F=9027.74  p<0.001  ***
+treatment      F=4.241    p=0.027  *
+sex1           F=61.568   p<0.001  ***
+litsize        F=49.577   p<0.001  ***
+treatment:sex1 F=0.317    p=0.729  (no significativo)
 ```
 
-Esta tabla presenta pruebas F para los términos fijos del modelo. El foco principal de H3.5 está en la última fila: `treatment:sex1`.
+La interacción `treatment:sex1` tiene F=0.317 y p=0.73 —
+**muy lejos de ser significativa**. Esto significa que el
+efecto del tratamiento sobre el peso es **el mismo para
+machos y hembras** — no hay evidencia de que difiera por
+sexo.
 
-| Término          | F-value | p-value | Interpretación                                       |
-| ---------------- | ------: | ------: | ---------------------------------------------------- |
-| `(Intercept)`    | 9027.74 | < .0001 | El intercepto es distinto de cero                    |
-| `treatment`      |   4.241 |  0.0271 | Hay diferencias promedio entre grupos de tratamiento |
-| `sex1`           |  61.568 | < .0001 | El peso difiere según el sexo de la cría             |
-| `litsize`        |  49.577 | < .0001 | El tamaño de camada se asocia con el peso            |
-| `treatment:sex1` |   0.317 |  0.7288 | La interacción no es significativa                   |
+Nótese que `treatment`, `sex1` y `litsize` **sí son
+significativos** como efectos principales — se mantienen
+en el modelo final.
 
-La pregunta específica de H3.5 es si el efecto del tratamiento sobre el peso depende del sexo de la cría. Esto se evalúa mediante la interacción `treatment:sex1`.
-
-El valor p de la interacción es alto (`p = 0.7288`), por lo que no hay evidencia suficiente para mantener este término en el modelo. En términos sustantivos, esto indica que la diferencia de peso entre los grupos de tratamiento no parece variar de forma importante entre machos y hembras.
-
-Es decir, el tratamiento puede tener un efecto sobre el peso, y el sexo también puede estar asociado con el peso, pero no hay evidencia de que el efecto del tratamiento sea distinto según el sexo.
-
-Por lo tanto, siguiendo la estrategia top-down, se elimina la interacción `treatment:sex1` y se ajusta un modelo más simple. Este modelo corresponde al **Model 3.3**, que mantiene `treatment`, `sex1` y `litsize` como efectos fijos, junto con el intercepto aleatorio para `litter` y la estructura de varianza residual heterogénea simplificada.
-
-Una forma breve de interpretar H3.5 es:
-
-> La interacción entre tratamiento y sexo no es significativa. Por lo tanto, el efecto del tratamiento sobre el peso de las crías no parece depender del sexo, y el término `treatment:sex1` se elimina del modelo.
-
-```markdown
-Los grados de libertad denominador varían entre términos porque algunos predictores corresponden al nivel de camada (`treatment`, `litsize`) y otros al nivel de cría (`sex1`). Esto refleja la estructura jerárquica del modelo mixto.
-```
+**Decisión:** se elimina la interacción `treatment:sex1`
+→ el modelo final tiene solo efectos principales.
 :::
 
 ### H3.6: ¿Efecto global del tratamiento?
-
 ```{r h36, echo=TRUE}
-model3.3.ml.fit <- lme(
-  weight ~ treatment + sex1 + litsize,
+model3.3a.ml.fit <- lme(weight ~ sex1 + litsize,
   random = ~1 | litter,
   data = ratpup,
   method = "ML",
   weights = varIdent(form = ~1 | trtgrp))
 
-model3.3a.ml.fit <- lme(
-  weight ~ sex1 + litsize,
+model3.3.ml.fit <- lme(weight ~ treatment + sex1 + litsize,
   random = ~1 | litter,
   data = ratpup,
   method = "ML",
@@ -683,69 +404,40 @@ model3.3a.ml.fit <- lme(
 anova(model3.3a.ml.fit, model3.3.ml.fit)
 ```
 
-> **p < 0.001** → el tratamiento tiene efecto global significativo.
+> **p < 0.001** → el tratamiento tiene efecto global
+> significativo.
 
 ::: {.callout-note collapse="true"}
 ## 🖊
-**H3.6: ¿El tratamiento tiene un efecto global sobre el peso?**
+**¿Qué se compara?**
 
-H3.6 es la última hipótesis antes de definir el modelo final. En esta etapa ya se eliminó la interacción `treatment:sex1`, porque en H3.5 no aportó evidencia suficiente. Por lo tanto, ahora se evalúa si el efecto principal de `treatment` debe mantenerse en el modelo.
-
-La pregunta sustantiva es si el tratamiento recibido por la madre se asocia con el peso de las crías, después de ajustar por sexo, tamaño de camada, agrupación por `litter` y varianza residual heterogénea.
-
-Para esto se comparan dos modelos:
-
-| Modelo             | Efectos fijos                | Interpretación                   |
-| ------------------ | ---------------------------- | -------------------------------- |
-| `model3.3a.ml.fit` | `sex1 + litsize`             | Modelo reducido, sin `treatment` |
-| `model3.3.ml.fit`  | `treatment + sex1 + litsize` | Modelo completo, con `treatment` |
-
-Ambos modelos mantienen la misma estructura aleatoria y la misma estructura de varianza residual: intercepto aleatorio para `litter` y varianza residual heterogénea para `Control` versus `High_Low`.
-
-```r
-model3.3.ml.fit <- lme(
-  weight ~ treatment + sex1 + litsize,
-  random = ~ 1 | litter,
-  data = ratpup,
-  method = "ML",
-  weights = varIdent(form = ~ 1 | trtgrp))
-
-model3.3a.ml.fit <- lme(
-  weight ~ sex1 + litsize,
-  random = ~ 1 | litter,
-  data = ratpup,
-  method = "ML",
-  weights = varIdent(form = ~ 1 | trtgrp))
-
-anova(model3.3a.ml.fit, model3.3.ml.fit)
+```
+model3.3a.ml.fit  AIC=368.37  (sin treatment)
+model3.3.ml.fit   AIC=353.77  (con treatment)
+LRT = 18.60       p < 0.001
 ```
 
-En esta comparación se usa `method = "ML"` porque los dos modelos difieren en sus efectos fijos. El modelo reducido excluye `treatment`, mientras que el modelo completo lo incluye. Para comparar modelos con diferentes efectos fijos, la comparación debe hacerse con máxima verosimilitud completa, no con REML.
+Esta es la hipótesis más importante del estudio —
+responde la **pregunta de investigación principal**: ¿el
+compuesto químico administrado a las madres afecta el
+peso al nacer de las crías?
 
-| Criterio | `model3.3a.ml.fit` | `model3.3.ml.fit` | Interpretación                                   |
-| -------- | -----------------: | ----------------: | ------------------------------------------------ |
-| AIC      |             368.37 |            353.77 | Disminuye, por lo tanto mejora                   |
-| BIC      |             391.02 |            383.97 | Disminuye, por lo tanto mejora                   |
-| L.Ratio  |                  — |             18.60 | Evidencia de mejor ajuste                        |
-| p-value  |                  — |            0.0001 | El efecto global de `treatment` es significativo |
+**¿Por qué ML y no REML aquí?**
 
-El resultado indica que el modelo que incluye `treatment` ajusta significativamente mejor que el modelo sin `treatment`. Por lo tanto, hay evidencia de que el tratamiento tiene un efecto global sobre el peso de las crías, incluso después de ajustar por `sex1` y `litsize`.
+Porque se están comparando modelos con **distintos efectos
+fijos** (uno con `treatment` y otro sin él). REML no es
+válido para comparar modelos con distintas estructuras de
+efectos fijos — solo ML permite esta comparación.
 
-Como `treatment` tiene tres niveles (`Control`, `Low` y `High`), el test evalúa simultáneamente los dos coeficientes asociados al tratamiento. Es decir, no prueba solo una comparación específica, sino si el tratamiento como variable global aporta información al modelo.
+**Resultado:** p<0.001 — el tratamiento tiene un efecto
+global significativo sobre el peso al nacer.
 
-La conclusión de H3.6 es que `treatment` debe mantenerse en el modelo final. Esto responde la pregunta sustantiva principal: el tratamiento recibido por la madre se asocia con diferencias en el peso de las crías, considerando la agrupación por camada y ajustando por sexo y tamaño de camada.
-
-Después de esta comparación, la especificación final de efectos fijos queda definida como:
-
-```r
-weight ~ treatment + sex1 + litsize
-```
-
-El siguiente paso es volver a ajustar este modelo final usando `method = "REML"`, porque una vez seleccionada la estructura del modelo, las estimaciones finales de los parámetros se reportan preferentemente con REML.
+**Nota importante:** estos modelos ML solo se usan para
+la prueba de hipótesis. Para interpretar los coeficientes
+finales se usa REML (Model 3.3 a continuación).
 :::
 
 ### Resumen de comparación de modelos
-
 | Comparación | Componente evaluado | Resultado | Decisión |
 |-------------|---------------------|-----------|----------|
 | 3.1 vs 3.1A | Intercepto aleatorio | p < 0.001 | Mantener |
@@ -754,7 +446,6 @@ El siguiente paso es volver a ajustar este modelo final usando `method = "REML"`
 | 3.1 vs 3.2B | Confirmar 3.2B | p < 0.001 | Elegir 3.2B |
 | anova(3.2B) | Interacción trat×sexo | p = 0.73 | Eliminar |
 | 3.3A vs 3.3 (ML) | Efecto tratamiento | p < 0.001 | Mantener |
-
 
 ::: {.callout-note collapse="true"}
 ## 🖊
@@ -1236,306 +927,3 @@ En síntesis, el análisis muestra que el tratamiento se asocia con menor peso d
 :::
 ---
 
-# Anexo 
-
-## Por qué lme() y no lmer()
-
-- `lmer()` no permite varianzas residuales heterogéneas
-- Para Model 3.2B y 3.3 es **obligatorio** usar `lme()` de `nlme`
-- `lmer()` solo llega hasta Model 3.1 en este ejemplo
-
-::: {.callout-note collapse="true"}
-## 🖊
-Una pregunta posible es por qué el análisis se realizó con `lme()` del paquete `nlme` y no con `lmer()` del paquete `lme4`, que actualmente es una función muy usada para ajustar modelos mixtos.
-
-En este ejemplo, la razón principal es técnica: el modelo final requiere una estructura de **varianza residual heterogénea**, y esa estructura se implementa directamente en `nlme` mediante `varIdent()`.
-
-Durante la estrategia top-down se encontró evidencia de que la varianza residual no era igual entre los grupos de tratamiento. En particular, el modelo final utiliza:
-
-```r
-weights = varIdent(form = ~ 1 | trtgrp)
-```
-
-Esta especificación permite estimar una varianza residual para `Control` y otra para los grupos tratados agrupados como `High_Low`.
-
-El paquete `lme4`, mediante `lmer()`, permite ajustar modelos mixtos con efectos aleatorios, por ejemplo un intercepto aleatorio para `litter`. Sin embargo, no permite especificar estructuras de varianza residual heterogénea como `varIdent()`.
-
-Por lo tanto, `lmer()` podría reproducir una versión del modelo con intercepto aleatorio y varianza residual homogénea, similar al **Model 3.1**:
-
-```r
-weight ~ treatment + sex1 + litsize + treatment:sex1 + (1 | litter)
-```
-
-Pero no puede reproducir directamente los modelos que incorporan varianza residual heterogénea, como **Model 3.2A**, **Model 3.2B** y **Model 3.3**.
-
-| Función  | Paquete | Qué permite                                                             | Limitación en este ejemplo                                 |
-| -------- | ------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `lme()`  | `nlme`  | Efectos aleatorios y estructuras de varianza residual como `varIdent()` | Sintaxis menos moderna, pero adecuada para este análisis   |
-| `lmer()` | `lme4`  | Efectos aleatorios de forma flexible y eficiente                        | No permite `varIdent()` para varianza residual heterogénea |
-
-La elección de `lme()` no es arbitraria. Responde directamente a los resultados del análisis: H3.2-H3.4 mostraron que la estructura de varianza residual heterogénea era necesaria. Por eso se utilizó una función que permite modelar explícitamente esa característica de los datos.
-
-Una forma breve de responderlo en la presentación sería:
-
-> Usé `lme()` porque el modelo final requiere una estructura de varianza residual heterogénea mediante `varIdent()`. `lmer()` podría ajustar el modelo con intercepto aleatorio, pero no permite implementar directamente la estructura `Control` versus `High_Low` que fue seleccionada en la estrategia top-down.
-:::
-
-## ML vs REML
-
-| Situación | Método |
-|-----------|--------|
-| Comparar modelos con distintos efectos fijos | ML |
-| Estimar modelo final e interpretar parámetros | REML |
-| Comparar modelos con mismos efectos fijos | REML |
-
-::: {.callout-note collapse="true"}
-## 🖊
-Una pregunta posible es por qué el análisis cambia entre `REML` y `ML` durante la estrategia de modelado. Aunque puede parecer inconsistente, en realidad sigue una regla estándar en modelos mixtos.
-
-La idea general es:
-
-| Etapa                                                      | Método | Razón                                                                                  |
-| ---------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------- |
-| Comparación de efectos aleatorios y estructura de varianza | `REML` | Los efectos fijos son los mismos entre los modelos comparados                          |
-| Comparación de efectos fijos                               | `ML`   | Los modelos difieren en sus efectos fijos                                              |
-| Modelo final                                               | `REML` | Se usa para obtener estimaciones finales más apropiadas de los componentes de varianza |
-
-**Uso de REML**
-
-`REML` significa **Restricted Maximum Likelihood**. Este método se usa frecuentemente en modelos mixtos porque produce estimaciones más apropiadas de los componentes de varianza, especialmente cuando el número de grupos no es muy grande.
-
-En este ejemplo, se usa `REML` para comparar modelos que tienen los mismos efectos fijos, pero distinta estructura aleatoria o de varianza residual.
-
-Esto ocurre en las primeras hipótesis:
-
-| Hipótesis | Qué se compara                                                 | Método |
-| --------- | -------------------------------------------------------------- | ------ |
-| H3.1      | Modelo con versus sin intercepto aleatorio para `litter`       | `REML` |
-| H3.2      | Varianza residual homogénea versus heterogénea por `treatment` | `REML` |
-| H3.3      | Tres varianzas residuales versus dos varianzas residuales      | `REML` |
-| H3.4      | Varianza residual homogénea versus heterogénea simplificada    | `REML` |
-
-En estas comparaciones, los efectos fijos se mantienen constantes. Por eso, las comparaciones con `REML` son apropiadas.
-
-**Uso de ML**
-
-`ML` significa **Maximum Likelihood**. Se usa cuando los modelos que se comparan tienen diferentes efectos fijos.
-
-Esto es importante porque las verosimilitudes REML dependen de la estructura de efectos fijos del modelo. Por esa razón, no se deben comparar modelos con distintos efectos fijos usando REML.
-
-En H3.6, la comparación es entre un modelo sin `treatment` y un modelo con `treatment`:
-
-```r
-model3.3a.ml.fit: weight ~ sex1 + litsize
-model3.3.ml.fit:  weight ~ treatment + sex1 + litsize
-```
-
-Como los efectos fijos cambian entre modelos, esta comparación debe hacerse con `ML`.
-
-| Modelo             | Efectos fijos                | Método |
-| ------------------ | ---------------------------- | ------ |
-| `model3.3a.ml.fit` | `sex1 + litsize`             | `ML`   |
-| `model3.3.ml.fit`  | `treatment + sex1 + litsize` | `ML`   |
-
-Esta comparación permite evaluar si `treatment` aporta información al modelo después de ajustar por sexo y tamaño de camada.
-
-**Por qué se vuelve a REML en el modelo final**
-
-Una vez que ya se decidió qué efectos fijos se mantienen en el modelo final, ya no se están comparando modelos con diferentes efectos fijos. En ese punto, el objetivo cambia: ahora se busca estimar e interpretar el modelo final.
-
-Por eso, el modelo final se vuelve a ajustar con `REML`:
-
-```r
-model3.3.reml.fit <- lme(
-  weight ~ treatment + sex1 + litsize,
-  random = ~ 1 | litter,
-  data = ratpup,
-  method = "REML",
-  weights = varIdent(form = ~ 1 | trtgrp))
-```
-
-Esto permite obtener estimaciones finales más apropiadas de los componentes de varianza, como la varianza entre camadas y la varianza residual.
-
-**Regla práctica**
-
-La regla puede resumirse así:
-
-| Situación                                                                                    | Método recomendado |
-| -------------------------------------------------------------------------------------------- | ------------------ |
-| Comparar modelos con los mismos efectos fijos, pero distinta estructura aleatoria o residual | `REML`             |
-| Comparar modelos con diferentes efectos fijos                                                | `ML`               |
-| Reportar el modelo final después de seleccionar la estructura                                | `REML`             |
-
-> Se usó REML para comparar estructuras aleatorias y de varianza porque los efectos fijos eran los mismos entre los modelos. Cuando se compararon modelos con distintos efectos fijos, como en H3.6, se usó ML, porque REML no permite comparar válidamente modelos con efectos fijos diferentes. Finalmente, el modelo seleccionado se reajustó con REML para obtener las estimaciones finales de los componentes de varianza.
-
-En síntesis, el cambio entre REML y ML no es una inconsistencia. Responde a la etapa del análisis: REML para decidir y reportar estructuras de varianza cuando los efectos fijos son iguales, ML para comparar modelos con efectos fijos diferentes, y REML nuevamente para presentar el modelo final.
-:::
-
-## Por qué dividir el p-value en H3.1
-
-Cuando se prueba si una varianza es cero, el parámetro está en el
-**límite del espacio parametral**. El LRT estándar no aplica
-directamente y el p-value se divide por 2.
-
-::: {.callout-note collapse="true"}
-## 🖊
-En H3.1 se evalúa si es necesario incluir un intercepto aleatorio para `litter`. En términos estadísticos, la hipótesis que se contrasta es si la varianza entre camadas es igual a cero:
-
-$$
-H_0: \sigma^2_{\text{litter}} = 0
-$$
-
-frente a:
-
-$$
-H_1: \sigma^2_{\text{litter}} > 0
-$$
-
-Esta comparación se realiza mediante un **Likelihood Ratio Test** o **LRT**, comparando un modelo sin intercepto aleatorio contra un modelo con intercepto aleatorio para `litter`.
-
-```r
-anova(model3.1a.fit, model3.1.fit)
-```
-
-**El problema técnico**
-
-En un LRT estándar, cuando se compara un modelo reducido contra un modelo más complejo con un parámetro adicional, se suele asumir que el estadístico del test sigue una distribución chi-cuadrado con un grado de libertad:
-
-$$
-LRT \sim \chi^2_1
-$$
-
-Sin embargo, esta aproximación estándar supone que el parámetro evaluado puede tomar valores a ambos lados del valor nulo. Esto no ocurre con una varianza.
-
-Una varianza no puede ser negativa:
-
-$$
-\sigma^2_{\text{litter}} \geq 0
-$$
-
-Por eso, cuando se prueba:
-
-$$
-H_0: \sigma^2_{\text{litter}} = 0
-$$
-
-el valor nulo está en el **límite del espacio de parámetros**. Es decir, el parámetro no puede tomar valores menores que cero.
-
-**Consecuencia para el LRT**
-
-Cuando se prueba un único componente de varianza contra cero, la distribución nula del LRT no sigue exactamente una chi-cuadrado estándar con un grado de libertad. En su lugar, se aproxima por una mezcla:
-
-$$
-0.5 \chi^2_0 + 0.5 \chi^2_1
-$$
-
-Esto significa que la distribución tiene:
-
-| Componente     | Interpretación                                                         |
-| -------------- | ---------------------------------------------------------------------- |
-| $0.5 \chi^2_0$ | 50% de probabilidad de que el estadístico sea cero                     |
-| $0.5 \chi^2_1$ | 50% de probabilidad de seguir una chi-cuadrado con 1 grado de libertad |
-
-En términos prácticos, esta mezcla implica que el valor p obtenido con la chi-cuadrado estándar suele dividirse por dos:
-
-```r
-p_ajustado <- p_lrt / 2
-```
-
-**Aplicación en H3.1**
-
-En H3.1, el LRT compara:
-
-| Modelo          | Estructura                             |
-| --------------- | -------------------------------------- |
-| `model3.1a.fit` | Sin intercepto aleatorio para `litter` |
-| `model3.1.fit`  | Con intercepto aleatorio para `litter` |
-
-La comparación evalúa si la varianza del intercepto aleatorio de `litter` es mayor que cero. Como se está probando un componente de varianza, West divide por dos el valor p del LRT.
-
-En este caso, el valor p reportado por `anova()` ya era menor que 0.0001. Por lo tanto, incluso después de dividirlo por dos, el resultado sigue siendo menor que 0.0001.
-
-**Interpretación**
-
-La corrección no cambia la conclusión práctica del análisis. La evidencia sigue apoyando claramente la inclusión del intercepto aleatorio para `litter`.
-
-Esto significa que existe variabilidad relevante entre camadas y que las crías de una misma camada no deben tratarse como observaciones completamente independientes.
-
-> En H3.1 se prueba si la varianza entre camadas es igual a cero. Como una varianza no puede ser negativa, el parámetro está en el límite del espacio de parámetros. Por eso, el LRT no sigue exactamente una chi-cuadrado estándar, sino una mezcla 50/50 entre una masa en cero y una chi-cuadrado con un grado de libertad. La corrección práctica usada por West es dividir el valor p por dos. En este caso, la corrección no cambia la conclusión, porque el valor p ya era menor que 0.0001.
-
-En síntesis, dividir el valor p por dos no es una decisión arbitraria. Responde al hecho de que se está evaluando un componente de varianza, y las varianzas tienen una restricción natural: no pueden ser negativas.
-:::
-
-## Estrategia top-down con decisiones
-
-```{mermaid}
-flowchart TD
-    A[Model 3.1] --> B{H3.1: ¿Intercepto aleatorio?}
-    B -->|Sí p<0.001| C{H3.2-3.4: ¿Varianza heterogénea?}
-    C -->|Sí elegir 3.2B| D{H3.5: ¿Interacción?}
-    D -->|No p=0.73| E{H3.6: ¿Efecto tratamiento?}
-    E -->|Sí p<0.001| F[Model 3.3 Final]
-```
-
-::: {.callout-note collapse="true"}
-## 🖊
-Este anexo presenta la versión completa del diagrama de la estrategia top-down. A diferencia del diagrama inicial, que muestra solo las preguntas de decisión, este diagrama incluye las respuestas, los valores p principales y el modelo seleccionado en cada etapa.
-
-La idea es mostrar de forma visual cómo se pasó desde el **Model 3.1**, un modelo inicial más completo, hasta el **Model 3.3**, que corresponde al modelo final.
-
-```{mermaid}
-flowchart TD
-    A["Model 3.1<br/>Modelo inicial completo"] --> B["H3.1<br/>¿Es necesario el intercepto aleatorio para litter?<br/>p < .0001"]
-    B --> C["Decisión: Sí<br/>Se mantiene random = ~ 1 | litter"]
-
-    C --> D["H3.2<br/>¿La varianza residual difiere por tratamiento?<br/>p < .0001"]
-    D --> E["Decisión: Sí<br/>Se permite varianza residual heterogénea"]
-
-    E --> F["H3.3<br/>¿Se puede simplificar de 3 varianzas a 2?<br/>p = 0.2741"]
-    F --> G["Decisión: Sí<br/>Low y High se agrupan como High_Low"]
-
-    G --> H["H3.4<br/>¿La estructura Control vs High_Low mejora frente a varianza única?<br/>p < .0001"]
-    H --> I["Decisión: Sí<br/>Se selecciona Model 3.2B"]
-
-    I --> J["H3.5<br/>¿Es necesaria la interacción treatment × sex1?<br/>p = 0.7288"]
-    J --> K["Decisión: No<br/>Se elimina treatment × sex1"]
-
-    K --> L["H3.6<br/>¿El tratamiento tiene efecto global?<br/>p = 0.0001"]
-    L --> M["Decisión: Sí<br/>Se mantiene treatment"]
-
-    M --> N["Model 3.3<br/>Modelo final"]
-```
-
-El flujo completo puede resumirse así:
-
-| Etapa | Pregunta                                                    | Resultado    | Decisión                                 |
-| ----- | ----------------------------------------------------------- | ------------ | ---------------------------------------- |
-| H3.1  | ¿Es necesario el intercepto aleatorio para `litter`?        | `p < .0001`  | Se mantiene el intercepto aleatorio      |
-| H3.2  | ¿La varianza residual difiere entre tratamientos?           | `p < .0001`  | Se permite varianza residual heterogénea |
-| H3.3  | ¿Se puede simplificar de tres varianzas a dos?              | `p = 0.2741` | Se agrupan `Low` y `High`                |
-| H3.4  | ¿La estructura simplificada mejora frente a varianza única? | `p < .0001`  | Se selecciona `model3.2b.fit`            |
-| H3.5  | ¿Es necesaria la interacción `treatment × sex1`?            | `p = 0.7288` | Se elimina la interacción                |
-| H3.6  | ¿El tratamiento tiene efecto global?                        | `p = 0.0001` | Se mantiene `treatment`                  |
-
-Este diagrama sirve como resumen visual del proceso de selección del modelo. La tabla entrega el detalle de cada comparación, mientras que el diagrama muestra el flujo secuencial de decisiones.
-
-El resultado final de este proceso es el **Model 3.3**, definido por:
-
-```r
-weight ~ treatment + sex1 + litsize
-```
-
-con intercepto aleatorio para camada:
-
-```r
-random = ~ 1 | litter
-```
-
-y varianza residual heterogénea simplificada:
-
-```r
-weights = varIdent(form = ~ 1 | trtgrp)
-```
-
-En síntesis, este anexo permite mostrar que el modelo final no fue elegido de forma arbitraria, sino mediante una secuencia explícita de comparaciones: se mantuvieron los componentes necesarios, como el intercepto aleatorio y la varianza residual heterogénea, y se eliminaron los términos que no aportaron evidencia suficiente, como la interacción entre tratamiento y sexo.
-:::

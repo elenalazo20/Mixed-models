@@ -1,0 +1,33 @@
+---
+title: "Mapas Conceptuales - Modelos Mixtos"
+---
+
+## Antes de empezar
+
+Estos mapas resumen la teoría central antes de entrar a los ejemplos trabajados.
+
+## 1. ¿De dónde vienen los modelos mixtos?
+
+Toda la familia de modelos parte de la misma regresión lineal general; lo que cambia es cuántos y qué tipo de predictores entran.
+
+```{mermaid}
+[pegar aquí el código del mapa 1 - familia de modelos]
+```
+
+## 2. Intercepto aleatorio, pendiente aleatoria, o ambos
+
+```{mermaid}
+[pegar aquí el mapa de intercepto/pendiente/ambos]
+```
+
+## 3. Supuestos de los modelos mixtos
+
+```{mermaid}
+[pegar aquí el mapa de supuestos con rombos ✅/❌]
+```
+
+## 4. Orden práctico para revisar supuestos (con código)
+
+```{mermaid}
+[pegar aquí el mapa de orden + código R]
+```

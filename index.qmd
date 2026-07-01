@@ -14,16 +14,15 @@ Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de text
 
 | Ejemplo | Libro | Capítulo | Modelo |
 |---------|-------|----------|--------|
-| [Two-Level Clusters (Rat Pup)](two-level-clusters/index.qmd) | West et al. | Cap. 3 (p.59) | Modelos para datos en clusters de 2 niveles |
-| [Three-Level Clusters (Classroom)](three-level-clusters/index.qmd) | West et al. | Cap. 4 (p.135) | Modelos para datos en clusters de 3 niveles |
-| [Repeated Measures (Rat Brain)](repeated-measures/index.qmd) | West et al. | Cap. 5 (p.199) | Modelo para datos de medidas repetidas |
-| [Longitudinal Random Coef (Autism)](longitudinal-random-coef/index.qmd) | West et al. | Cap. 6 (p.249) | Modelos longitudinales con coeficientes aleatorios |
-| [Longitudinal Clusters (Dental Veener)](longitudinal-clusters/index.qmd) | West et al. | Cap. 7 (p.307) | Modelo longitudinal en clusters |
-| [Crossed Random Effects (SAT Score)](crossed-random-effects/index.qmd) | West et al. | Cap. 8 (p.369) | Modelos con factores aleatorios cruzados |
-| [Multilevel GLM (Mathematics)](multilevel-glm/index.qmd) | Finch et al. | Cap. 8 (p.133) | Modelo lineal generalizado multinivel |
-| [Longitudinal Grouped (ARMD)](longitudinal-grouped/index.qmd) | Galecki et al. | Cap. 2 (p.11-22) | Modelo longitudinal con obs. agrupadas |
-| [Pre-Post Clusters (PRT)](pre-post-clusters/index.qmd) | Galecki et al. | Cap. 2 (p.20) | Modelo pre-post con datos en clusters |
-
+| [Two-Level Clusters (Rat Pup)](two-level-clusters/index.qmd) | West et al. | Cap. 3 (pp. 59–134) | Modelos para datos en clusters de 2 niveles |
+| [Three-Level Clusters (Classroom)](three-level-clusters/index.qmd) | West et al. | Cap. 4 (pp. 135–198) | Modelos para datos en clusters de 3 niveles |
+| [Repeated Measures (Rat Brain)](repeated-measures/index.qmd) | West et al. | Cap. 5 (pp. 199–248) | Modelo para datos de medidas repetidas |
+| [Longitudinal Random Coef (Autism)](longitudinal-random-coef/index.qmd) | West et al. | Cap. 6 (pp. 249–305) | Modelos longitudinales con coeficientes aleatorios |
+| [Longitudinal Clusters (Dental Veneer)](longitudinal-clusters/index.qmd) | West et al. | Cap. 7 (pp. 307–368) | Modelo longitudinal en clusters |
+| [Crossed Random Effects (SAT Score)](crossed-random-effects/index.qmd) | West et al. | Cap. 8 (pp. 369–393) | Modelos con factores aleatorios cruzados |
+| [Multilevel GLM (Mathematics)](multilevel-glm/index.qmd) | Finch et al. | Cap. 8 (pp. 133–143) | Modelo lineal generalizado multinivel (outcome binario) |
+| [Longitudinal Grouped (ARMD)](longitudinal-grouped/index.qmd) | Galecki et al. | Cap. 2 (pp. 11–22); dataset retomado hasta Cap. 16 | Modelo longitudinal con obs. agrupadas |
+| [Pre-Post Clusters (PRT)](pre-post-clusters/index.qmd) | Galecki et al. | Cap. 2 (p. 20); dataset retomado hasta Cap. 17 | Modelo pre-post con datos en clusters |
 
 ## Mapa conceptual de los modelos
 
@@ -51,5 +50,9 @@ flowchart TD
 | Continuo | LMM gaussiano | Dental Veneer | Longitudinal de 3 niveles | `lme()` | West |
 | Continuo | LMM gaussiano | SAT Score | Factores aleatorios cruzados | `lmer()` | West |
 | Continuo | LMM gaussiano | ARMD Trial | Ensayo clínico longitudinal agrupado | `lme()` | Galecki |
-| Continuo | LMM gaussiano | PRT Trial | Pre-post con observaciones agrupadas por sujeto | `lme()` / `pdKronecker` | Galecki |
+| Continuo | LMM gaussiano | PRT Trial | Pre-post con observaciones agrupadas por sujeto | `lme()` | Galecki |
 | Binario | GLMM logístico | Mathematics Achievement | Estudiantes dentro de escuelas | `glmer()` | Finch |
+
+## Antes de empezar
+
+Si querés repasar la teoría antes de ver los ejemplos, revisá los [mapas conceptuales](fundamentos.qmd).
