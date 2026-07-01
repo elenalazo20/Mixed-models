@@ -2,32 +2,284 @@
 title: "Mapas Conceptuales - Modelos Mixtos"
 ---
 
-## Antes de empezar
-
 Estos mapas resumen la teoría central antes de entrar a los ejemplos trabajados.
 
-## 1. ¿De dónde vienen los modelos mixtos?
+## ¿De dónde vienen los modelos mixtos?
 
-Toda la familia de modelos parte de la misma regresión lineal general; lo que cambia es cuántos y qué tipo de predictores entran.
-
-```{mermaid}
-[pegar aquí el código del mapa 1 - familia de modelos]
-```
-
-## 2. Intercepto aleatorio, pendiente aleatoria, o ambos
+Toda la familia de modelos parte de la misma regresión lineal general — lo único que cambia es cuántos y qué tipo de predictores (X) entran.
 
 ```{mermaid}
-[pegar aquí el mapa de intercepto/pendiente/ambos]
+flowchart TD
+    RAIZ["📐 MODELO LINEAL GENERAL<br/>Y = β₀ + β₁X + ε<br/>Todo lo de abajo ES una regresión lineal,<br/>solo cambia cuántas/qué tipo de X entran"]
+
+    RAIZ --> T["🔵 PRUEBA T<br/>1 predictor categórico BINARIO<br/>(2 grupos)"]
+    RAIZ --> A1["🟣 ANOVA ONE-WAY<br/>1 predictor categórico<br/>con >2 niveles"]
+    RAIZ --> A2["🟣 ANOVA TWO-WAY<br/>2 predictores categóricos<br/>+ interacción"]
+    RAIZ --> ARM["🟠 ANOVA MEDIDAS REPETIDAS<br/>mismo sujeto medido<br/>varias veces<br/>(antecesor conceptual<br/>de modelos mixtos)"]
+    RAIZ --> MULT["🟢 REGRESIÓN MÚLTIPLE<br/>≥2 predictores<br/>(continuos y/o categóricos)"]
+
+    T --> T1["Independiente: 2 grupos distintos<br/>Pareada: mismo sujeto, 2 momentos<br/>(ya es una mini medida repetida)"]
+
+    ARM --> ARM1["⚠️ Requiere supuesto extra:<br/>ESFERICIDAD"]
+
+    MULT --> MIXTO["🔴 MODELOS DE EFECTOS MIXTOS<br/>Regresión múltiple + estructura<br/>de dependencia (jerárquica/repetida)<br/>modelada con efectos aleatorios<br/>Y = Xβ (fijos) + Zu (aleatorios) + ε"]
+    ARM -.->|"cuando datos son<br/>desbalanceados o hay<br/>estructura anidada"| MIXTO
+
+    classDef raiz fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef t fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px
+    classDef anova fill:#805AD5,color:#fff,stroke:#553C9A,stroke-width:2px
+    classDef rm fill:#DD6B20,color:#fff,stroke:#9C4221,stroke-width:2px
+    classDef mult fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px
+    classDef mixto fill:#E53E3E,color:#fff,stroke:#9B2C2C,stroke-width:3px,font-weight:bold
+
+    class RAIZ raiz
+    class T,T1 t
+    class A1,A2 anova
+    class ARM,ARM1 rm
+    class MULT mult
+    class MIXTO mixto
 ```
 
-## 3. Supuestos de los modelos mixtos
+## Intercepto aleatorio, pendiente aleatoria, o ambos
+
+¿Qué varía entre sujetos? Esa es la pregunta que define qué efectos aleatorios incluir.
 
 ```{mermaid}
-[pegar aquí el mapa de supuestos con rombos ✅/❌]
+flowchart TD
+    A["🎯 MODELOS DE EFECTOS MIXTOS<br/>¿Qué varía entre sujetos?"]
+
+    A --> B["1️⃣ INTERCEPTO ALEATORIO<br/>(1 | paciente)"]
+    A --> C["2️⃣ PENDIENTE ALEATORIA<br/>(0 + tiempo | paciente)"]
+    A --> D["3️⃣ INTERCEPTO + PENDIENTE<br/>(tiempo | paciente)"]
+
+    B --> B1["🏃 ANALOGÍA: Carrera con hándicap<br/>━━━━━━━━━━<br/>Cada corredor arranca desde una posición distinta en la pista (algunos más adelante, otros más atrás), pero todos corren a la MISMA velocidad. La distancia entre ellos se mantiene constante todo el recorrido."]
+    C --> C1["🎈 ANALOGÍA: Globos que se sueltan juntos<br/>━━━━━━━━━━<br/>Todos los globos parten del MISMO punto en el piso, pero el viento empuja a cada uno a distinta velocidad. Con el tiempo, se separan cada vez más entre sí, como un abanico que se abre."]
+    D --> D1["🌱 ANALOGÍA: Plantas en macetas distintas<br/>━━━━━━━━━━<br/>Cada planta se siembra con una altura inicial distinta (semilla más grande/chica) Y además crece a su propio ritmo (más o menos sol, agua, nutrientes). Ninguna planta se parece del todo a otra en su trayectoria."]
+
+    B1 --> BQ["💭 Pregunta clave: ¿Todos parten distinto pero avanzan igual?"]
+    C1 --> CQ["💭 Pregunta clave: ¿Todos parten igual pero avanzan distinto?"]
+    D1 --> DQ["💭 Pregunta clave: ¿Todos parten distinto Y avanzan distinto?"]
+
+    BQ --> B2["📘 TEORÍA<br/>Cada sujeto parte de un punto distinto (nivel basal), pero todos cambian al mismo ritmo en el tiempo. Líneas paralelas."]
+    CQ --> C2["📘 TEORÍA<br/>Todos los sujetos parten del MISMO punto inicial, pero evolucionan a ritmos distintos. Líneas que se abren desde un origen común."]
+    DQ --> D2["📘 TEORÍA<br/>Cada sujeto tiene su propio punto de partida Y su propio ritmo de cambio. El más flexible y realista para datos biológicos/clínicos."]
+
+    B2 --> B3["💡 EJEMPLO DE LA VIDA REAL<br/>Crecimiento infantil: cada niño nace con altura distinta, pero la velocidad de crecimiento anual es similar entre niños sanos."]
+    C2 --> C3["💡 EJEMPLO DE LA VIDA REAL<br/>Experimento de laboratorio: todas las muestras parten de concentración 0 en t=0 por diseño, pero la velocidad de reacción difiere entre ellas."]
+    D2 --> D3["💡 EJEMPLO DE LA VIDA REAL<br/>Ensayo antihipertensivo: cada paciente entra con PAD basal distinto (biología propia) y responde al fármaco a su propio ritmo."]
+
+    E["⚠️ CLAVE PARA ELEGIR<br/>No se elige a priori:<br/>se compara con LRT / AIC / BIC<br/>usando ML (no REML)"]
+    B3 -.-> E
+    C3 -.-> E
+    D3 -.-> E
+
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:2px,font-weight:bold
+    classDef intercepto fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px
+    classDef pendiente fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px
+    classDef ambos fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px
+    classDef analogia fill:#EDF2F7,color:#1A202C,stroke:#4A5568,stroke-width:1px,text-align:center
+    classDef pregunta fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
+    classDef teoria fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px,text-align:center
+    classDef ejemplo fill:#FFFBEB,color:#1A202C,stroke:#D69E2E,stroke-width:1px,text-align:center
+    classDef alerta fill:#FED7D7,color:#742A2A,stroke:#C53030,stroke-width:2px,font-weight:bold
+
+    class A titulo
+    class B intercepto
+    class C pendiente
+    class D ambos
+    class B1,C1,D1 analogia
+    class BQ,CQ,DQ pregunta
+    class B2,C2,D2 teoria
+    class B3,C3,D3 ejemplo
+    class E alerta
 ```
 
-## 4. Orden práctico para revisar supuestos (con código)
+## Supuestos de los modelos mixtos
 
 ```{mermaid}
-[pegar aquí el mapa de orden + código R]
+flowchart TD
+    TITULO["📋 SUPUESTOS DE MODELOS DE EFECTOS MIXTOS"]
+
+    TITULO --> COMUNES["📘 SUPUESTOS COMUNES<br/>(heredados de la regresión lineal clásica)"]
+    TITULO --> ADIC["📕 SUPUESTOS ADICIONALES<br/>(propios de la estructura mixta)"]
+
+    COMUNES --> SM2["Normalidad de<br/>los residuos"]
+    COMUNES --> SM3["Homocedasticidad<br/>de los residuos"]
+    COMUNES --> SM6["Linealidad predictor-respuesta"]
+
+    ADIC --> SM1["Normalidad de<br/>efectos aleatorios"]
+    ADIC --> SM4["Estructura de covarianza<br/>correctamente especificada"]
+    ADIC --> SM5["Independencia ENTRE unidades<br/>(se permite dependencia<br/>DENTRO de cada unidad)"]
+
+    SM2 --> A2["❌ Si falla:<br/>➡️ Transformar variable respuesta<br/>(log, sqrt)<br/>➡️ Usar GLMM con distribución<br/>adecuada (Poisson, Binomial, etc.)"]
+    SM3 --> A3["❌ Si falla:<br/>➡️ Modelar la varianza explícitamente<br/>(weights= varIdent, varPower en nlme)<br/>➡️ Errores estándar robustos"]
+    SM6 --> A6["❌ Si falla:<br/>➡️ Agregar términos polinomiales<br/>o splines<br/>➡️ Transformar predictor<br/>➡️ Modelo aditivo generalizado (GAMM)"]
+
+    SM1 --> A1["❌ Si falla:<br/>➡️ Revisar con QQ-plot de<br/>efectos aleatorios (ranef)<br/>➡️ Si son pocos grupos, el efecto<br/>es robusto a violaciones moderadas<br/>➡️ Considerar remuestreo (bootstrap)"]
+    SM4 --> A4["❌ Si falla:<br/>➡️ Probar estructuras alternativas:<br/>AR(1), no estructurada, etc.<br/>➡️ Comparar con AIC/BIC<br/>➡️ Simplificar si no converge<br/>(modelo sobreajustado)"]
+    SM5 --> A5["❌ Si falla:<br/>➡️ Agregar el nivel de agrupación<br/>faltante (ej. centro dentro de<br/>paciente, si aplica)<br/>➡️ Estructura anidada vs. cruzada:<br/>revisar diseño"]
+
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef comunes fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef adic fill:#E53E3E,color:#fff,stroke:#9B2C2C,stroke-width:2px,font-weight:bold
+    classDef supComun fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef supAdic fill:#FFF5F5,color:#1A202C,stroke:#E53E3E,stroke-width:1px
+    classDef altComun fill:#FAF089,color:#1A202C,stroke:#3182CE,stroke-width:1px,text-align:left
+    classDef altAdic fill:#FAF089,color:#1A202C,stroke:#E53E3E,stroke-width:1px,text-align:left
+
+    class TITULO titulo
+    class COMUNES comunes
+    class ADIC adic
+    class SM2,SM3,SM6 supComun
+    class SM1,SM4,SM5 supAdic
+    class A2,A3,A6 altComun
+    class A1,A4,A5 altAdic
 ```
+
+## Orden práctico para revisar supuestos (con código)
+
+```{mermaid}
+flowchart TD
+    P0["🧩 PASO 0 — Ajustar el modelo mixto<br/><span style='font-size:11px;font-family:monospace;white-space:pre'>mod_c &lt;- lmer(<br/>  pad ~ trat * semana + (semana | paciente),<br/>  data = datos, REML = TRUE)</span>"]
+
+    P0 --> P1["🧩 PASO 1 — Homocedasticidad<br/><span style='font-size:11px;font-family:monospace;white-space:pre'>plot(mod_c)</span>"]
+    P1 --> R1{"¿Se ve un<br/>'embudo'?"}
+    R1 -->|"❌ Sí, falla"| F1["➡️ Transformar variable<br/>respuesta (log, sqrt)<br/>o usar GLMM"]
+    F1 -.->|"volver a probar"| R1
+    R1 -->|"✅ No, pasa"| P2
+
+    P2["🧩 PASO 2 — Normalidad de residuos<br/><span style='font-size:11px;font-family:monospace;white-space:pre'>qqnorm(resid(mod_c))<br/>qqline(resid(mod_c))</span>"]
+    P2 --> R2{"¿Se aleja de<br/>la diagonal?"}
+    R2 -->|"❌ Sí, falla"| F2["➡️ Transformar<br/>o usar GLMM"]
+    F2 -.->|"volver a probar"| R2
+    R2 -->|"✅ No, pasa"| P3
+
+    P3["🧩 PASO 3 — Normalidad de efectos aleatorios<br/><span style='font-size:11px;font-family:monospace;white-space:pre'>qqnorm(ranef(mod_c)$paciente[,1])<br/>qqline(ranef(mod_c)$paciente[,1])</span>"]
+    P3 --> R3{"¿Se aleja de<br/>la diagonal?"}
+    R3 -->|"❌ Sí, falla"| F3["➡️ Con pocos grupos,<br/>es robusto → aceptar<br/>y seguir igual"]
+    F3 --> P4
+    R3 -->|"✅ No, pasa"| P4
+
+    P4["🧩 PASO 4 — Estructura de efectos validada<br/><span style='font-size:11px;font-family:monospace;white-space:pre'>anova(mod_a_ml, mod_b_ml, mod_c_ml)<br/>AIC(mod_a_ml, mod_b_ml, mod_c_ml)</span>"]
+    P4 --> R4{"¿Fue validada<br/>con LRT/AIC?"}
+    R4 -->|"❌ No"| F4["➡️ Volver a comparar<br/>modelos"]
+    F4 -.->|"volver a probar"| R4
+    R4 -->|"✅ Sí"| FIN["✅ TODO OK<br/>Interpretar el modelo<br/>con confianza"]
+
+    classDef paso fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef check fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px
+    classDef falla fill:#FED7D7,color:#1A202C,stroke:#E53E3E,stroke-width:1px
+    classDef ok fill:#C6F6D5,color:#1A202C,stroke:#38A169,stroke-width:3px,font-weight:bold
+
+    class P0,P1,P2,P3,P4 paso
+    class R1,R2,R3,R4 check
+    class F1,F2,F3,F4 falla
+    class FIN ok
+```
+
+## Estructura de los ejemplos de este sitio
+
+Una vez que entendés la teoría, así se conectan los 9 ejemplos trabajados según su tipo de dato.
+
+```{mermaid}
+%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
+flowchart TD
+    A["📚 EJEMPLOS DE ESTE SITIO<br/>¿Qué estructura de datos tenés?"]
+
+    A --> B["📗 Outcome continuo<br/>LMM gaussiano (lineal)"]
+    A --> C["📙 Outcome binario<br/>GLMM logístico<br/>⚠️ NO es LMM — usa función<br/>de enlace logit, no identidad"]
+
+    B --> D["2 niveles<br/>(sujetos dentro de un grupo)"]
+    B --> E["3 niveles<br/>(anidamiento doble)"]
+    B --> F["Medidas repetidas<br/>(mismo sujeto en el tiempo)"]
+    B --> G["Coeficientes aleatorios<br/>longitudinales"]
+    B --> H["Factores aleatorios<br/>cruzados (no anidados)"]
+    B --> I["Ensayo clínico<br/>longitudinal agrupado"]
+
+    D --> D1["🐀 Rat Pup — West Cap. 3<br/>crías dentro de camadas<br/>🔵 Intercepto aleatorio"]
+    E --> E1["🏫 Classroom — West Cap. 4<br/>estudiantes-salones-escuelas<br/>🔵 Intercepto aleatorio (3 niveles)"]
+    F --> F1["🧠 Rat Brain — West Cap. 5<br/>medidas repetidas en rata<br/>🔵 Intercepto aleatorio +<br/>estructura de covarianza"]
+    G --> G1["🧩 Autism — West Cap. 6<br/>trayectorias de socialización<br/>🟢 Intercepto + pendiente"]
+    G --> G2["🦷 Dental Veneer — West Cap. 7<br/>longitudinal en 3 niveles<br/>🟢 Intercepto + pendiente"]
+    H --> H1["📝 SAT Score — West Cap. 8<br/>estudiantes y profesores cruzados<br/>🔵 Interceptos cruzados"]
+    I --> I1["👁️ ARMD Trial — Galecki<br/>agudeza visual en el tiempo<br/>🟢 Intercepto + pendiente"]
+    I --> I2["💪 PRT Trial — Galecki<br/>fuerza muscular pre-post<br/>🔵 Intercepto aleatorio (Kronecker)"]
+
+    C --> J["Intercepto aleatorio<br/>logístico"]
+    J --> J1["📐 Mathematics — Finch Cap. 8<br/>estudiantes dentro de escuelas<br/>🔵 Intercepto aleatorio (glmer)"]
+
+    LEYENDA["🔑 LEYENDA<br/>🔵 Solo intercepto aleatorio<br/>🟢 Intercepto + pendiente aleatorios<br/>(ver mapa 2 para la teoría de cada uno)"]
+
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef continuo fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
+    classDef binario fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px,font-weight:bold
+    classDef categoria fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef ejemplo fill:#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px
+    classDef leyenda fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
+
+    class A titulo
+    class B continuo
+    class C binario
+    class D,E,F,G,H,I,J categoria
+    class D1,E1,F1,G1,G2,H1,I1,I2,J1 ejemplo
+    class LEYENDA leyenda
+```
+
+---
+
+## West, Welch & Galecki
+
+### Rat Pup — Two-Level Clusters (Cap. 3)
+Estudio del **peso al nacer de crías de rata**, agrupadas dentro de camadas (litter), comparando distintas dosis de tratamiento. Cada camada es una "familia" — las crías de la misma camada se parecen más entre sí que a crías de otras camadas (comparten genética y ambiente uterino).
+
+**Estructura aplicada:** solo **intercepto aleatorio** `(1 | litter)`. No hay una dimensión de tiempo — es un dato transversal (una sola medición por cría), así que no existe "pendiente" que hacer aleatoria. Lo único que varía entre camadas es el nivel promedio de peso, no una evolución temporal.
+
+### Classroom — Three-Level Clusters (Cap. 4)
+Ganancia en matemáticas de estudiantes anidados en salones, anidados en escuelas — tres niveles jerárquicos.
+
+**Estructura aplicada:** **intercepto aleatorio en cada nivel** `(1 | escuela/salon)`. Igual que Rat Pup, es principalmente transversal: lo que varía es el promedio de cada salón y de cada escuela, no una trayectoria en el tiempo. La complejidad acá no viene de intercepto vs. pendiente, sino de tener **dos niveles de agrupación anidados** en simultáneo.
+
+### Rat Brain — Repeated Measures (Cap. 5)
+Activación química cerebral medida repetidamente dentro de cada rata bajo distintos tratamientos.
+
+**Estructura aplicada:** **intercepto aleatorio** `(1 | rata)` combinado con una **estructura de covarianza** que modela cómo se correlacionan las mediciones repetidas en el tiempo (no necesariamente pendiente aleatoria). Es un caso donde el libro usa el ejemplo justamente para mostrar la diferencia entre "modelar la pendiente como aleatoria" vs. "modelar la correlación residual directamente" — dos formas distintas de manejar dependencia temporal.
+
+### Autism — Longitudinal Random Coefficients (Cap. 6)
+Trayectorias de socialización de niños con autismo medidas en el tiempo, buscando ver si distintos subtipos de diagnóstico tienen trayectorias distintas.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | niño)`. Este es el ejemplo clásico de "coeficientes aleatorios": cada niño no solo entra con un nivel basal distinto de socialización, sino que también progresa (o no) a su propio ritmo. Es exactamente la lógica del modelo (c) que armamos en tu tarea de PAD.
+
+### Dental Veneer — Longitudinal Clusters (Cap. 7)
+Salud gingival medida en el tiempo, con dientes anidados dentro de pacientes — una estructura longitudinal Y de clusters a la vez.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios**, pero en dos niveles (paciente y diente dentro de paciente). Cada paciente tiene su nivel basal y evolución propios, y dentro de cada paciente, cada diente también puede variar. Es la combinación más compleja de las vistas hasta acá: jerarquía + tiempo.
+
+### SAT Score — Crossed Random Effects (Cap. 8)
+Puntajes SAT a lo largo del tiempo, donde estudiantes y profesores **no están anidados** — un profesor puede tener estudiantes de distintos años, y un estudiante puede tener distintos profesores.
+
+**Estructura aplicada:** **interceptos aleatorios cruzados** `(1 | estudiante) + (1 | profesor)`, sin relación de anidamiento entre ambos. Acá la novedad no es intercepto vs. pendiente, sino que hay **dos fuentes de variación aleatoria que no forman jerarquía**, sino que se cruzan.
+
+---
+
+## Finch, Bolin & Kelley
+
+### Mathematics — Multilevel GLM (Cap. 8)
+Predicción de si un estudiante aprueba o no un examen estatal de matemáticas, con estudiantes anidados en escuelas.
+
+**Estructura aplicada:** **intercepto aleatorio logístico** `(1 | escuela)`, vía `glmer()` con familia binomial. Acá la diferencia clave no es intercepto/pendiente sino que el **outcome no es continuo** — es binario, así que en vez de modelar el PAD promedio directamente, se modela la probabilidad de aprobar mediante una función de enlace logit. No es un modelo lineal simple, es un modelo lineal generalizado.
+
+---
+
+## Galecki & Burzykowski
+
+### ARMD Trial — Longitudinal Grouped
+Agudeza visual medida en el tiempo en pacientes con degeneración macular, comparando tratamiento vs. placebo.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | paciente)`. Muy similar en lógica a tu tarea de PAD: cada paciente entra con una agudeza visual basal distinta y su visión evoluciona a su propio ritmo bajo tratamiento.
+
+### PRT Trial — Pre-Post Clusters
+Fuerza muscular en fibras, medida antes y después de un programa de entrenamiento de resistencia, con fibras agrupadas dentro de sujetos.
+
+**Estructura aplicada:** **intercepto aleatorio** con una estructura de covarianza más avanzada (productos de Kronecker en capítulos posteriores) para modelar cómo se correlacionan las distintas fibras dentro del mismo sujeto en cada momento (pre/post). Es un caso donde, otra vez, el foco no es tanto pendiente aleatoria sino **cómo estructurar la correlación entre observaciones agrupadas**.
+
+---
