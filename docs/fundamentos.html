@@ -199,25 +199,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#intercepto-aleatorio-pendiente-aleatoria-o-ambos" id="toc-intercepto-aleatorio-pendiente-aleatoria-o-ambos" class="nav-link" data-scroll-target="#intercepto-aleatorio-pendiente-aleatoria-o-ambos"><span class="header-section-number">2</span> Intercepto aleatorio, pendiente aleatoria, o ambos</a></li>
   <li><a href="#supuestos-de-los-modelos-mixtos" id="toc-supuestos-de-los-modelos-mixtos" class="nav-link" data-scroll-target="#supuestos-de-los-modelos-mixtos"><span class="header-section-number">3</span> Supuestos de los modelos mixtos</a></li>
   <li><a href="#orden-práctico-para-revisar-supuestos-con-código" id="toc-orden-práctico-para-revisar-supuestos-con-código" class="nav-link" data-scroll-target="#orden-práctico-para-revisar-supuestos-con-código"><span class="header-section-number">4</span> Orden práctico para revisar supuestos (con código)</a></li>
-  <li><a href="#estructura-de-los-ejemplos-de-este-sitio" id="toc-estructura-de-los-ejemplos-de-este-sitio" class="nav-link" data-scroll-target="#estructura-de-los-ejemplos-de-este-sitio"><span class="header-section-number">5</span> Estructura de los ejemplos de este sitio</a></li>
-  <li><a href="#west-welch-galecki" id="toc-west-welch-galecki" class="nav-link" data-scroll-target="#west-welch-galecki"><span class="header-section-number">6</span> West, Welch &amp; Galecki</a>
-  <ul class="collapse">
-  <li><a href="#rat-pup-two-level-clusters-cap.-3" id="toc-rat-pup-two-level-clusters-cap.-3" class="nav-link" data-scroll-target="#rat-pup-two-level-clusters-cap.-3"><span class="header-section-number">6.1</span> Rat Pup — Two-Level Clusters (Cap. 3)</a></li>
-  <li><a href="#classroom-three-level-clusters-cap.-4" id="toc-classroom-three-level-clusters-cap.-4" class="nav-link" data-scroll-target="#classroom-three-level-clusters-cap.-4"><span class="header-section-number">6.2</span> Classroom — Three-Level Clusters (Cap. 4)</a></li>
-  <li><a href="#rat-brain-repeated-measures-cap.-5" id="toc-rat-brain-repeated-measures-cap.-5" class="nav-link" data-scroll-target="#rat-brain-repeated-measures-cap.-5"><span class="header-section-number">6.3</span> Rat Brain — Repeated Measures (Cap. 5)</a></li>
-  <li><a href="#autism-longitudinal-random-coefficients-cap.-6" id="toc-autism-longitudinal-random-coefficients-cap.-6" class="nav-link" data-scroll-target="#autism-longitudinal-random-coefficients-cap.-6"><span class="header-section-number">6.4</span> Autism — Longitudinal Random Coefficients (Cap. 6)</a></li>
-  <li><a href="#dental-veneer-longitudinal-clusters-cap.-7" id="toc-dental-veneer-longitudinal-clusters-cap.-7" class="nav-link" data-scroll-target="#dental-veneer-longitudinal-clusters-cap.-7"><span class="header-section-number">6.5</span> Dental Veneer — Longitudinal Clusters (Cap. 7)</a></li>
-  <li><a href="#sat-score-crossed-random-effects-cap.-8" id="toc-sat-score-crossed-random-effects-cap.-8" class="nav-link" data-scroll-target="#sat-score-crossed-random-effects-cap.-8"><span class="header-section-number">6.6</span> SAT Score — Crossed Random Effects (Cap. 8)</a></li>
-  </ul></li>
-  <li><a href="#finch-bolin-kelley" id="toc-finch-bolin-kelley" class="nav-link" data-scroll-target="#finch-bolin-kelley"><span class="header-section-number">7</span> Finch, Bolin &amp; Kelley</a>
-  <ul class="collapse">
-  <li><a href="#mathematics-multilevel-glm-cap.-8" id="toc-mathematics-multilevel-glm-cap.-8" class="nav-link" data-scroll-target="#mathematics-multilevel-glm-cap.-8"><span class="header-section-number">7.1</span> Mathematics — Multilevel GLM (Cap. 8)</a></li>
-  </ul></li>
-  <li><a href="#galecki-burzykowski" id="toc-galecki-burzykowski" class="nav-link" data-scroll-target="#galecki-burzykowski"><span class="header-section-number">8</span> Galecki &amp; Burzykowski</a>
-  <ul class="collapse">
-  <li><a href="#armd-trial-longitudinal-grouped" id="toc-armd-trial-longitudinal-grouped" class="nav-link" data-scroll-target="#armd-trial-longitudinal-grouped"><span class="header-section-number">8.1</span> ARMD Trial — Longitudinal Grouped</a></li>
-  <li><a href="#prt-trial-pre-post-clusters" id="toc-prt-trial-pre-post-clusters" class="nav-link" data-scroll-target="#prt-trial-pre-post-clusters"><span class="header-section-number">8.2</span> PRT Trial — Pre-Post Clusters</a></li>
-  </ul></li>
+  <li><a href="#varianza-y-covarianza-en-mm" id="toc-varianza-y-covarianza-en-mm" class="nav-link" data-scroll-target="#varianza-y-covarianza-en-mm"><span class="header-section-number">5</span> Varianza y covarianza en MM</a></li>
+  <li><a href="#errores-estándar-en-mm" id="toc-errores-estándar-en-mm" class="nav-link" data-scroll-target="#errores-estándar-en-mm"><span class="header-section-number">6</span> Errores Estándar en MM</a></li>
   </ul>
 </nav>
     </div>
@@ -300,7 +283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     A["🎯 MODELOS DE EFECTOS MIXTOS&lt;br/&gt;¿Qué varía entre sujetos?"]
 
     A --&gt; B["1️⃣ INTERCEPTO ALEATORIO&lt;br/&gt;(1 | paciente)"]
-    A --&gt; C["2️⃣ PENDIENTE ALEATORIA&lt;br/&gt;(0 + tiempo | paciente)"]
+    A --&gt; C["2️⃣ PENDIENTE ALEATORIA&lt;br/&gt; (tiempo - 1 | paciente)"]
     A --&gt; D["3️⃣ INTERCEPTO + PENDIENTE&lt;br/&gt;(tiempo | paciente)"]
 
     B --&gt; B1["🏃 ANALOGÍA: Carrera con hándicap&lt;br/&gt;━━━━━━━━━━&lt;br/&gt;Cada corredor arranca desde una posición distinta en la pista (algunos más adelante, otros más atrás), pero todos corren a la MISMA velocidad. La distancia entre ellos se mantiene constante todo el recorrido."]
@@ -451,9 +434,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="estructura-de-los-ejemplos-de-este-sitio" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="estructura-de-los-ejemplos-de-este-sitio"><span class="header-section-number">5</span> Estructura de los ejemplos de este sitio</h2>
-<p>Una vez que entendés la teoría, así se conectan los 9 ejemplos trabajados según su tipo de dato.</p>
+<section id="varianza-y-covarianza-en-mm" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="varianza-y-covarianza-en-mm"><span class="header-section-number">5</span> Varianza y covarianza en MM</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -461,113 +443,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
 flowchart TD
-    A["📚 EJEMPLOS DE ESTE SITIO&lt;br/&gt;¿Qué estructura de datos tenés?"]
+    A["📐 VARIANZA Y COVARIANZA&lt;br/&gt;EN MODELOS MIXTOS"]
 
-    A --&gt; B["📗 Outcome continuo&lt;br/&gt;LMM gaussiano (lineal)"]
-    A --&gt; C["📙 Outcome binario&lt;br/&gt;GLMM logístico&lt;br/&gt;⚠️ NO es LMM — usa función&lt;br/&gt;de enlace logit, no identidad"]
+    A --&gt; INTRO["📖 ¿QUÉ SON, EN ESTE CONTEXTO?"]
 
-    B --&gt; D["2 niveles&lt;br/&gt;(sujetos dentro de un grupo)"]
-    B --&gt; E["3 niveles&lt;br/&gt;(anidamiento doble)"]
-    B --&gt; F["Medidas repetidas&lt;br/&gt;(mismo sujeto en el tiempo)"]
-    B --&gt; G["Coeficientes aleatorios&lt;br/&gt;longitudinales"]
-    B --&gt; H["Factores aleatorios&lt;br/&gt;cruzados (no anidados)"]
-    B --&gt; I["Ensayo clínico&lt;br/&gt;longitudinal agrupado"]
+    INTRO --&gt; VAR["VARIANZA&lt;br/&gt;Qué tan dispersos están los&lt;br/&gt;valores alrededor de un&lt;br/&gt;promedio. En modelos mixtos:&lt;br/&gt;cuánto se diferencian los&lt;br/&gt;sujetos entre sí en su&lt;br/&gt;intercepto o en su pendiente"]
+    INTRO --&gt; COV["COVARIANZA&lt;br/&gt;Si dos cosas varían juntas&lt;br/&gt;o de forma opuesta. En&lt;br/&gt;modelos mixtos: si el&lt;br/&gt;intercepto y la pendiente de&lt;br/&gt;un mismo sujeto tienden a&lt;br/&gt;moverse en la misma dirección&lt;br/&gt;(o en direcciones opuestas)"]
 
-    D --&gt; D1["🐀 Rat Pup — West Cap. 3&lt;br/&gt;crías dentro de camadas&lt;br/&gt;🔵 Intercepto aleatorio"]
-    E --&gt; E1["🏫 Classroom — West Cap. 4&lt;br/&gt;estudiantes-salones-escuelas&lt;br/&gt;🔵 Intercepto aleatorio (3 niveles)"]
-    F --&gt; F1["🧠 Rat Brain — West Cap. 5&lt;br/&gt;medidas repetidas en rata&lt;br/&gt;🔵 Intercepto aleatorio +&lt;br/&gt;estructura de covarianza"]
-    G --&gt; G1["🧩 Autism — West Cap. 6&lt;br/&gt;trayectorias de socialización&lt;br/&gt;🟢 Intercepto + pendiente"]
-    G --&gt; G2["🦷 Dental Veneer — West Cap. 7&lt;br/&gt;longitudinal en 3 niveles&lt;br/&gt;🟢 Intercepto + pendiente"]
-    H --&gt; H1["📝 SAT Score — West Cap. 8&lt;br/&gt;estudiantes y profesores cruzados&lt;br/&gt;🔵 Interceptos cruzados"]
-    I --&gt; I1["👁️ ARMD Trial — Galecki&lt;br/&gt;agudeza visual en el tiempo&lt;br/&gt;🟢 Intercepto + pendiente"]
-    I --&gt; I2["💪 PRT Trial — Galecki&lt;br/&gt;fuerza muscular pre-post&lt;br/&gt;🔵 Intercepto aleatorio (Kronecker)"]
+    VAR --&gt; VAREJ["Ejemplo simple: si todos los&lt;br/&gt;pacientes tuvieran el mismo&lt;br/&gt;PAD basal, la varianza del&lt;br/&gt;intercepto sería 0. Cuanto&lt;br/&gt;más distintos entre sí,&lt;br/&gt;mayor la varianza"]
+    COV --&gt; COVEJ["Ejemplo simple: si los&lt;br/&gt;pacientes que arrancan con&lt;br/&gt;PAD más alto también bajan&lt;br/&gt;más rápido, hay covarianza&lt;br/&gt;negativa entre intercepto&lt;br/&gt;y pendiente"]
 
-    C --&gt; J["Intercepto aleatorio&lt;br/&gt;logístico"]
-    J --&gt; J1["📐 Mathematics — Finch Cap. 8&lt;br/&gt;estudiantes dentro de escuelas&lt;br/&gt;🔵 Intercepto aleatorio (glmer)"]
+    INTRO --&gt; G["🔵 MATRIZ G&lt;br/&gt;Varianza-covarianza de&lt;br/&gt;los EFECTOS ALEATORIOS"]
+    INTRO --&gt; R["🟠 MATRIZ R&lt;br/&gt;Varianza-covarianza&lt;br/&gt;RESIDUAL (dentro del sujeto)"]
+    INTRO --&gt; V["🟢 MATRIZ V&lt;br/&gt;Varianza-covarianza&lt;br/&gt;MARGINAL implicada&lt;br/&gt;V = ZGZ' + R"]
 
-    LEYENDA["🔑 LEYENDA&lt;br/&gt;🔵 Solo intercepto aleatorio&lt;br/&gt;🟢 Intercepto + pendiente aleatorios&lt;br/&gt;(ver mapa 2 para la teoría de cada uno)"]
+    G --&gt; G1["¿Qué mide? Cuánto varía el intercepto entre sujetos, cuánto varía la pendiente, y si ambos están correlacionados entre sí"]
+    G1 --&gt; G2["📊 En R: VarCorr(modelo)&lt;br/&gt;muestra Variance (intercepto),&lt;br/&gt;Variance (pendiente) y Corr&lt;br/&gt;(correlación entre ambos)"]
+    G2 --&gt; G3["💡 Interpretación: correlación&lt;br/&gt;negativa = sujetos que arrancan&lt;br/&gt;más alto tienden a cambiar más&lt;br/&gt;rápido hacia abajo (regresión&lt;br/&gt;a la media)"]
+
+    R --&gt; R1["¿Qué mide? Cómo se correlacionan&lt;br/&gt;los errores dentro del mismo&lt;br/&gt;sujeto, una vez ya sacada la&lt;br/&gt;parte explicada por G"]
+    R1 --&gt; R2["Por default en lmer(): R es&lt;br/&gt;diagonal (residuos independientes&lt;br/&gt;dentro del sujeto)"]
+    R2 --&gt; R3["Con nlme::lme() se pueden&lt;br/&gt;especificar estructuras más&lt;br/&gt;complejas: AR1, general, etc."]
+
+    V --&gt; V1["Combina G y R para dar la&lt;br/&gt;covarianza TOTAL observada&lt;br/&gt;entre las mediciones de&lt;br/&gt;un mismo sujeto"]
+
+    CONEX["🔗 CONEXIÓN CON LOS EJEMPLOS&lt;br/&gt;DE ESTA PÁGINA"]
+    G3 -.-&gt; CONEX
+    R3 -.-&gt; CONEX
+    V1 -.-&gt; CONEX
+
+    CONEX --&gt; E1["Estructura de G: Rat Pup y&lt;br/&gt;Classroom usan solo intercepto&lt;br/&gt;aleatorio (G es 1x1). Autism,&lt;br/&gt;Dental Veneer y ARMD Trial usan&lt;br/&gt;intercepto y pendiente juntos&lt;br/&gt;(G es 2x2, con su correlación)"]
+    CONEX --&gt; E2["Estructura de R: Rat Brain es&lt;br/&gt;el caso donde más se trabaja&lt;br/&gt;la correlación residual entre&lt;br/&gt;medidas repetidas dentro del&lt;br/&gt;mismo sujeto, más allá de lo&lt;br/&gt;que ya captura G"]
 
     classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
-    classDef continuo fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
-    classDef binario fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px,font-weight:bold
-    classDef categoria fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef intro fill:#805AD5,color:#fff,stroke:#553C9A,stroke-width:2px,font-weight:bold
+    classDef varcov fill:#E9D8FD,color:#1A202C,stroke:#805AD5,stroke-width:1px,font-weight:bold
+    classDef ejsimple fill:#FAF5FF,color:#1A202C,stroke:#805AD5,stroke-width:1px
+    classDef matrizG fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef matrizR fill:#DD6B20,color:#fff,stroke:#9C4221,stroke-width:2px,font-weight:bold
+    classDef matrizV fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
+    classDef detalleG fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef detalleR fill:#FFFAF0,color:#1A202C,stroke:#DD6B20,stroke-width:1px
+    classDef detalleV fill:#F0FFF4,color:#1A202C,stroke:#38A169,stroke-width:1px
+    classDef conexion fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
     classDef ejemplo fill:#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px
-    classDef leyenda fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
 
     class A titulo
-    class B continuo
-    class C binario
-    class D,E,F,G,H,I,J categoria
-    class D1,E1,F1,G1,G2,H1,I1,I2,J1 ejemplo
-    class LEYENDA leyenda
+    class INTRO intro
+    class VAR,COV varcov
+    class VAREJ,COVEJ ejsimple
+    class G matrizG
+    class R matrizR
+    class V matrizV
+    class G1,G2,G3 detalleG
+    class R1,R2,R3 detalleR
+    class V1 detalleV
+    class CONEX conexion
+    class E1,E2 ejemplo
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<hr>
 </section>
-<section id="west-welch-galecki" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="west-welch-galecki"><span class="header-section-number">6</span> West, Welch &amp; Galecki</h2>
-<section id="rat-pup-two-level-clusters-cap.-3" class="level3" data-number="6.1">
-<h3 data-number="6.1" class="anchored" data-anchor-id="rat-pup-two-level-clusters-cap.-3"><span class="header-section-number">6.1</span> Rat Pup — Two-Level Clusters (Cap. 3)</h3>
-<p>Estudio del <strong>peso al nacer de crías de rata</strong>, agrupadas dentro de camadas (litter), comparando distintas dosis de tratamiento. Cada camada es una “familia” — las crías de la misma camada se parecen más entre sí que a crías de otras camadas (comparten genética y ambiente uterino).</p>
-<p><strong>Estructura aplicada:</strong> solo <strong>intercepto aleatorio</strong> <code>(1 | litter)</code>. No hay una dimensión de tiempo — es un dato transversal (una sola medición por cría), así que no existe “pendiente” que hacer aleatoria. Lo único que varía entre camadas es el nivel promedio de peso, no una evolución temporal.</p>
-</section>
-<section id="classroom-three-level-clusters-cap.-4" class="level3" data-number="6.2">
-<h3 data-number="6.2" class="anchored" data-anchor-id="classroom-three-level-clusters-cap.-4"><span class="header-section-number">6.2</span> Classroom — Three-Level Clusters (Cap. 4)</h3>
-<p>Ganancia en matemáticas de estudiantes anidados en salones, anidados en escuelas — tres niveles jerárquicos.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto aleatorio en cada nivel</strong> <code>(1 | escuela/salon)</code>. Igual que Rat Pup, es principalmente transversal: lo que varía es el promedio de cada salón y de cada escuela, no una trayectoria en el tiempo. La complejidad acá no viene de intercepto vs.&nbsp;pendiente, sino de tener <strong>dos niveles de agrupación anidados</strong> en simultáneo.</p>
-</section>
-<section id="rat-brain-repeated-measures-cap.-5" class="level3" data-number="6.3">
-<h3 data-number="6.3" class="anchored" data-anchor-id="rat-brain-repeated-measures-cap.-5"><span class="header-section-number">6.3</span> Rat Brain — Repeated Measures (Cap. 5)</h3>
-<p>Activación química cerebral medida repetidamente dentro de cada rata bajo distintos tratamientos.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto aleatorio</strong> <code>(1 | rata)</code> combinado con una <strong>estructura de covarianza</strong> que modela cómo se correlacionan las mediciones repetidas en el tiempo (no necesariamente pendiente aleatoria). Es un caso donde el libro usa el ejemplo justamente para mostrar la diferencia entre “modelar la pendiente como aleatoria” vs.&nbsp;“modelar la correlación residual directamente” — dos formas distintas de manejar dependencia temporal.</p>
-</section>
-<section id="autism-longitudinal-random-coefficients-cap.-6" class="level3" data-number="6.4">
-<h3 data-number="6.4" class="anchored" data-anchor-id="autism-longitudinal-random-coefficients-cap.-6"><span class="header-section-number">6.4</span> Autism — Longitudinal Random Coefficients (Cap. 6)</h3>
-<p>Trayectorias de socialización de niños con autismo medidas en el tiempo, buscando ver si distintos subtipos de diagnóstico tienen trayectorias distintas.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto + pendiente aleatorios</strong> <code>(tiempo | niño)</code>. Este es el ejemplo clásico de “coeficientes aleatorios”: cada niño no solo entra con un nivel basal distinto de socialización, sino que también progresa (o no) a su propio ritmo. Es exactamente la lógica del modelo (c) que armamos en tu tarea de PAD.</p>
-</section>
-<section id="dental-veneer-longitudinal-clusters-cap.-7" class="level3" data-number="6.5">
-<h3 data-number="6.5" class="anchored" data-anchor-id="dental-veneer-longitudinal-clusters-cap.-7"><span class="header-section-number">6.5</span> Dental Veneer — Longitudinal Clusters (Cap. 7)</h3>
-<p>Salud gingival medida en el tiempo, con dientes anidados dentro de pacientes — una estructura longitudinal Y de clusters a la vez.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto + pendiente aleatorios</strong>, pero en dos niveles (paciente y diente dentro de paciente). Cada paciente tiene su nivel basal y evolución propios, y dentro de cada paciente, cada diente también puede variar. Es la combinación más compleja de las vistas hasta acá: jerarquía + tiempo.</p>
-</section>
-<section id="sat-score-crossed-random-effects-cap.-8" class="level3" data-number="6.6">
-<h3 data-number="6.6" class="anchored" data-anchor-id="sat-score-crossed-random-effects-cap.-8"><span class="header-section-number">6.6</span> SAT Score — Crossed Random Effects (Cap. 8)</h3>
-<p>Puntajes SAT a lo largo del tiempo, donde estudiantes y profesores <strong>no están anidados</strong> — un profesor puede tener estudiantes de distintos años, y un estudiante puede tener distintos profesores.</p>
-<p><strong>Estructura aplicada:</strong> <strong>interceptos aleatorios cruzados</strong> <code>(1 | estudiante) + (1 | profesor)</code>, sin relación de anidamiento entre ambos. Acá la novedad no es intercepto vs.&nbsp;pendiente, sino que hay <strong>dos fuentes de variación aleatoria que no forman jerarquía</strong>, sino que se cruzan.</p>
-<hr>
-</section>
-</section>
-<section id="finch-bolin-kelley" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="finch-bolin-kelley"><span class="header-section-number">7</span> Finch, Bolin &amp; Kelley</h2>
-<section id="mathematics-multilevel-glm-cap.-8" class="level3" data-number="7.1">
-<h3 data-number="7.1" class="anchored" data-anchor-id="mathematics-multilevel-glm-cap.-8"><span class="header-section-number">7.1</span> Mathematics — Multilevel GLM (Cap. 8)</h3>
-<p>Predicción de si un estudiante aprueba o no un examen estatal de matemáticas, con estudiantes anidados en escuelas.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto aleatorio logístico</strong> <code>(1 | escuela)</code>, vía <code>glmer()</code> con familia binomial. Acá la diferencia clave no es intercepto/pendiente sino que el <strong>outcome no es continuo</strong> — es binario, así que en vez de modelar el PAD promedio directamente, se modela la probabilidad de aprobar mediante una función de enlace logit. No es un modelo lineal simple, es un modelo lineal generalizado.</p>
-<hr>
-</section>
-</section>
-<section id="galecki-burzykowski" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="galecki-burzykowski"><span class="header-section-number">8</span> Galecki &amp; Burzykowski</h2>
-<section id="armd-trial-longitudinal-grouped" class="level3" data-number="8.1">
-<h3 data-number="8.1" class="anchored" data-anchor-id="armd-trial-longitudinal-grouped"><span class="header-section-number">8.1</span> ARMD Trial — Longitudinal Grouped</h3>
-<p>Agudeza visual medida en el tiempo en pacientes con degeneración macular, comparando tratamiento vs.&nbsp;placebo.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto + pendiente aleatorios</strong> <code>(tiempo | paciente)</code>. Muy similar en lógica a tu tarea de PAD: cada paciente entra con una agudeza visual basal distinta y su visión evoluciona a su propio ritmo bajo tratamiento.</p>
-</section>
-<section id="prt-trial-pre-post-clusters" class="level3" data-number="8.2">
-<h3 data-number="8.2" class="anchored" data-anchor-id="prt-trial-pre-post-clusters"><span class="header-section-number">8.2</span> PRT Trial — Pre-Post Clusters</h3>
-<p>Fuerza muscular en fibras, medida antes y después de un programa de entrenamiento de resistencia, con fibras agrupadas dentro de sujetos.</p>
-<p><strong>Estructura aplicada:</strong> <strong>intercepto aleatorio</strong> con una estructura de covarianza más avanzada (productos de Kronecker en capítulos posteriores) para modelar cómo se correlacionan las distintas fibras dentro del mismo sujeto en cada momento (pre/post). Es un caso donde, otra vez, el foco no es tanto pendiente aleatoria sino <strong>cómo estructurar la correlación entre observaciones agrupadas</strong>.</p>
-<hr>
+<section id="errores-estándar-en-mm" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="errores-estándar-en-mm"><span class="header-section-number">6</span> Errores Estándar en MM</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
+flowchart TD
+    A["📏 ERRORES ESTÁNDAR&lt;br/&gt;EN MODELOS MIXTOS"]
+
+    A --&gt; P1["1️⃣ ¿Por qué no es tan simple&lt;br/&gt;como en regresión clásica?"]
+    A --&gt; P2["2️⃣ ¿De dónde salen los&lt;br/&gt;grados de libertad?"]
+    A --&gt; P3["3️⃣ ¿Por qué agregar una&lt;br/&gt;variable cambia otros&lt;br/&gt;errores estándar?"]
+    A --&gt; P4["4️⃣ Efectos fijos vs.&lt;br/&gt;efectos aleatorios"]
+
+    P1 --&gt; P1A["En regresión simple, todas&lt;br/&gt;las observaciones son&lt;br/&gt;independientes, así que hay&lt;br/&gt;una fórmula directa para&lt;br/&gt;el error estándar"]
+    P1A --&gt; P1B["En modelos mixtos, las&lt;br/&gt;observaciones del mismo grupo&lt;br/&gt;están correlacionadas. El error&lt;br/&gt;estándar tiene que descontar&lt;br/&gt;esa dependencia, usando la&lt;br/&gt;matriz V (ver mapa de&lt;br/&gt;varianza-covarianza)"]
+
+    P2 --&gt; P2A["lmer() del paquete lme4 NO&lt;br/&gt;da p-values por default,&lt;br/&gt;porque calcular grados de&lt;br/&gt;libertad exactos en modelos&lt;br/&gt;mixtos no es directo"]
+    P2A --&gt; P2B["lmerTest agrega una&lt;br/&gt;APROXIMACIÓN de grados&lt;br/&gt;de libertad: método&lt;br/&gt;Satterthwaite (default) o&lt;br/&gt;Kenward-Roger"]
+    P2B --&gt; P2C["Por eso a veces ves grados&lt;br/&gt;de libertad con decimales&lt;br/&gt;(ej. df = 42.3) — es normal,&lt;br/&gt;no un error"]
+
+    P3 --&gt; P3A["Al agregar una variable&lt;br/&gt;(ej. centro o edad), el&lt;br/&gt;modelo reparte la varianza&lt;br/&gt;explicada de otra manera&lt;br/&gt;entre efectos fijos y&lt;br/&gt;aleatorios"]
+    P3A --&gt; P3B["Esto puede achicar o agrandar&lt;br/&gt;los errores estándar de las&lt;br/&gt;variables que ya estaban en&lt;br/&gt;el modelo, incluso si la&lt;br/&gt;nueva variable no es&lt;br/&gt;significativa"]
+
+    P4 --&gt; P4A["Error estándar de un&lt;br/&gt;EFECTO FIJO (ej. efecto de&lt;br/&gt;tratamiento): qué tan&lt;br/&gt;precisa es la estimación&lt;br/&gt;del promedio poblacional"]
+    P4 --&gt; P4B["Incertidumbre en la varianza&lt;br/&gt;de un EFECTO ALEATORIO: más&lt;br/&gt;compleja de estimar, y menos&lt;br/&gt;confiable cuando hay pocos&lt;br/&gt;grupos (ej. pocos centros)"]
+
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef pregunta fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef detalle fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+
+    class A titulo
+    class P1,P2,P3,P4 pregunta
+    class P1A,P1B,P2A,P2B,P2C,P3A,P3B,P4A,P4B detalle
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 
 
 <!-- -->
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1073,7 +1058,7 @@ flowchart TD
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    A[<span class="ot">"</span><span class="st">🎯 MODELOS DE EFECTOS MIXTOS&lt;br/&gt;¿Qué varía entre sujetos?</span><span class="ot">"</span>]</span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    A --&gt; B[<span class="ot">"</span><span class="st">1️⃣ INTERCEPTO ALEATORIO&lt;br/&gt;(1 | paciente)</span><span class="ot">"</span>]</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[<span class="ot">"</span><span class="st">2️⃣ PENDIENTE ALEATORIA&lt;br/&gt;(0 + tiempo | paciente)</span><span class="ot">"</span>]</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[<span class="ot">"</span><span class="st">2️⃣ PENDIENTE ALEATORIA&lt;br/&gt; (tiempo - 1 | paciente)</span><span class="ot">"</span>]</span>
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[<span class="ot">"</span><span class="st">3️⃣ INTERCEPTO + PENDIENTE&lt;br/&gt;(tiempo | paciente)</span><span class="ot">"</span>]</span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    B --&gt; B1[<span class="ot">"</span><span class="st">🏃 ANALOGÍA: Carrera con hándicap&lt;br/&gt;━━━━━━━━━━&lt;br/&gt;Cada corredor arranca desde una posición distinta en la pista (algunos más adelante, otros más atrás), pero todos corren a la MISMA velocidad. La distancia entre ellos se mantiene constante todo el recorrido.</span><span class="ot">"</span>]</span>
@@ -1201,112 +1186,105 @@ flowchart TD
 <span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>    class FIN ok</span>
 <span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estructura de los ejemplos de este sitio</span></span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>Una vez que entendés la teoría, así se conectan los 9 ejemplos trabajados según su tipo de dato.</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>%<span class="dt">%</span>{init: {<span class="ot">'</span><span class="ss">flowchart</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">curve</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">basis</span><span class="ot">'</span>, <span class="ot">'</span><span class="ss">nodeSpacing</span><span class="ot">'</span>: <span class="dv">50</span>, <span class="ot">'</span><span class="ss">rankSpacing</span><span class="ot">'</span>: <span class="dv">60</span>}, <span class="ot">'</span><span class="ss">themeVariables</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">fontSize</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">16px</span><span class="ot">'</span>}} }%%</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>    A[<span class="ot">"</span><span class="st">📚 EJEMPLOS DE ESTE SITIO&lt;br/&gt;¿Qué estructura de datos tenés?</span><span class="ot">"</span>]</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>    A --&gt; B[<span class="ot">"</span><span class="st">📗 Outcome continuo&lt;br/&gt;LMM gaussiano (lineal)</span><span class="ot">"</span>]</span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[<span class="ot">"</span><span class="st">📙 Outcome binario&lt;br/&gt;GLMM logístico&lt;br/&gt;⚠️ NO es LMM — usa función&lt;br/&gt;de enlace logit, no identidad</span><span class="ot">"</span>]</span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>    B --&gt; D[<span class="ot">"</span><span class="st">2 niveles&lt;br/&gt;(sujetos dentro de un grupo)</span><span class="ot">"</span>]</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[<span class="ot">"</span><span class="st">3 niveles&lt;br/&gt;(anidamiento doble)</span><span class="ot">"</span>]</span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[<span class="ot">"</span><span class="st">Medidas repetidas&lt;br/&gt;(mismo sujeto en el tiempo)</span><span class="ot">"</span>]</span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>    B --&gt; G[<span class="ot">"</span><span class="st">Coeficientes aleatorios&lt;br/&gt;longitudinales</span><span class="ot">"</span>]</span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>    B --&gt; H[<span class="ot">"</span><span class="st">Factores aleatorios&lt;br/&gt;cruzados (no anidados)</span><span class="ot">"</span>]</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>    B --&gt; I[<span class="ot">"</span><span class="st">Ensayo clínico&lt;br/&gt;longitudinal agrupado</span><span class="ot">"</span>]</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>    D --&gt; D1[<span class="ot">"</span><span class="st">🐀 Rat Pup — West Cap. 3&lt;br/&gt;crías dentro de camadas&lt;br/&gt;🔵 Intercepto aleatorio</span><span class="ot">"</span>]</span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>    E --&gt; E1[<span class="ot">"</span><span class="st">🏫 Classroom — West Cap. 4&lt;br/&gt;estudiantes-salones-escuelas&lt;br/&gt;🔵 Intercepto aleatorio (3 niveles)</span><span class="ot">"</span>]</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>    F --&gt; F1[<span class="ot">"</span><span class="st">🧠 Rat Brain — West Cap. 5&lt;br/&gt;medidas repetidas en rata&lt;br/&gt;🔵 Intercepto aleatorio +&lt;br/&gt;estructura de covarianza</span><span class="ot">"</span>]</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>    G --&gt; G1[<span class="ot">"</span><span class="st">🧩 Autism — West Cap. 6&lt;br/&gt;trayectorias de socialización&lt;br/&gt;🟢 Intercepto + pendiente</span><span class="ot">"</span>]</span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>    G --&gt; G2[<span class="ot">"</span><span class="st">🦷 Dental Veneer — West Cap. 7&lt;br/&gt;longitudinal en 3 niveles&lt;br/&gt;🟢 Intercepto + pendiente</span><span class="ot">"</span>]</span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>    H --&gt; H1[<span class="ot">"</span><span class="st">📝 SAT Score — West Cap. 8&lt;br/&gt;estudiantes y profesores cruzados&lt;br/&gt;🔵 Interceptos cruzados</span><span class="ot">"</span>]</span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>    I --&gt; I1[<span class="ot">"</span><span class="st">👁️ ARMD Trial — Galecki&lt;br/&gt;agudeza visual en el tiempo&lt;br/&gt;🟢 Intercepto + pendiente</span><span class="ot">"</span>]</span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>    I --&gt; I2[<span class="ot">"</span><span class="st">💪 PRT Trial — Galecki&lt;br/&gt;fuerza muscular pre-post&lt;br/&gt;🔵 Intercepto aleatorio (Kronecker)</span><span class="ot">"</span>]</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## Varianza y covarianza en MM</span></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>%<span class="dt">%</span>{init: {<span class="ot">'</span><span class="ss">flowchart</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">curve</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">basis</span><span class="ot">'</span>, <span class="ot">'</span><span class="ss">nodeSpacing</span><span class="ot">'</span>: <span class="dv">50</span>, <span class="ot">'</span><span class="ss">rankSpacing</span><span class="ot">'</span>: <span class="dv">60</span>}, <span class="ot">'</span><span class="ss">themeVariables</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">fontSize</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">16px</span><span class="ot">'</span>}} }%%</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>    A[<span class="ot">"</span><span class="st">📐 VARIANZA Y COVARIANZA&lt;br/&gt;EN MODELOS MIXTOS</span><span class="ot">"</span>]</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>    A --&gt; INTRO[<span class="ot">"</span><span class="st">📖 ¿QUÉ SON, EN ESTE CONTEXTO?</span><span class="ot">"</span>]</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>    INTRO --&gt; VAR[<span class="ot">"</span><span class="st">VARIANZA&lt;br/&gt;Qué tan dispersos están los&lt;br/&gt;valores alrededor de un&lt;br/&gt;promedio. En modelos mixtos:&lt;br/&gt;cuánto se diferencian los&lt;br/&gt;sujetos entre sí en su&lt;br/&gt;intercepto o en su pendiente</span><span class="ot">"</span>]</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>    INTRO --&gt; COV[<span class="ot">"</span><span class="st">COVARIANZA&lt;br/&gt;Si dos cosas varían juntas&lt;br/&gt;o de forma opuesta. En&lt;br/&gt;modelos mixtos: si el&lt;br/&gt;intercepto y la pendiente de&lt;br/&gt;un mismo sujeto tienden a&lt;br/&gt;moverse en la misma dirección&lt;br/&gt;(o en direcciones opuestas)</span><span class="ot">"</span>]</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>    VAR --&gt; VAREJ[<span class="ot">"</span><span class="st">Ejemplo simple: si todos los&lt;br/&gt;pacientes tuvieran el mismo&lt;br/&gt;PAD basal, la varianza del&lt;br/&gt;intercepto sería 0. Cuanto&lt;br/&gt;más distintos entre sí,&lt;br/&gt;mayor la varianza</span><span class="ot">"</span>]</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>    COV --&gt; COVEJ[<span class="ot">"</span><span class="st">Ejemplo simple: si los&lt;br/&gt;pacientes que arrancan con&lt;br/&gt;PAD más alto también bajan&lt;br/&gt;más rápido, hay covarianza&lt;br/&gt;negativa entre intercepto&lt;br/&gt;y pendiente</span><span class="ot">"</span>]</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>    INTRO --&gt; G[<span class="ot">"</span><span class="st">🔵 MATRIZ G&lt;br/&gt;Varianza-covarianza de&lt;br/&gt;los EFECTOS ALEATORIOS</span><span class="ot">"</span>]</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>    INTRO --&gt; R[<span class="ot">"</span><span class="st">🟠 MATRIZ R&lt;br/&gt;Varianza-covarianza&lt;br/&gt;RESIDUAL (dentro del sujeto)</span><span class="ot">"</span>]</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>    INTRO --&gt; V[<span class="ot">"</span><span class="st">🟢 MATRIZ V&lt;br/&gt;Varianza-covarianza&lt;br/&gt;MARGINAL implicada&lt;br/&gt;V = ZGZ' + R</span><span class="ot">"</span>]</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>    G --&gt; G1[<span class="ot">"</span><span class="st">¿Qué mide? Cuánto varía el intercepto entre sujetos, cuánto varía la pendiente, y si ambos están correlacionados entre sí</span><span class="ot">"</span>]</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>    G1 --&gt; G2[<span class="ot">"</span><span class="st">📊 En R: VarCorr(modelo)&lt;br/&gt;muestra Variance (intercepto),&lt;br/&gt;Variance (pendiente) y Corr&lt;br/&gt;(correlación entre ambos)</span><span class="ot">"</span>]</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>    G2 --&gt; G3[<span class="ot">"</span><span class="st">💡 Interpretación: correlación&lt;br/&gt;negativa = sujetos que arrancan&lt;br/&gt;más alto tienden a cambiar más&lt;br/&gt;rápido hacia abajo (regresión&lt;br/&gt;a la media)</span><span class="ot">"</span>]</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>    R --&gt; R1[<span class="ot">"</span><span class="st">¿Qué mide? Cómo se correlacionan&lt;br/&gt;los errores dentro del mismo&lt;br/&gt;sujeto, una vez ya sacada la&lt;br/&gt;parte explicada por G</span><span class="ot">"</span>]</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>    R1 --&gt; R2[<span class="ot">"</span><span class="st">Por default en lmer(): R es&lt;br/&gt;diagonal (residuos independientes&lt;br/&gt;dentro del sujeto)</span><span class="ot">"</span>]</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>    R2 --&gt; R3[<span class="ot">"</span><span class="st">Con nlme::lme() se pueden&lt;br/&gt;especificar estructuras más&lt;br/&gt;complejas: AR1, general, etc.</span><span class="ot">"</span>]</span>
 <span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>    C --&gt; J[<span class="ot">"</span><span class="st">Intercepto aleatorio&lt;br/&gt;logístico</span><span class="ot">"</span>]</span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>    J --&gt; J1[<span class="ot">"</span><span class="st">📐 Mathematics — Finch Cap. 8&lt;br/&gt;estudiantes dentro de escuelas&lt;br/&gt;🔵 Intercepto aleatorio (glmer)</span><span class="ot">"</span>]</span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    LEYENDA[<span class="ot">"</span><span class="st">🔑 LEYENDA&lt;br/&gt;🔵 Solo intercepto aleatorio&lt;br/&gt;🟢 Intercepto + pendiente aleatorios&lt;br/&gt;(ver mapa 2 para la teoría de cada uno)</span><span class="ot">"</span>]</span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>    classDef titulo fill:<span class="co">#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold</span></span>
-<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>    classDef continuo fill:<span class="co">#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold</span></span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>    classDef binario fill:<span class="co">#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px,font-weight:bold</span></span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>    classDef categoria fill:<span class="co">#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px</span></span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>    classDef ejemplo fill:<span class="co">#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px</span></span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>    classDef leyenda fill:<span class="co">#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold</span></span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>    class A titulo</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>    class B continuo</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>    class C binario</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>    class D,E,F,G,H,I,J categoria</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>    class D1,E1,F1,G1,G2,H1,I1,I2,J1 ejemplo</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>    class LEYENDA leyenda</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## West, Welch &amp; Galecki</span></span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rat Pup — Two-Level Clusters (Cap. 3)</span></span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>Estudio del **peso al nacer de crías de rata**, agrupadas dentro de camadas (litter), comparando distintas dosis de tratamiento. Cada camada es una "familia" — las crías de la misma camada se parecen más entre sí que a crías de otras camadas (comparten genética y ambiente uterino).</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** solo **intercepto aleatorio** <span class="in">`(1 | litter)`</span>. No hay una dimensión de tiempo — es un dato transversal (una sola medición por cría), así que no existe "pendiente" que hacer aleatoria. Lo único que varía entre camadas es el nivel promedio de peso, no una evolución temporal.</span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="fu">### Classroom — Three-Level Clusters (Cap. 4)</span></span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>Ganancia en matemáticas de estudiantes anidados en salones, anidados en escuelas — tres niveles jerárquicos.</span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto aleatorio en cada nivel** `(1 | escuela/salon)`. Igual que Rat Pup, es principalmente transversal: lo que varía es el promedio de cada salón y de cada escuela, no una trayectoria en el tiempo. La complejidad acá no viene de intercepto vs. pendiente, sino de tener **dos niveles de agrupación anidados** en simultáneo.</span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rat Brain — Repeated Measures (Cap. 5)</span></span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>Activación química cerebral medida repetidamente dentro de cada rata bajo distintos tratamientos.</span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>    V --&gt; V1[<span class="ot">"</span><span class="st">Combina G y R para dar la&lt;br/&gt;covarianza TOTAL observada&lt;br/&gt;entre las mediciones de&lt;br/&gt;un mismo sujeto</span><span class="ot">"</span>]</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>    CONEX[<span class="ot">"</span><span class="st">🔗 CONEXIÓN CON LOS EJEMPLOS&lt;br/&gt;DE ESTA PÁGINA</span><span class="ot">"</span>]</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    G3 -.-&gt; CONEX</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>    R3 -.-&gt; CONEX</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>    V1 -.-&gt; CONEX</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>    CONEX --&gt; E1[<span class="ot">"</span><span class="st">Estructura de G: Rat Pup y&lt;br/&gt;Classroom usan solo intercepto&lt;br/&gt;aleatorio (G es 1x1). Autism,&lt;br/&gt;Dental Veneer y ARMD Trial usan&lt;br/&gt;intercepto y pendiente juntos&lt;br/&gt;(G es 2x2, con su correlación)</span><span class="ot">"</span>]</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>    CONEX --&gt; E2[<span class="ot">"</span><span class="st">Estructura de R: Rat Brain es&lt;br/&gt;el caso donde más se trabaja&lt;br/&gt;la correlación residual entre&lt;br/&gt;medidas repetidas dentro del&lt;br/&gt;mismo sujeto, más allá de lo&lt;br/&gt;que ya captura G</span><span class="ot">"</span>]</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>    classDef titulo fill:<span class="co">#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold</span></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>    classDef intro fill:<span class="co">#805AD5,color:#fff,stroke:#553C9A,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>    classDef varcov fill:<span class="co">#E9D8FD,color:#1A202C,stroke:#805AD5,stroke-width:1px,font-weight:bold</span></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>    classDef ejsimple fill:<span class="co">#FAF5FF,color:#1A202C,stroke:#805AD5,stroke-width:1px</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>    classDef matrizG fill:<span class="co">#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>    classDef matrizR fill:<span class="co">#DD6B20,color:#fff,stroke:#9C4221,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>    classDef matrizV fill:<span class="co">#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>    classDef detalleG fill:<span class="co">#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px</span></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>    classDef detalleR fill:<span class="co">#FFFAF0,color:#1A202C,stroke:#DD6B20,stroke-width:1px</span></span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>    classDef detalleV fill:<span class="co">#F0FFF4,color:#1A202C,stroke:#38A169,stroke-width:1px</span></span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>    classDef conexion fill:<span class="co">#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>    classDef ejemplo fill:<span class="co">#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px</span></span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>    class A titulo</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>    class INTRO intro</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>    class VAR,COV varcov</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>    class VAREJ,COVEJ ejsimple</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>    class G matrizG</span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>    class R matrizR</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>    class V matrizV</span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>    class G1,G2,G3 detalleG</span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>    class R1,R2,R3 detalleR</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>    class V1 detalleV</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>    class CONEX conexion</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>    class E1,E2 ejemplo</span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto aleatorio** `(1 | rata)` combinado con una **estructura de covarianza** que modela cómo se correlacionan las mediciones repetidas en el tiempo (no necesariamente pendiente aleatoria). Es un caso donde el libro usa el ejemplo justamente para mostrar la diferencia entre "modelar la pendiente como aleatoria" vs. "modelar la correlación residual directamente" — dos formas distintas de manejar dependencia temporal.</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="fu">### Autism — Longitudinal Random Coefficients (Cap. 6)</span></span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>Trayectorias de socialización de niños con autismo medidas en el tiempo, buscando ver si distintos subtipos de diagnóstico tienen trayectorias distintas.</span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto + pendiente aleatorios** <span class="in">`(tiempo | niño)`</span>. Este es el ejemplo clásico de "coeficientes aleatorios": cada niño no solo entra con un nivel basal distinto de socialización, sino que también progresa (o no) a su propio ritmo. Es exactamente la lógica del modelo (c) que armamos en tu tarea de PAD.</span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dental Veneer — Longitudinal Clusters (Cap. 7)</span></span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>Salud gingival medida en el tiempo, con dientes anidados dentro de pacientes — una estructura longitudinal Y de clusters a la vez.</span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores Estándar en MM </span></span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>%<span class="dt">%</span>{init: {<span class="ot">'</span><span class="ss">flowchart</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">curve</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">basis</span><span class="ot">'</span>, <span class="ot">'</span><span class="ss">nodeSpacing</span><span class="ot">'</span>: <span class="dv">50</span>, <span class="ot">'</span><span class="ss">rankSpacing</span><span class="ot">'</span>: <span class="dv">60</span>}, <span class="ot">'</span><span class="ss">themeVariables</span><span class="ot">'</span>: {<span class="ot">'</span><span class="ss">fontSize</span><span class="ot">'</span>: <span class="ot">'</span><span class="ss">16px</span><span class="ot">'</span>}} }%%</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>    A[<span class="ot">"</span><span class="st">📏 ERRORES ESTÁNDAR&lt;br/&gt;EN MODELOS MIXTOS</span><span class="ot">"</span>]</span>
 <span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto + pendiente aleatorios**, pero en dos niveles (paciente y diente dentro de paciente). Cada paciente tiene su nivel basal y evolución propios, y dentro de cada paciente, cada diente también puede variar. Es la combinación más compleja de las vistas hasta acá: jerarquía + tiempo.</span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a><span class="fu">### SAT Score — Crossed Random Effects (Cap. 8)</span></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>Puntajes SAT a lo largo del tiempo, donde estudiantes y profesores **no están anidados** — un profesor puede tener estudiantes de distintos años, y un estudiante puede tener distintos profesores.</span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>    A --&gt; P1[<span class="ot">"</span><span class="st">1️⃣ ¿Por qué no es tan simple&lt;br/&gt;como en regresión clásica?</span><span class="ot">"</span>]</span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>    A --&gt; P2[<span class="ot">"</span><span class="st">2️⃣ ¿De dónde salen los&lt;br/&gt;grados de libertad?</span><span class="ot">"</span>]</span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>    A --&gt; P3[<span class="ot">"</span><span class="st">3️⃣ ¿Por qué agregar una&lt;br/&gt;variable cambia otros&lt;br/&gt;errores estándar?</span><span class="ot">"</span>]</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>    A --&gt; P4[<span class="ot">"</span><span class="st">4️⃣ Efectos fijos vs.&lt;br/&gt;efectos aleatorios</span><span class="ot">"</span>]</span>
 <span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **interceptos aleatorios cruzados** `(1 | estudiante) + (1 | profesor)`, sin relación de anidamiento entre ambos. Acá la novedad no es intercepto vs. pendiente, sino que hay **dos fuentes de variación aleatoria que no forman jerarquía**, sino que se cruzan.</span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## Finch, Bolin &amp; Kelley</span></span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a><span class="fu">### Mathematics — Multilevel GLM (Cap. 8)</span></span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>Predicción de si un estudiante aprueba o no un examen estatal de matemáticas, con estudiantes anidados en escuelas.</span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto aleatorio logístico** `(1 | escuela)`, vía `glmer()` con familia binomial. Acá la diferencia clave no es intercepto/pendiente sino que el **outcome no es continuo** — es binario, así que en vez de modelar el PAD promedio directamente, se modela la probabilidad de aprobar mediante una función de enlace logit. No es un modelo lineal simple, es un modelo lineal generalizado.</span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>    P1 --&gt; P1A[<span class="ot">"</span><span class="st">En regresión simple, todas&lt;br/&gt;las observaciones son&lt;br/&gt;independientes, así que hay&lt;br/&gt;una fórmula directa para&lt;br/&gt;el error estándar</span><span class="ot">"</span>]</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>    P1A --&gt; P1B[<span class="ot">"</span><span class="st">En modelos mixtos, las&lt;br/&gt;observaciones del mismo grupo&lt;br/&gt;están correlacionadas. El error&lt;br/&gt;estándar tiene que descontar&lt;br/&gt;esa dependencia, usando la&lt;br/&gt;matriz V (ver mapa de&lt;br/&gt;varianza-covarianza)</span><span class="ot">"</span>]</span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>    P2 --&gt; P2A[<span class="ot">"</span><span class="st">lmer() del paquete lme4 NO&lt;br/&gt;da p-values por default,&lt;br/&gt;porque calcular grados de&lt;br/&gt;libertad exactos en modelos&lt;br/&gt;mixtos no es directo</span><span class="ot">"</span>]</span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>    P2A --&gt; P2B[<span class="ot">"</span><span class="st">lmerTest agrega una&lt;br/&gt;APROXIMACIÓN de grados&lt;br/&gt;de libertad: método&lt;br/&gt;Satterthwaite (default) o&lt;br/&gt;Kenward-Roger</span><span class="ot">"</span>]</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>    P2B --&gt; P2C[<span class="ot">"</span><span class="st">Por eso a veces ves grados&lt;br/&gt;de libertad con decimales&lt;br/&gt;(ej. df = 42.3) — es normal,&lt;br/&gt;no un error</span><span class="ot">"</span>]</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>    P3 --&gt; P3A[<span class="ot">"</span><span class="st">Al agregar una variable&lt;br/&gt;(ej. centro o edad), el&lt;br/&gt;modelo reparte la varianza&lt;br/&gt;explicada de otra manera&lt;br/&gt;entre efectos fijos y&lt;br/&gt;aleatorios</span><span class="ot">"</span>]</span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>    P3A --&gt; P3B[<span class="ot">"</span><span class="st">Esto puede achicar o agrandar&lt;br/&gt;los errores estándar de las&lt;br/&gt;variables que ya estaban en&lt;br/&gt;el modelo, incluso si la&lt;br/&gt;nueva variable no es&lt;br/&gt;significativa</span><span class="ot">"</span>]</span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>    P4 --&gt; P4A[<span class="ot">"</span><span class="st">Error estándar de un&lt;br/&gt;EFECTO FIJO (ej. efecto de&lt;br/&gt;tratamiento): qué tan&lt;br/&gt;precisa es la estimación&lt;br/&gt;del promedio poblacional</span><span class="ot">"</span>]</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>    P4 --&gt; P4B[<span class="ot">"</span><span class="st">Incertidumbre en la varianza&lt;br/&gt;de un EFECTO ALEATORIO: más&lt;br/&gt;compleja de estimar, y menos&lt;br/&gt;confiable cuando hay pocos&lt;br/&gt;grupos (ej. pocos centros)</span><span class="ot">"</span>]</span>
 <span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Galecki &amp; Burzykowski</span></span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="fu">### ARMD Trial — Longitudinal Grouped</span></span>
-<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>Agudeza visual medida en el tiempo en pacientes con degeneración macular, comparando tratamiento vs. placebo.</span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto + pendiente aleatorios** <span class="in">`(tiempo | paciente)`</span>. Muy similar en lógica a tu tarea de PAD: cada paciente entra con una agudeza visual basal distinta y su visión evoluciona a su propio ritmo bajo tratamiento.</span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="fu">### PRT Trial — Pre-Post Clusters</span></span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>Fuerza muscular en fibras, medida antes y después de un programa de entrenamiento de resistencia, con fibras agrupadas dentro de sujetos.</span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>**Estructura aplicada:** **intercepto aleatorio** con una estructura de covarianza más avanzada (productos de Kronecker en capítulos posteriores) para modelar cómo se correlacionan las distintas fibras dentro del mismo sujeto en cada momento (pre/post). Es un caso donde, otra vez, el foco no es tanto pendiente aleatoria sino **cómo estructurar la correlación entre observaciones agrupadas**.</span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>    classDef titulo fill:<span class="co">#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold</span></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>    classDef pregunta fill:<span class="co">#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold</span></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>    classDef detalle fill:<span class="co">#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>    class A titulo</span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>    class P1,P2,P3,P4 pregunta</span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>    class P1A,P1B,P2A,P2B,P2C,P3A,P3B,P4A,P4B detalle</span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

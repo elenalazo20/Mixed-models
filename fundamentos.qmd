@@ -49,7 +49,7 @@ flowchart TD
     A["🎯 MODELOS DE EFECTOS MIXTOS<br/>¿Qué varía entre sujetos?"]
 
     A --> B["1️⃣ INTERCEPTO ALEATORIO<br/>(1 | paciente)"]
-    A --> C["2️⃣ PENDIENTE ALEATORIA<br/>(0 + tiempo | paciente)"]
+    A --> C["2️⃣ PENDIENTE ALEATORIA<br/> (tiempo - 1 | paciente)"]
     A --> D["3️⃣ INTERCEPTO + PENDIENTE<br/>(tiempo | paciente)"]
 
     B --> B1["🏃 ANALOGÍA: Carrera con hándicap<br/>━━━━━━━━━━<br/>Cada corredor arranca desde una posición distinta en la pista (algunos más adelante, otros más atrás), pero todos corren a la MISMA velocidad. La distancia entre ellos se mantiene constante todo el recorrido."]
@@ -177,109 +177,102 @@ flowchart TD
     class FIN ok
 ```
 
-## Estructura de los ejemplos de este sitio
 
-Una vez que entendés la teoría, así se conectan los 9 ejemplos trabajados según su tipo de dato.
+## Varianza y covarianza en MM
 
 ```{mermaid}
 %%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
 flowchart TD
-    A["📚 EJEMPLOS DE ESTE SITIO<br/>¿Qué estructura de datos tenés?"]
+    A["📐 VARIANZA Y COVARIANZA<br/>EN MODELOS MIXTOS"]
 
-    A --> B["📗 Outcome continuo<br/>LMM gaussiano (lineal)"]
-    A --> C["📙 Outcome binario<br/>GLMM logístico<br/>⚠️ NO es LMM — usa función<br/>de enlace logit, no identidad"]
+    A --> INTRO["📖 ¿QUÉ SON, EN ESTE CONTEXTO?"]
 
-    B --> D["2 niveles<br/>(sujetos dentro de un grupo)"]
-    B --> E["3 niveles<br/>(anidamiento doble)"]
-    B --> F["Medidas repetidas<br/>(mismo sujeto en el tiempo)"]
-    B --> G["Coeficientes aleatorios<br/>longitudinales"]
-    B --> H["Factores aleatorios<br/>cruzados (no anidados)"]
-    B --> I["Ensayo clínico<br/>longitudinal agrupado"]
+    INTRO --> VAR["VARIANZA<br/>Qué tan dispersos están los<br/>valores alrededor de un<br/>promedio. En modelos mixtos:<br/>cuánto se diferencian los<br/>sujetos entre sí en su<br/>intercepto o en su pendiente"]
+    INTRO --> COV["COVARIANZA<br/>Si dos cosas varían juntas<br/>o de forma opuesta. En<br/>modelos mixtos: si el<br/>intercepto y la pendiente de<br/>un mismo sujeto tienden a<br/>moverse en la misma dirección<br/>(o en direcciones opuestas)"]
 
-    D --> D1["🐀 Rat Pup — West Cap. 3<br/>crías dentro de camadas<br/>🔵 Intercepto aleatorio"]
-    E --> E1["🏫 Classroom — West Cap. 4<br/>estudiantes-salones-escuelas<br/>🔵 Intercepto aleatorio (3 niveles)"]
-    F --> F1["🧠 Rat Brain — West Cap. 5<br/>medidas repetidas en rata<br/>🔵 Intercepto aleatorio +<br/>estructura de covarianza"]
-    G --> G1["🧩 Autism — West Cap. 6<br/>trayectorias de socialización<br/>🟢 Intercepto + pendiente"]
-    G --> G2["🦷 Dental Veneer — West Cap. 7<br/>longitudinal en 3 niveles<br/>🟢 Intercepto + pendiente"]
-    H --> H1["📝 SAT Score — West Cap. 8<br/>estudiantes y profesores cruzados<br/>🔵 Interceptos cruzados"]
-    I --> I1["👁️ ARMD Trial — Galecki<br/>agudeza visual en el tiempo<br/>🟢 Intercepto + pendiente"]
-    I --> I2["💪 PRT Trial — Galecki<br/>fuerza muscular pre-post<br/>🔵 Intercepto aleatorio (Kronecker)"]
+    VAR --> VAREJ["Ejemplo simple: si todos los<br/>pacientes tuvieran el mismo<br/>PAD basal, la varianza del<br/>intercepto sería 0. Cuanto<br/>más distintos entre sí,<br/>mayor la varianza"]
+    COV --> COVEJ["Ejemplo simple: si los<br/>pacientes que arrancan con<br/>PAD más alto también bajan<br/>más rápido, hay covarianza<br/>negativa entre intercepto<br/>y pendiente"]
 
-    C --> J["Intercepto aleatorio<br/>logístico"]
-    J --> J1["📐 Mathematics — Finch Cap. 8<br/>estudiantes dentro de escuelas<br/>🔵 Intercepto aleatorio (glmer)"]
+    INTRO --> G["🔵 MATRIZ G<br/>Varianza-covarianza de<br/>los EFECTOS ALEATORIOS"]
+    INTRO --> R["🟠 MATRIZ R<br/>Varianza-covarianza<br/>RESIDUAL (dentro del sujeto)"]
+    INTRO --> V["🟢 MATRIZ V<br/>Varianza-covarianza<br/>MARGINAL implicada<br/>V = ZGZ' + R"]
 
-    LEYENDA["🔑 LEYENDA<br/>🔵 Solo intercepto aleatorio<br/>🟢 Intercepto + pendiente aleatorios<br/>(ver mapa 2 para la teoría de cada uno)"]
+    G --> G1["¿Qué mide? Cuánto varía el intercepto entre sujetos, cuánto varía la pendiente, y si ambos están correlacionados entre sí"]
+    G1 --> G2["📊 En R: VarCorr(modelo)<br/>muestra Variance (intercepto),<br/>Variance (pendiente) y Corr<br/>(correlación entre ambos)"]
+    G2 --> G3["💡 Interpretación: correlación<br/>negativa = sujetos que arrancan<br/>más alto tienden a cambiar más<br/>rápido hacia abajo (regresión<br/>a la media)"]
+
+    R --> R1["¿Qué mide? Cómo se correlacionan<br/>los errores dentro del mismo<br/>sujeto, una vez ya sacada la<br/>parte explicada por G"]
+    R1 --> R2["Por default en lmer(): R es<br/>diagonal (residuos independientes<br/>dentro del sujeto)"]
+    R2 --> R3["Con nlme::lme() se pueden<br/>especificar estructuras más<br/>complejas: AR1, general, etc."]
+
+    V --> V1["Combina G y R para dar la<br/>covarianza TOTAL observada<br/>entre las mediciones de<br/>un mismo sujeto"]
+
+    CONEX["🔗 CONEXIÓN CON LOS EJEMPLOS<br/>DE ESTA PÁGINA"]
+    G3 -.-> CONEX
+    R3 -.-> CONEX
+    V1 -.-> CONEX
+
+    CONEX --> E1["Estructura de G: Rat Pup y<br/>Classroom usan solo intercepto<br/>aleatorio (G es 1x1). Autism,<br/>Dental Veneer y ARMD Trial usan<br/>intercepto y pendiente juntos<br/>(G es 2x2, con su correlación)"]
+    CONEX --> E2["Estructura de R: Rat Brain es<br/>el caso donde más se trabaja<br/>la correlación residual entre<br/>medidas repetidas dentro del<br/>mismo sujeto, más allá de lo<br/>que ya captura G"]
 
     classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
-    classDef continuo fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
-    classDef binario fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px,font-weight:bold
-    classDef categoria fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef intro fill:#805AD5,color:#fff,stroke:#553C9A,stroke-width:2px,font-weight:bold
+    classDef varcov fill:#E9D8FD,color:#1A202C,stroke:#805AD5,stroke-width:1px,font-weight:bold
+    classDef ejsimple fill:#FAF5FF,color:#1A202C,stroke:#805AD5,stroke-width:1px
+    classDef matrizG fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef matrizR fill:#DD6B20,color:#fff,stroke:#9C4221,stroke-width:2px,font-weight:bold
+    classDef matrizV fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
+    classDef detalleG fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef detalleR fill:#FFFAF0,color:#1A202C,stroke:#DD6B20,stroke-width:1px
+    classDef detalleV fill:#F0FFF4,color:#1A202C,stroke:#38A169,stroke-width:1px
+    classDef conexion fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
     classDef ejemplo fill:#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px
-    classDef leyenda fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
 
     class A titulo
-    class B continuo
-    class C binario
-    class D,E,F,G,H,I,J categoria
-    class D1,E1,F1,G1,G2,H1,I1,I2,J1 ejemplo
-    class LEYENDA leyenda
+    class INTRO intro
+    class VAR,COV varcov
+    class VAREJ,COVEJ ejsimple
+    class G matrizG
+    class R matrizR
+    class V matrizV
+    class G1,G2,G3 detalleG
+    class R1,R2,R3 detalleR
+    class V1 detalleV
+    class CONEX conexion
+    class E1,E2 ejemplo
 ```
 
----
 
-## West, Welch & Galecki
+## Errores Estándar en MM 
 
-### Rat Pup — Two-Level Clusters (Cap. 3)
-Estudio del **peso al nacer de crías de rata**, agrupadas dentro de camadas (litter), comparando distintas dosis de tratamiento. Cada camada es una "familia" — las crías de la misma camada se parecen más entre sí que a crías de otras camadas (comparten genética y ambiente uterino).
+```{mermaid}
+%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
+flowchart TD
+    A["📏 ERRORES ESTÁNDAR<br/>EN MODELOS MIXTOS"]
 
-**Estructura aplicada:** solo **intercepto aleatorio** `(1 | litter)`. No hay una dimensión de tiempo — es un dato transversal (una sola medición por cría), así que no existe "pendiente" que hacer aleatoria. Lo único que varía entre camadas es el nivel promedio de peso, no una evolución temporal.
+    A --> P1["1️⃣ ¿Por qué no es tan simple<br/>como en regresión clásica?"]
+    A --> P2["2️⃣ ¿De dónde salen los<br/>grados de libertad?"]
+    A --> P3["3️⃣ ¿Por qué agregar una<br/>variable cambia otros<br/>errores estándar?"]
+    A --> P4["4️⃣ Efectos fijos vs.<br/>efectos aleatorios"]
 
-### Classroom — Three-Level Clusters (Cap. 4)
-Ganancia en matemáticas de estudiantes anidados en salones, anidados en escuelas — tres niveles jerárquicos.
+    P1 --> P1A["En regresión simple, todas<br/>las observaciones son<br/>independientes, así que hay<br/>una fórmula directa para<br/>el error estándar"]
+    P1A --> P1B["En modelos mixtos, las<br/>observaciones del mismo grupo<br/>están correlacionadas. El error<br/>estándar tiene que descontar<br/>esa dependencia, usando la<br/>matriz V (ver mapa de<br/>varianza-covarianza)"]
 
-**Estructura aplicada:** **intercepto aleatorio en cada nivel** `(1 | escuela/salon)`. Igual que Rat Pup, es principalmente transversal: lo que varía es el promedio de cada salón y de cada escuela, no una trayectoria en el tiempo. La complejidad acá no viene de intercepto vs. pendiente, sino de tener **dos niveles de agrupación anidados** en simultáneo.
+    P2 --> P2A["lmer() del paquete lme4 NO<br/>da p-values por default,<br/>porque calcular grados de<br/>libertad exactos en modelos<br/>mixtos no es directo"]
+    P2A --> P2B["lmerTest agrega una<br/>APROXIMACIÓN de grados<br/>de libertad: método<br/>Satterthwaite (default) o<br/>Kenward-Roger"]
+    P2B --> P2C["Por eso a veces ves grados<br/>de libertad con decimales<br/>(ej. df = 42.3) — es normal,<br/>no un error"]
 
-### Rat Brain — Repeated Measures (Cap. 5)
-Activación química cerebral medida repetidamente dentro de cada rata bajo distintos tratamientos.
+    P3 --> P3A["Al agregar una variable<br/>(ej. centro o edad), el<br/>modelo reparte la varianza<br/>explicada de otra manera<br/>entre efectos fijos y<br/>aleatorios"]
+    P3A --> P3B["Esto puede achicar o agrandar<br/>los errores estándar de las<br/>variables que ya estaban en<br/>el modelo, incluso si la<br/>nueva variable no es<br/>significativa"]
 
-**Estructura aplicada:** **intercepto aleatorio** `(1 | rata)` combinado con una **estructura de covarianza** que modela cómo se correlacionan las mediciones repetidas en el tiempo (no necesariamente pendiente aleatoria). Es un caso donde el libro usa el ejemplo justamente para mostrar la diferencia entre "modelar la pendiente como aleatoria" vs. "modelar la correlación residual directamente" — dos formas distintas de manejar dependencia temporal.
+    P4 --> P4A["Error estándar de un<br/>EFECTO FIJO (ej. efecto de<br/>tratamiento): qué tan<br/>precisa es la estimación<br/>del promedio poblacional"]
+    P4 --> P4B["Incertidumbre en la varianza<br/>de un EFECTO ALEATORIO: más<br/>compleja de estimar, y menos<br/>confiable cuando hay pocos<br/>grupos (ej. pocos centros)"]
 
-### Autism — Longitudinal Random Coefficients (Cap. 6)
-Trayectorias de socialización de niños con autismo medidas en el tiempo, buscando ver si distintos subtipos de diagnóstico tienen trayectorias distintas.
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef pregunta fill:#3182CE,color:#fff,stroke:#2C5282,stroke-width:2px,font-weight:bold
+    classDef detalle fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
 
-**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | niño)`. Este es el ejemplo clásico de "coeficientes aleatorios": cada niño no solo entra con un nivel basal distinto de socialización, sino que también progresa (o no) a su propio ritmo. Es exactamente la lógica del modelo (c) que armamos en tu tarea de PAD.
-
-### Dental Veneer — Longitudinal Clusters (Cap. 7)
-Salud gingival medida en el tiempo, con dientes anidados dentro de pacientes — una estructura longitudinal Y de clusters a la vez.
-
-**Estructura aplicada:** **intercepto + pendiente aleatorios**, pero en dos niveles (paciente y diente dentro de paciente). Cada paciente tiene su nivel basal y evolución propios, y dentro de cada paciente, cada diente también puede variar. Es la combinación más compleja de las vistas hasta acá: jerarquía + tiempo.
-
-### SAT Score — Crossed Random Effects (Cap. 8)
-Puntajes SAT a lo largo del tiempo, donde estudiantes y profesores **no están anidados** — un profesor puede tener estudiantes de distintos años, y un estudiante puede tener distintos profesores.
-
-**Estructura aplicada:** **interceptos aleatorios cruzados** `(1 | estudiante) + (1 | profesor)`, sin relación de anidamiento entre ambos. Acá la novedad no es intercepto vs. pendiente, sino que hay **dos fuentes de variación aleatoria que no forman jerarquía**, sino que se cruzan.
-
----
-
-## Finch, Bolin & Kelley
-
-### Mathematics — Multilevel GLM (Cap. 8)
-Predicción de si un estudiante aprueba o no un examen estatal de matemáticas, con estudiantes anidados en escuelas.
-
-**Estructura aplicada:** **intercepto aleatorio logístico** `(1 | escuela)`, vía `glmer()` con familia binomial. Acá la diferencia clave no es intercepto/pendiente sino que el **outcome no es continuo** — es binario, así que en vez de modelar el PAD promedio directamente, se modela la probabilidad de aprobar mediante una función de enlace logit. No es un modelo lineal simple, es un modelo lineal generalizado.
-
----
-
-## Galecki & Burzykowski
-
-### ARMD Trial — Longitudinal Grouped
-Agudeza visual medida en el tiempo en pacientes con degeneración macular, comparando tratamiento vs. placebo.
-
-**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | paciente)`. Muy similar en lógica a tu tarea de PAD: cada paciente entra con una agudeza visual basal distinta y su visión evoluciona a su propio ritmo bajo tratamiento.
-
-### PRT Trial — Pre-Post Clusters
-Fuerza muscular en fibras, medida antes y después de un programa de entrenamiento de resistencia, con fibras agrupadas dentro de sujetos.
-
-**Estructura aplicada:** **intercepto aleatorio** con una estructura de covarianza más avanzada (productos de Kronecker en capítulos posteriores) para modelar cómo se correlacionan las distintas fibras dentro del mismo sujeto en cada momento (pre/post). Es un caso donde, otra vez, el foco no es tanto pendiente aleatoria sino **cómo estructurar la correlación entre observaciones agrupadas**.
-
----
+    class A titulo
+    class P1,P2,P3,P4 pregunta
+    class P1A,P1B,P2A,P2B,P2C,P3A,P3B,P4A,P4B detalle
+```

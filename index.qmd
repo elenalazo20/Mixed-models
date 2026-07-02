@@ -24,35 +24,114 @@ Este sitio contiene ejemplos trabajados de modelos mixtos de tres libros de text
 | [Longitudinal Grouped (ARMD)](longitudinal-grouped/index.qmd) | Galecki et al. | Cap. 2 (pp. 11–22); dataset retomado hasta Cap. 16 | Modelo longitudinal con obs. agrupadas |
 | [Pre-Post Clusters (PRT)](pre-post-clusters/index.qmd) | Galecki et al. | Cap. 2 (p. 20); dataset retomado hasta Cap. 17 | Modelo pre-post con datos en clusters |
 
-## Mapa conceptual de los modelos
-
-```{mermaid}
-flowchart TD
-    A[Modelos mixtos / multinivel] --> B[Outcome continuo<br/>LMM gaussiano]
-    A --> C[Outcome binario<br/>GLMM logístico]
-    B --> D[2 niveles<br/>Rat Pup]
-    B --> E[3 niveles<br/>Classroom]
-    B --> F[Medidas repetidas<br/>Rat Brain]
-    B --> G[Coeficientes aleatorios<br/>longitudinal<br/>Autism]
-    B --> H[3 niveles longitudinal<br/>Dental Veneer]
-    B --> I[Factores aleatorios cruzados<br/>SAT Score]
-    B --> J[Ensayo longitudinal agrupado<br/>ARMD Trial]
-    B --> K[Pre-post agrupado por sujeto<br/>PRT Trial]
-    C --> L[Intercepto aleatorio logístico<br/>Mathematics Achievement]
-```
-
-| Tipo de outcome | Familia del modelo | Ejemplo | Estructura principal | Función R | Libro |
-|------------------|---------------------|---------|------------------------|-----------|-------|
-| Continuo | LMM gaussiano | Rat Pup | 2 niveles: crías dentro de camadas | `lme()` | West |
-| Continuo | LMM gaussiano | Classroom | 3 niveles: estudiantes, salones, escuelas | `lme()` | West |
-| Continuo | LMM gaussiano | Rat Brain | Medidas repetidas dentro de rata | `lme()` | West |
-| Continuo | LMM gaussiano | Autism | Longitudinal con coeficientes aleatorios | `lme()` | West |
-| Continuo | LMM gaussiano | Dental Veneer | Longitudinal de 3 niveles | `lme()` | West |
-| Continuo | LMM gaussiano | SAT Score | Factores aleatorios cruzados | `lmer()` | West |
-| Continuo | LMM gaussiano | ARMD Trial | Ensayo clínico longitudinal agrupado | `lme()` | Galecki |
-| Continuo | LMM gaussiano | PRT Trial | Pre-post con observaciones agrupadas por sujeto | `lme()` | Galecki |
-| Binario | GLMM logístico | Mathematics Achievement | Estudiantes dentro de escuelas | `glmer()` | Finch |
-
 ## Antes de empezar
 
 Si querés repasar la teoría antes de ver los ejemplos, revisá los [mapas conceptuales](fundamentos.qmd).
+
+## Estructura de los ejemplos de este sitio
+
+Una vez que entendés la teoría, así se conectan los 9 ejemplos trabajados según su tipo de dato.
+
+```{mermaid}
+%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '16px'}} }%%
+flowchart TD
+    A["📚 EJEMPLOS DE ESTE SITIO<br/>¿Qué estructura de datos tenés?"]
+
+    A --> B["📗 Outcome continuo<br/>LMM gaussiano (lineal)"]
+    A --> C["📙 Outcome binario<br/>GLMM logístico<br/>⚠️ NO es LMM — usa función<br/>de enlace logit, no identidad"]
+
+    B --> D["2 niveles<br/>(sujetos dentro de un grupo)"]
+    B --> E["3 niveles<br/>(anidamiento doble)"]
+    B --> F["Medidas repetidas<br/>(mismo sujeto en el tiempo)"]
+    B --> G["Coeficientes aleatorios<br/>longitudinales"]
+    B --> H["Factores aleatorios<br/>cruzados (no anidados)"]
+    B --> I["Ensayo clínico<br/>longitudinal agrupado"]
+
+    D --> D1["🐀 Rat Pup — West Cap. 3<br/>crías dentro de camadas<br/>🔵 Intercepto aleatorio"]
+    E --> E1["🏫 Classroom — West Cap. 4<br/>estudiantes-salones-escuelas<br/>🔵 Intercepto aleatorio (3 niveles)"]
+    F --> F1["🧠 Rat Brain — West Cap. 5<br/>medidas repetidas en rata<br/>🔵 Intercepto aleatorio +<br/>estructura de covarianza"]
+    G --> G1["🧩 Autism — West Cap. 6<br/>trayectorias de socialización<br/>🟢 Intercepto + pendiente"]
+    G --> G2["🦷 Dental Veneer — West Cap. 7<br/>longitudinal en 3 niveles<br/>🟢 Intercepto + pendiente"]
+    H --> H1["📝 SAT Score — West Cap. 8<br/>estudiantes y profesores cruzados<br/>🔵 Interceptos cruzados"]
+    I --> I1["👁️ ARMD Trial — Galecki<br/>agudeza visual en el tiempo<br/>🟢 Intercepto + pendiente"]
+    I --> I2["💪 PRT Trial — Galecki<br/>fuerza muscular pre-post<br/>🔵 Intercepto aleatorio (Kronecker)"]
+
+    C --> J["Intercepto aleatorio<br/>logístico"]
+    J --> J1["📐 Mathematics — Finch Cap. 8<br/>estudiantes dentro de escuelas<br/>🔵 Intercepto aleatorio (glmer)"]
+
+    LEYENDA["🔑 LEYENDA<br/>🔵 Solo intercepto aleatorio<br/>🟢 Intercepto + pendiente aleatorios<br/>(ver mapa 2 para la teoría de cada uno)"]
+
+    classDef titulo fill:#4A5568,color:#fff,stroke:#2D3748,stroke-width:3px,font-weight:bold
+    classDef continuo fill:#38A169,color:#fff,stroke:#276749,stroke-width:2px,font-weight:bold
+    classDef binario fill:#D69E2E,color:#fff,stroke:#975A16,stroke-width:2px,font-weight:bold
+    classDef categoria fill:#EBF8FF,color:#1A202C,stroke:#3182CE,stroke-width:1px
+    classDef ejemplo fill:#FFFFFF,color:#1A202C,stroke:#4A5568,stroke-width:1px
+    classDef leyenda fill:#FEEBC8,color:#1A202C,stroke:#DD6B20,stroke-width:2px,font-weight:bold
+
+    class A titulo
+    class B continuo
+    class C binario
+    class D,E,F,G,H,I,J categoria
+    class D1,E1,F1,G1,G2,H1,I1,I2,J1 ejemplo
+    class LEYENDA leyenda
+```
+
+---
+
+### West, Welch & Galecki
+
+#### Rat Pup — Two-Level Clusters (Cap. 3)
+Estudio del **peso al nacer de crías de rata**, agrupadas dentro de camadas (litter), comparando distintas dosis de tratamiento. Cada camada es una "familia" — las crías de la misma camada se parecen más entre sí que a crías de otras camadas (comparten genética y ambiente uterino).
+
+**Estructura aplicada:** solo **intercepto aleatorio** `(1 | litter)`. No hay una dimensión de tiempo — es un dato transversal (una sola medición por cría), así que no existe "pendiente" que hacer aleatoria. Lo único que varía entre camadas es el nivel promedio de peso, no una evolución temporal.
+
+#### Classroom — Three-Level Clusters (Cap. 4)
+Ganancia en matemáticas de estudiantes anidados en salones, anidados en escuelas — tres niveles jerárquicos.
+
+**Estructura aplicada:** **intercepto aleatorio en cada nivel** `(1 | escuela/salon)`. Igual que Rat Pup, es principalmente transversal: lo que varía es el promedio de cada salón y de cada escuela, no una trayectoria en el tiempo. La complejidad acá no viene de intercepto vs. pendiente, sino de tener **dos niveles de agrupación anidados** en simultáneo.
+
+#### Rat Brain — Repeated Measures (Cap. 5)
+Activación química cerebral medida repetidamente dentro de cada rata bajo distintos tratamientos.
+
+**Estructura aplicada:** **intercepto aleatorio** `(1 | rata)` combinado con una **estructura de covarianza** que modela cómo se correlacionan las mediciones repetidas en el tiempo (no necesariamente pendiente aleatoria). Es un caso donde el libro usa el ejemplo justamente para mostrar la diferencia entre "modelar la pendiente como aleatoria" vs. "modelar la correlación residual directamente" — dos formas distintas de manejar dependencia temporal.
+
+#### Autism — Longitudinal Random Coefficients (Cap. 6)
+Trayectorias de socialización de niños con autismo medidas en el tiempo, buscando ver si distintos subtipos de diagnóstico tienen trayectorias distintas.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | niño)`. Este es el ejemplo clásico de "coeficientes aleatorios": cada niño no solo entra con un nivel basal distinto de socialización, sino que también progresa (o no) a su propio ritmo. Es exactamente la lógica del modelo (c) que armamos en tu tarea de PAD.
+
+#### Dental Veneer — Longitudinal Clusters (Cap. 7)
+Salud gingival medida en el tiempo, con dientes anidados dentro de pacientes — una estructura longitudinal Y de clusters a la vez.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios**, pero en dos niveles (paciente y diente dentro de paciente). Cada paciente tiene su nivel basal y evolución propios, y dentro de cada paciente, cada diente también puede variar. Es la combinación más compleja de las vistas hasta acá: jerarquía + tiempo.
+
+#### SAT Score — Crossed Random Effects (Cap. 8)
+Puntajes SAT a lo largo del tiempo, donde estudiantes y profesores **no están anidados** — un profesor puede tener estudiantes de distintos años, y un estudiante puede tener distintos profesores.
+
+**Estructura aplicada:** **interceptos aleatorios cruzados** `(1 | estudiante) + (1 | profesor)`, sin relación de anidamiento entre ambos. Acá la novedad no es intercepto vs. pendiente, sino que hay **dos fuentes de variación aleatoria que no forman jerarquía**, sino que se cruzan.
+
+---
+
+### Finch, Bolin & Kelley
+
+#### Mathematics — Multilevel GLM (Cap. 8)
+Predicción de si un estudiante aprueba o no un examen estatal de matemáticas, con estudiantes anidados en escuelas.
+
+**Estructura aplicada:** **intercepto aleatorio logístico** `(1 | escuela)`, vía `glmer()` con familia binomial. Acá la diferencia clave no es intercepto/pendiente sino que el **outcome no es continuo** — es binario, así que en vez de modelar el PAD promedio directamente, se modela la probabilidad de aprobar mediante una función de enlace logit. No es un modelo lineal simple, es un modelo lineal generalizado.
+
+---
+
+### Galecki & Burzykowski
+
+#### ARMD Trial — Longitudinal Grouped
+Agudeza visual medida en el tiempo en pacientes con degeneración macular, comparando tratamiento vs. placebo.
+
+**Estructura aplicada:** **intercepto + pendiente aleatorios** `(tiempo | paciente)`. Muy similar en lógica a tu tarea de PAD: cada paciente entra con una agudeza visual basal distinta y su visión evoluciona a su propio ritmo bajo tratamiento.
+
+#### PRT Trial — Pre-Post Clusters
+Fuerza muscular en fibras, medida antes y después de un programa de entrenamiento de resistencia, con fibras agrupadas dentro de sujetos.
+
+**Estructura aplicada:** **intercepto aleatorio** con una estructura de covarianza más avanzada (productos de Kronecker en capítulos posteriores) para modelar cómo se correlacionan las distintas fibras dentro del mismo sujeto en cada momento (pre/post). Es un caso donde, otra vez, el foco no es tanto pendiente aleatoria sino **cómo estructurar la correlación entre observaciones agrupadas**.
+
+---
+
